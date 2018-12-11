@@ -20,3 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('smart/v1/categories','CategoryController@show');
 
 Route::get('smart/v1/channels','ChannelsController@show');
+
+Route::get('smart/v1/archives','ArchiveController@show');

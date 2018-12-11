@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
                 CategoryTableSeader::class,
                 ChannelTableSeeder::class,
                 BroadcastsTableSeeder::class,
+                ArchiveTableSeeder::class,
+                EpisodeTableSeeder::class,
             ]
         );
     }
