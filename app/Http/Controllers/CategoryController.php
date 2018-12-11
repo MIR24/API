@@ -11,7 +11,11 @@ class CategoryController extends Controller
      *   path="/smart/v1/categories",
      *   summary="Получение списка категорий передач",
      *   externalDocs="https://mir24tv.atlassian.net/browse/SSAPI-4",
-     *   @OA\Response(response=200, description="Список категорий передач")
+     *   @OA\Response(
+     *      response=200,
+     *      description="Список категорий передач",
+     *      @OA\JsonContent(ref="#/components/schemas/Category")
+     *   ),
      * )
      */
     public function show()
