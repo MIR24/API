@@ -2,6 +2,10 @@
 
 namespace App\Http;
 
+/**
+ * @OA\Info(title="Mir24 API", version="0.1")
+ */
+
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
