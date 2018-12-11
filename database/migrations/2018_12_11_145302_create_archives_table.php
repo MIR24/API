@@ -15,10 +15,10 @@ class CreateArchivesTable extends Migration
     {
         Schema::create('archives', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('title');
+            $table->string('title');
             $table->integer('category_id')->unsigned()->nullable();
-            $table->text('poster');
-            $table->text('url');
+            $table->string('poster');
+            $table->string('url');
             $table->dateTime('time_begin');
             $table->dateTime('time_end');
             $table->foreign('category_id')->references('id')->on('categories');

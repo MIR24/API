@@ -15,10 +15,10 @@ class CreateChannelsTable extends Migration
     {
         Schema::create('channel', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('name');
-            $table->text('stream_shift');
-            $table->text('stream_live');
-            $table->text('logo');
+            $table->string('name');
+            $table->string('stream_shift');
+            $table->string('stream_live');
+            $table->string('logo');
         });
     }
 

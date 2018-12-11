@@ -15,13 +15,13 @@ class CreateEpisodesTable extends Migration
     {
         Schema::create('episodes', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('title');
-            $table->text('poster');
+            $table->string('title');
+            $table->string('poster');
             $table->integer('season');
             $table->year('year');
             $table->dateTime('time_begin');
             $table->dateTime('time_end');
-            $table->text('url');
+            $table->string('url');
             $table->integer('archive_id')->unsigned()->nullable();
             $table->foreign('archive_id')->references('id')->on('archives');
 

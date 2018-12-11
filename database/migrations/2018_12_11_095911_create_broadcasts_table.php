@@ -15,10 +15,10 @@ class CreateBroadcastsTable extends Migration
     {
         Schema::create('broadcasts', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('title');
-            $table->text('subtitle');
+            $table->string('title');
+            $table->string('subtitle');
             $table->integer('age');
-            $table->text('day_of_week');
+            $table->string('day_of_week');
             $table->dateTime('begin');
             $table->dateTime('end');
             $table->integer('category_id')->unsigned()->nullable();
