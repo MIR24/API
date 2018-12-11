@@ -15,8 +15,8 @@ class Broadcasts extends Migration
     {
         Schema::table('broadcasts', function (Blueprint $table) {
 
-            $table->integer('chanel_id')->nullable()->unsigned();
-            $table->foreign('chanel_id')->references('id')->on('channel');
+            $table->integer('channel_id')->nullable()->unsigned();
+            $table->foreign('channel_id')->references('id')->on('channel');
             //$table->timestamps();
         });
     }
@@ -30,7 +30,7 @@ class Broadcasts extends Migration
     {
         Schema::table('broadcasts', function (Blueprint $table) {
 
-            $table->dropColumn('chanel_id');
+            $table->dropColumn('channel_id');
         });
     }
 }
