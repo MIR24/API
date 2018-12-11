@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  *   type="object",
  *     @OA\Property(property="id", type="integer"),
  *     @OA\Property(property="name", type="string"),
- *
  * )
  */
 class Category extends Model
