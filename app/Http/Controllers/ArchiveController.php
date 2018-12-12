@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Archive;
+use App\Library\Services\TimeReplacer\TimeReplacer;
 
+/**
+ * @OA\Get(
+ *   path="/smart/v1/archives",
+ *   summary="Получение списка передач в записи",
+ *   externalDocs="https://mir24tv.atlassian.net/browse/SSAPI-5",
+ *   @OA\Response(
+ *      response=200,
+ *      description="Список передач в записи",
+ *      @OA\JsonContent(ref="#/components/schemas/Archive"),
+ *   ),
+ * )
+ */
 class ArchiveController extends Controller
 {
-    /**
-     * @OA\Get(
-     *   path="/smart/v1/archives",
-     *   summary="Получение списка передач в записи",
-     *   externalDocs="https://mir24tv.atlassian.net/browse/SSAPI-5",
-     *   @OA\Response(
-     *      response=200,
-     *      description="Список передач в записи",
-     *      @OA\JsonContent(ref="#/components/schemas/Archive"),
-     *   ),
-     * )
-     */
-    public function show()
+    public function show(TimeReplacer $replacer)
     {
-        return response()->json(Archive::GetForApi()->get());
+        return response()->json($replacer->replace(Archive::GetForApi()->get()));
     }
 }
