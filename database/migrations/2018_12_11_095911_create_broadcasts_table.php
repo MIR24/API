@@ -19,8 +19,8 @@ class CreateBroadcastsTable extends Migration
             $table->string('subtitle');
             $table->integer('age');
             $table->string('day_of_week');
-            $table->dateTime('begin');
-            $table->dateTime('end');
+            $table->dateTime('time_begin');
+            $table->dateTime('time_end');
             $table->integer('category_id')->unsigned()->nullable();
             $table->foreign('category_id')->references('id')->on('categories');
             //$table->timestamps();
