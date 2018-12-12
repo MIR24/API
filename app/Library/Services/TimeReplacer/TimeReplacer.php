@@ -24,15 +24,24 @@ class TimeReplacer
         return $data;
     }
 
-    private function replace(Collection $data): Collection
+    public function replaceForChannel(Collection $data): Collection
     {
-        $data->map(function ($item) {
+        $data->each(function ($item) {
+            $item['broadcasts'] = $this->replace($item['broadcasts']);
+        });
+
+        return $data;
+    }
+
+    private function replace(Collection $data, $keyBegin = "time_begin", $keyEnd = "time_end"): Collection
+    {
+        $data->map(function ($item) use ($keyBegin, $keyEnd) {
             $item['time'] = [
-                'begin' => $item['time_begin'], # TODO достаточно только время без даты
-                'end' => $item['time_end'],
+                'begin' => $item[$keyBegin], # TODO достаточно только время без даты
+                'end' => $item[$keyBegin],
             ];
-            unset($item['time_begin']);
-            unset($item['time_end']);
+            unset($item[$keyBegin]);
+            unset($item[$keyBegin]);
 
             return $item;
         });
