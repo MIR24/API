@@ -13,7 +13,7 @@ use App\Library\Services\TimeReplacer\TimeReplacer;
  *   @OA\Response(
  *      response=200,
  *      description="Список передач в записи",
- *      @OA\JsonContent(ref="#/components/schemas/Archive"),
+ *      @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Archive")),
  *   ),
  * )
  */
