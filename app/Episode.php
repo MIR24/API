@@ -4,6 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @OA\Schema(
+ *   schema="time",
+ *   type="object",
+ *   description="Время начала передачи и длительность",
+ *   @OA\Property(property="begin", type="string"),
+ *   @OA\Property(property="end", type="string"),
+ * )
+ */
 
 /**
  * @OA\Schema(
@@ -12,13 +21,13 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="title", type="string"),
  *     @OA\Property(property="poster", type="string", format="uri"),
  *     @OA\Property(property="season", type="string", format="uri"),
- *     @OA\Property(property="year", type="integer"),
+ *     @OA\Property(property="year", type="integer", maximum=9999),
+ *     @OA\Property(property="time", type="object", ref="#/components/schemas/time"),
  *     @OA\Property(property="url", type="string", format="uri", description="Ссылка на видео" ),
  * )
  */
 class Episode extends Model
 {
-    # TODO OA\Property(property="time", type="TODO", description="Время начала передачи и длительность, если нет эпизодов"), #begin duration/end
     protected $table = 'episodes';
 
     public $timestamps = false;

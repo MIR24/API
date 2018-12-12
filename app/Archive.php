@@ -24,11 +24,13 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="url", type="string", format="uri",
  *       description="Ссылка на видео, если нет эпизодов",
  *     ),
+ *     @OA\Property(property="time", type="object", ref="#/components/schemas/time",
+ *       description="Время начала передачи и длительность, если нет эпизодов"
+ *     ),
  *   )
  */
 class Archive extends Model
 {
-    # TODO OA\Property(property="time", type="TODO", description="Время начала передачи и длительность, если нет эпизодов"), #begin duration/end
     protected $table='archives';
 
     public $timestamps=false;

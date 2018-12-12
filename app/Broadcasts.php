@@ -13,12 +13,12 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="subtitle", type="string"),
  *     @OA\Property(property="age", type="integer", description="Возрастное ограничение передачи (0 - без ограничений)."),
  *     @OA\Property(property="dayOfWeek", type="string", description="День недели"),
+ *     @OA\Property(property="time", type="object", ref="#/components/schemas/time"),
  *     @OA\Property(property="categoryId", type="integer"),
  * )
  */
 class Broadcasts extends Model
 {
-# TODO OA\Property(property="time", type="TODO", description="Время начала передачи и длительность"), #begin duration/end
     protected $table='broadcasts';
 
     protected $hidden=[
