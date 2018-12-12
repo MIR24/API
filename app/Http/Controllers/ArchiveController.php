@@ -21,6 +21,6 @@ class ArchiveController extends Controller
 {
     public function show(TimeReplacer $replacer)
     {
-        return response()->json($replacer->replace(Archive::GetForApi()->get()));
+        return response()->json($replacer->replaceForArchive(Archive::GetForApi()->get()));
     }
 }
