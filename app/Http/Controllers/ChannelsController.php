@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Library\Services\TimeReplacer\StreamUrlReplacer;
 use App\Library\Services\TimeReplacer\TimeReplacer;
 
 class ChannelsController extends Controller
@@ -19,10 +20,15 @@ class ChannelsController extends Controller
      *   ),
      * )
      */
-    public function show(TimeReplacer $replacer)
+    public function show(TimeReplacer $timeReplacer, StreamUrlReplacer $streamUrlReplacer)
     {
         # TODO массив каналов или какой-то конкретный?
-        # TODO stream_shift и stream_live преобразовать в: stream:{ shift:"x", live:"y" }
-        return response()->json($replacer->replaceForChannel(Channel::GetForApi()->get()));
+        return response()->json(
+            $streamUrlReplacer->replace(
+                $timeReplacer->replaceForChannel(
+                    Channel::GetForApi()->get()
+                )
+            )
+        );
     }
 }

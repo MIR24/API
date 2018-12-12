@@ -38,10 +38,10 @@ class TimeReplacer
         $data->map(function ($item) use ($keyBegin, $keyEnd) {
             $item['time'] = [
                 'begin' => $item[$keyBegin], # TODO достаточно только время без даты
-                'end' => $item[$keyBegin],
+                'end' => $item[$keyEnd],
             ];
             unset($item[$keyBegin]);
-            unset($item[$keyBegin]);
+            unset($item[$keyEnd]);
 
             return $item;
         });
