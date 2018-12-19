@@ -1,47 +1,19 @@
 <?php
 
-namespace App\Library\Services;
+namespace App\Library\Services\Import;
 
-class TimeReplacer
+class Mir24Importer
 {
+    public function run()
+    {
+        return "Starting update.";
+    }
 }
 
-//package ru.mirtv.m24api.parsers;
 ///*  Класс содержащий методы для парсинга информации из базы данных bd-mir основного
 // *  сайта и сохранения их в локальную базу на bd-proj. Используется для снижения нагрузки
 // *  на основную базу и снижения количества запросов к ней.
 // */
-//
-//import com.mysql.jdbc.Connection;
-//import java.io.IOException;
-//import java.net.URI;
-//import java.net.URISyntaxException;
-//import java.sql.PreparedStatement;
-//import java.sql.CallableStatement;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.sql.Statement;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.HashSet;
-//import java.util.Iterator;
-//import java.util.Set;
-//import javax.servlet.ServletContext;
-//import org.apache.commons.lang3.StringEscapeUtils;
-//import org.jsoup.Jsoup;
-//import org.jsoup.nodes.Document;
-//import org.jsoup.nodes.Element;
-//import org.jsoup.safety.Whitelist;
-//import ru.mirtv.m24api.db.DBMessanger;
-//import ru.mirtv.m24api.getters.InfoGetter;
-//import ru.mirtv.m24api.log.Logger;
-//import ru.mirtv.m24api.objects.Gallery;
-//import ru.mirtv.m24api.objects.NewsItem;
-//import ru.mirtv.m24api.objects.Tag;
-//import ru.mirtv.m24api.objects.options.NewsOptions;
-//import ru.mirtv.m24api.shell.ShellExecutor;
-//import ru.mirtv.m24api.utils.ConfigLoader;
-//
 ///**
 // * Class used to parse news from main site database and save them to local api
 // * database.
@@ -50,30 +22,9 @@ class TimeReplacer
 // */
 //public class NewsParser extends Thread {
 //
-//private ServletContext context;
-//private final Logger logger = new Logger();
-//private String query;
-//
 //private final int PROMO_NEWS_COUNT = 5;
 //private static int UPDATE_PERIOD = 60; // период обновления новостей в минутах
 //private final String DEFAULT_VIDEO_URL;
-//
-//    /**
-//     * Empty contstructor for debug.
-//     */
-//public NewsParser() {
-//DEFAULT_VIDEO_URL = ConfigLoader.getVariable("default_video_url");
-//}
-//
-//    /**
-//     * Constructor with context for cache support.
-//     *
-//     * @param context context of application to save frequenly used objects
-//     */
-//    public NewsParser(ServletContext context) {
-//    DEFAULT_VIDEO_URL = ConfigLoader.getVariable("default_video_url");
-//    this.context = context;
-//}
 //
 //    @Override
 //    public void run() {
