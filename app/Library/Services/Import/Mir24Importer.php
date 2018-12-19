@@ -4,9 +4,64 @@ namespace App\Library\Services\Import;
 
 class Mir24Importer
 {
-    public function run()
+    public function getLastNews(): array
     {
-        return "Starting update.";
+        return []; # TODO
+    }
+
+    public function saveLastNews($news): void
+    {
+        # TODO
+    }
+
+    public function getActualNewsId(): array
+    {
+        return []; # TODO
+    }
+
+    public function updateActualNews($actualNews): void
+    {
+        # TODO
+    }
+
+    public function getTags(): array
+    {
+        return []; # TODO
+    }
+
+    public function saveTags($tags): void
+    {
+        # TODO
+    }
+
+    public function getNewsTags($news): array
+    {
+        return []; # TODO
+    }
+
+    public function saveNewsTags($newsTags): void
+    {
+        # TODO
+    }
+
+    public function getGalleries($news): array
+    {
+        return []; # TODO
+    }
+
+    public function saveGalleries($galleries): void
+    {
+        # TODO
+    }
+
+    public function getNewsCountryLinks($news): array
+    {
+        return []; # TODO
+    }
+
+    public function saveNewsCountryLinks($links): void
+    {
+        # TODO
     }
 }
 
@@ -29,62 +84,6 @@ class Mir24Importer
 //    @Override
 //    public void run() {
 //setUpdateComplete(Boolean.FALSE);
-//
-//        logger.info("Starting update.");
-//        logger.info("Getting news.");
-//        ArrayList<NewsItem> news = getLastNews();
-//        logger.info("Got " + news.size() + " news. Saving...");
-//        saveLastNews(news);
-//        logger.info("Getting actual news info.");
-//        int[] actualNews = getActualNewsId();
-//        logger.info("Got " + actualNews.length + " hits. Saving...");
-//        updateActualNews(actualNews);
-//        logger.info("Getting tags.");
-//        ArrayList<Tag> tags = getTags();
-//        logger.info("Got " + tags.size() + " tags. Saving...");
-//        saveTags(tags);
-//        logger.info("Getting news tags info.");
-//        HashMap<Integer, Set<Integer>> newsTags = getNewsTags(news);
-//        logger.info("Saving...");
-//        try {
-//            saveNewsTags(newsTags);
-//        } catch (SQLException sqlex) {
-//    logger.error("Error occurs while trying to save news tags: " + sqlex);
-//}
-//        logger.info("Getting photos for news with galleries.");
-//        HashMap<Integer, Set<Gallery>> galleries = getGalleries(news);
-//        logger.info("Got " + galleries.size() + " galleries. Saving...");
-//        try {
-//            saveGalleries(galleries);
-//        } catch (SQLException sqlex) {
-//    logger.error("Error occurs while trying to save galleries: " + sqlex);
-//}
-//        logger.info("Getting country links.");
-//        HashMap<Integer, Integer> links = getNewsCountryLinks(news);
-//        logger.info("Got " + links.size() + " links. Saving...");
-//        saveNewsCountryLinks(links);
-//        logger.info("Setting last news to cache.");
-//        InfoGetter getter = new InfoGetter();
-//        NewsOptions options = new NewsOptions();
-//        options.setLastNews(Boolean.TRUE);
-//        options.setLimit(10);
-//        options.setPage(1);
-//        ArrayList<NewsItem> lastNews = getter.getLastNews(options);
-//        context.setAttribute("lastNews", lastNews);
-//        logger.info("Setting last news with gallery to cache.");
-//        options.setOnlyWithGallery(Boolean.TRUE);
-//        ArrayList<NewsItem> newsWithGallery = getter.getLastNews(options);
-//        context.setAttribute("newsWithGallery", newsWithGallery);
-//        logger.info("Setting last news with videos to cache.");
-//        options.setOnlyVideo(Boolean.TRUE);
-//        options.setOnlyWithGallery(Boolean.FALSE);
-//        ArrayList<NewsItem> newsWithVideo = getter.getLastNews(options);
-//        context.setAttribute("newsWithVideo", newsWithVideo);
-//        logger.info("Setting countries to cache.");
-//        context.setAttribute("countries", getter.getCountries());
-//        logger.info("Setting search table to cache.");
-//        context.setAttribute("searchTable", getter.getSearchTable());
-//        logger.info("Done.");
 //
 //        setUpdateComplete(Boolean.TRUE);
 //    }
