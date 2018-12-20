@@ -67,7 +67,7 @@ class ImportFromMir24 extends Command
 //}
         $this->info("Getting photos for news with galleries.");
         $galleries = $this->importer->getGalleries($news);
-//        $this->info("Got " + galleries.size() + " galleries. Saving...");
+        $this->info("Got " . count($galleries) . " galleries. Saving...");
 //        try {
         $this->importer->saveGalleries($galleries);
 //        } catch (SQLException sqlex) {

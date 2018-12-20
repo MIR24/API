@@ -2,6 +2,8 @@
 
 namespace App\Library\Services\Import;
 
+use Illuminate\Support\Facades\DB;
+
 class Mir24Importer
 {
     public function getLastNews(): array
@@ -44,9 +46,24 @@ class Mir24Importer
         # TODO
     }
 
-    public function getGalleries($news): array
+    public function getGalleries(?array $news): array
     {
-        return []; # TODO
+        if ($news == null || count($news) == 0) {
+            return [];
+        }
+
+        $whereIn = implode(',', array_fill(0, count($news), '?'));
+        $query = "SELECT imn.news_id AS newsId, imn.image_id AS imageId, i.src AS link, a.name AS author "
+            . "FROM      image_news imn "
+            . "LEFT JOIN images i ON i.id = imn.image_id "
+            . "LEFT JOIN authors a ON a.id = i.author_id "
+            . "WHERE     imn.news_id in ($whereIn)";
+
+        $ids = array_map(function ($i) {
+            return $i['id'];
+        }, $news);
+
+        return DB::connection('mir24')->select($query, $ids);
     }
 
     public function saveGalleries($galleries): void
@@ -86,42 +103,6 @@ class Mir24Importer
 //setUpdateComplete(Boolean.FALSE);
 //
 //        setUpdateComplete(Boolean.TRUE);
-//    }
-//
-//    private HashMap<Integer, Set<Gallery>> getGalleries(ArrayList<NewsItem> news) {
-//
-//    DBMessanger messanger = new DBMessanger("mir24");
-//        HashMap<Integer, Set<Gallery>> galleries = new HashMap<>();
-//
-//        query = "SELECT    i.id, i.src, a.name AS author "
-//            + "FROM      image_news imn "
-//            + "LEFT JOIN images i ON i.id = imn.image_id "
-//            + "LEFT JOIN authors a ON a.id = i.author_id "
-//            + "WHERE     imn.news_id = ";
-//
-//        try {
-//            for (NewsItem newsItem : news) {
-//                if (newsItem.getHasGallery()) {
-//                    ResultSet resultSet = messanger.doQuery(query + newsItem.getId());
-//                    Set<Gallery> photos = new HashSet<>();
-//                    while (resultSet.next()) {
-//                        Gallery photo = new Gallery();
-//                        photo.setImageID(resultSet.getInt("id"));
-//                        photo.setNewsID(newsItem.getId());
-//                        photo.setAuthor(resultSet.getString("author"));
-//                        photo.setLink(resultSet.getString("src"));
-//                        photos.add(photo);
-//                    }
-//                    galleries.put(newsItem.getId(), photos);
-//                }
-//            }
-//        } catch (SQLException sqlex) {
-//        logger.error("Can't get galleries: " + sqlex);
-//    } finally {
-//        messanger.closeConnection();
-//    }
-//
-//        return galleries;
 //    }
 //
 //    private void saveGalleries(HashMap<Integer, Set<Gallery>> galleries) throws SQLException {
