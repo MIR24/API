@@ -148,7 +148,21 @@ class Mir24Importer
 
     public function getNewsTags($news): array
     {
-        return []; # TODO
+        if ($news == null || count($news) == 0) {
+            return [];
+        }
+
+        $whereIn = implode(',', array_fill(0, count($news), '?'));
+        $query = "SELECT nt.tag_id, (nt.status = 'active') AS published "
+            . "FROM      news_tag nt "
+            . "LEFT JOIN tags t ON t.id = nt.tag_id "
+            . "WHERE     t.type = 1 AND nt.news_id in ($whereIn)";
+
+        $ids = array_map(function ($row) {
+            return $row->id;
+        }, $news);
+
+        return DB::connection('mir24')->select($query, $ids);
     }
 
     public function saveNewsTags($newsTags): void
@@ -538,37 +552,6 @@ class Mir24Importer
 //                    logger.error("Can't get duration of file with url " + videoURL + ": " + ex);
 //                }
 //        return duration;
-//    }
-//
-//    private HashMap<Integer, Set<Integer>> getNewsTags(ArrayList<NewsItem> news) {
-//
-//                DBMessanger messanger = new DBMessanger("mir24");
-//        HashMap<Integer, Set<Integer>> newsTags = new HashMap<>();
-//
-//        query = "SELECT    nt.tag_id, (nt.status = 'active') AS published "
-//            + "FROM      news_tag nt "
-//            + "LEFT JOIN tags t ON t.id = nt.tag_id "
-//            + "WHERE     t.type = 1 AND nt.news_id = ";
-//
-//        try {
-//            ResultSet resultSet;
-//            for (NewsItem newsItem : news) {
-//                resultSet = messanger.doQuery(query + newsItem.getId());
-//                Set<Integer> tags = new HashSet<>();
-//                while (resultSet.next()) {
-//                    tags.add(resultSet.getInt("tag_id"));
-//                }
-//                if (!tags.isEmpty()) {
-//                    newsTags.put(newsItem.getId(), tags);
-//                }
-//            }
-//        } catch (SQLException sqlex) {
-//                    logger.error("Error while geting news tags: " + sqlex);
-//                } finally {
-//                    messanger.closeConnection();
-//                }
-//
-//        return newsTags;
 //    }
 //
 //    private void saveNewsTags(HashMap<Integer, Set<Integer>> newsTags)
