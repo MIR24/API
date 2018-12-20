@@ -77,7 +77,7 @@ class Mir24Importer
         $queryPromo = "SELECT entity_id FROM promo_cells LIMIT " . $this::PROMO_NEWS_COUNT;
         $rsPromo = DB::connection('mir24')->select($queryPromo);
 
-        foreach($rsPromo as $row) {
+        foreach ($rsPromo as $row) {
             $news[] = $row->entity_id;
         }
 
@@ -127,7 +127,8 @@ class Mir24Importer
         return DB::connection('mir24')->select($query, [$lastTagId]);
     }
 
-    private function getLastTagId() {
+    private function getLastTagId()
+    {
         $query = "SELECT MAX(id) AS lastId FROM tags";
 
         $result = DB::connection('mir24')->select($query);
@@ -197,7 +198,40 @@ class Mir24Importer
 
     public function getNewsCountryLinks($news): array
     {
-        return []; # TODO
+        $whereIn = implode(',', array_fill(0, count($news), '?'));
+        $query = "SELECT nt.news_id news_id, UPPER(t.title) AS country "
+            . "FROM   news_tag nt "
+            . "LEFT JOIN tags t "
+            . "ON t.id = nt.tag_id "
+            . "WHERE  nt.news_id in ($whereIn) "
+            . "AND    t.type = 2 "
+            . "AND    status = 'active'";
+
+        $countries = $this->getAvailableCountries(); # TODO
+
+        $ids = array_map(function ($i) {
+            return $i->id;
+        }, $news);
+
+        $rs = DB::connection('mir24')->select($query, $ids);
+
+//        foreach ($rs as $row) { TODO need $countries
+//            $row->country = $countries[$row->country];
+//            if ($row->country == null) {
+//                $row->country = $countries["РОССИЯ"]; # TODO
+//            }
+//        }
+
+        return $rs;
+    }
+
+    private function getAvailableCountries(): array
+    {
+        return []; # TODO Table 'mir24_7.country' doesn't exist
+
+        $query = "SELECT UPPER(name) AS name, id FROM country WHERE published = 'true'";
+
+        return DB::connection('mir24')->select($query);
     }
 
     public function saveNewsCountryLinks($links): void
@@ -281,44 +315,6 @@ class Mir24Importer
 //    }
 //    }
 //
-//    private HashMap<Integer, Integer> getNewsCountryLinks(ArrayList<NewsItem> news) {
-//
-//    HashMap<Integer, Integer> links = new HashMap<>();
-//        DBMessanger messanger = new DBMessanger("mir24");
-//
-//        HashMap<String, Integer> countries = getAvailableCountries();
-//
-//        for (NewsItem item : news) {
-//
-//            query = "SELECT nt.news_id news_id, UPPER(t.title) AS country "
-//                + "FROM   news_tag nt "
-//                + "LEFT JOIN tags t "
-//                + "ON t.id = nt.tag_id "
-//                + "WHERE  nt.news_id = " + item.getId() + " "
-//                + "AND    t.type = 2 "
-//                + "AND    status = 'active'";
-//
-//            ResultSet resultSet = messanger.doQuery(query);
-//
-//            try {
-//                Integer countryId = null;
-//                if (resultSet.next()) {
-//                    countryId = countries.get(resultSet.getString("country"));
-//                }
-//                if (countryId == null) {
-//                    countryId = countries.get("РОССИЯ");
-//                }
-//                links.put(item.getId(), countryId);
-//            } catch (SQLException sqlex) {
-//                logger.error("Can't get country links: " + sqlex);
-//            }
-//        }
-//
-//        messanger.closeConnection();
-//
-//        return links;
-//    }
-//
 //    private void saveNewsCountryLinks(HashMap<Integer, Integer> links) {
 //
 //DBMessanger messanger = new DBMessanger("m24api");
@@ -334,27 +330,6 @@ class Mir24Importer
 //
 //        messanger.closeConnection();
 //
-//    }
-//
-//    private HashMap<String, Integer> getAvailableCountries() {
-//
-//            DBMessanger messanger = new DBMessanger("m24api");
-//        HashMap<String, Integer> countries = new HashMap<>();
-//
-//        query = "SELECT UPPER(name) AS name, id FROM country WHERE `published` = 'true'";
-//
-//        ResultSet rs = messanger.doQuery(query);
-//        try {
-//            while (rs.next()) {
-//                countries.put(rs.getString("name"), rs.getInt("id"));
-//            }
-//        } catch (SQLException sqlex) {
-//                logger.error("Can't get available countries for api database: " + sqlex);
-//            } finally {
-//                messanger.closeConnection();
-//            }
-//
-//        return countries;
 //    }
 //
 //    private HashMap<String, Integer> getAvailableCategories() {
