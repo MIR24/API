@@ -52,7 +52,7 @@ class Mir24Importer
         $result = DB::connection('mir24')->select($query);
 
         if (count($result)) {
-            return $lastNewsId = $result[0]->lastId;
+            return $result[0]->lastId;
         } else {
             # TODO "Can't get last news id: " + sqlex.toString());
             return 0;
@@ -115,7 +115,30 @@ class Mir24Importer
 
     public function getTags(): array
     {
-        return []; # TODO
+        $query = "SELECT id, title as name "
+            . "FROM   tags "
+            . "WHERE  type = 1 "
+// TODO            . "AND    (created_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE) "
+//            . "OR      updated_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE)) "
+            . "OR     id > ?";
+
+        $lastTagId = $this->getLastTagId();
+
+        return DB::connection('mir24')->select($query, [$lastTagId]);
+    }
+
+    private function getLastTagId() {
+        $query = "SELECT MAX(id) AS lastId FROM tags";
+
+        $result = DB::connection('mir24')->select($query);
+
+        if (count($result)) {
+            return $result[0]->lastId;
+        } else {
+            # TODO "Can't get last tag id: " + sqlex.toString());
+            return 0;
+        }
+
     }
 
     public function saveTags($tags): void
@@ -604,62 +627,6 @@ class Mir24Importer
 //                        connection.close();
 //                    }
 //                }
-//    }
-//
-//    private int getLastTagId() {
-//            int lastTagId = 0;
-//
-//        query = "SELECT MAX(id) "
-//            + "AS     lastID "
-//            + "FROM   tags";
-//
-//        DBMessanger messanger = new DBMessanger("m24api");
-//        ResultSet resultSet = messanger.doQuery(query);
-//
-//        try {
-//            if (resultSet.next()) {
-//                lastTagId = resultSet.getInt("lastID");
-//            }
-//        } catch (SQLException sqlex) {
-//                logger.error("Can't get last tag id: " + sqlex.toString());
-//            } finally {
-//                messanger.closeConnection();
-//            }
-//
-//        return lastTagId;
-//    }
-//
-//
-//    private ArrayList<Tag> getTags() {
-//
-//            ArrayList<Tag> tags = new ArrayList<>();
-//
-//        int lastTagId = getLastTagId();
-//
-//        query = "SELECT id,  title "
-//            + "FROM   tags "
-//            + "WHERE  type = 1 "
-//            + "AND    (created_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE) "
-//            + "OR      updated_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE)) "
-//            + "OR     id > " + lastTagId;
-//
-//        DBMessanger messanger = new DBMessanger("mir24");
-//        ResultSet resultSet = messanger.doQuery(query);
-//
-//        try {
-//            while (resultSet.next()) {
-//                Tag tag = new Tag();
-//                tag.setId(resultSet.getInt("id"));
-//                tag.setName(resultSet.getString("title"));
-//                tags.add(tag);
-//            }
-//        } catch (SQLException sqlex) {
-//                logger.error("Can't get tags: " + sqlex.toString());
-//            } finally {
-//                messanger.closeConnection();
-//            }
-//
-//        return tags;
 //    }
 //
 //    private void saveTags(ArrayList<Tag> tags) {
