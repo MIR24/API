@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class Mir24Importer
 {
+    private const PROMO_NEWS_COUNT = 5;
+
     public function getLastNews(): array
     {
         $query = "SELECT    n.id, n.created_at, n.published_at, n.advert, n.text, "
@@ -62,9 +64,48 @@ class Mir24Importer
         # TODO
     }
 
+    /**
+     * This method must be reworked to get values from native mir24 api because
+     * it's have hardcoded values of static tags in it
+     *
+     * @return array of actual news id
+     */
     public function getActualNewsId(): array
     {
-        return []; # TODO
+        $news = [];
+
+        $queryPromo = "SELECT entity_id FROM promo_cells LIMIT " . $this::PROMO_NEWS_COUNT;
+        $rsPromo = DB::connection('mir24')->select($queryPromo);
+
+        foreach($rsPromo as $row) {
+            $news[] = $row->entity_id;
+        }
+
+        if (count($news) < $this::PROMO_NEWS_COUNT) {
+            $limitAdditional = $this::PROMO_NEWS_COUNT - count($news);
+
+            # TODO ??? AND id IN (15348025, 15348024, 15348023, 15348067, 15348062) "
+            $queryAdditional = "SELECT news.id FROM news "
+                . "WHERE EXISTS (SELECT * FROM images INNER JOIN image_news"
+                . "              ON images.id = image_news.image_id "
+                . "              WHERE image_news.news_id = news.id "
+                . "              AND images.deleted_at IS NULL) "
+                . "AND NOT EXISTS (SELECT * FROM tags INNER JOIN news_tag "
+                . "                ON tags.id = news_tag.tag_id "
+                . "                WHERE news_tag.news_id = news.id "
+                . "                AND id IN (15348025, 15348024, 15348023, 15348067, 15348062) "
+                . "                AND tags.deleted_at IS NULL) "
+                . "AND main_top = 1 and news.deleted_at IS NULL "
+                . "AND news.status = ? ORDER BY published_at DESC LIMIT $limitAdditional OFFSET 0";
+
+            $rsAdditional = DB::connection('mir24')->select($queryAdditional, ["active"]);
+
+            foreach ($rsAdditional as $row) {
+                $news[] = $row->id;
+            }
+        }
+
+        return $news;
     }
 
     public function updateActualNews($actualNews): void
@@ -653,48 +694,6 @@ class Mir24Importer
 //                dropActualNews();
 //                saveActualNews(news);
 //            }
-//
-//    /**
-//     * This method must be reworked to get values from native mir24 api because
-//     * it's have hardcoded values of static tags in it
-//     *
-//     * @return array of actual news id
-//     */
-//    public int[] getActualNewsId() {
-//            int[] news = new int[5];
-//        DBMessanger messanger = new DBMessanger("mir24");
-//        query = "SELECT entity_id FROM promo_cells LIMIT 5";
-//        ResultSet rs = messanger.doQuery(query);
-//
-//        try {
-//            int i = 0;
-//            while (rs.next()) {
-//                news[i++] = rs.getInt("entity_id");
-//            }
-//            if (news.length < 5) {
-//                query = "SELECT news.id FROM news "
-//                    + "WHERE EXISTS (SELECT * FROM images "
-//                    + "              image_news on images.id = image_news.image_id "
-//                    + "              WHERE image_news.news_id = news.id "
-//                    + "              AND images.deleted_at IN NULL) "
-//                    + "AND NOT EXISTS (SELECT * FROM tags INNER JOIN news_tag "
-//                    + "                ON tags.id = news_tag.tag_id "
-//                    + "                WHERE news_tag.news_id = news.id "
-//                    + "                AND id IN (15348025, 15348024, 15348023, 15348067, 15348062) "
-//                    + "                AND tags.deleted_at IS NULL) "
-//                    + "AND main_top = 1 and news.deleted_at IS NULL "
-//                    + "AND news.status = \"active\" ORDER BY published_at DESC LIMIT "
-//                    + (PROMO_NEWS_COUNT - news.length) + " OFFSET 0";
-//                rs = messanger.doQuery(query);
-//                while (rs.next()) {
-//                    news[i++] = rs.getInt("id");
-//                }
-//            }
-//        } catch (SQLException ex) {
-//                logger.error(ex.toString());
-//            }
-//        return news;
-//    }
 //
 //    private void dropActualNews() {
 //            query = "DELETE FROM actual_news";
