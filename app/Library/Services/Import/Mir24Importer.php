@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 class Mir24Importer
 {
     private const PROMO_NEWS_COUNT = 5;
+    private const UPDATE_PERIOD_IN_MINUTES = 60; // период обновления новостей в минутах
 
     public function getLastNews(): array
     {
@@ -31,9 +32,9 @@ class Mir24Importer
             . "WHERE     n.title IS NOT NULL "
             . "AND       n.text  IS NOT NULL "
             . "AND       t.type = 3 "
-// TODO            . "AND       ((n.created_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE) "
-//            . "   OR       n.updated_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE))"
-            . "     OR     n.id > ?";
+            . "AND       ((n.created_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE) "
+            . "   OR       n.updated_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE))"
+            . "     OR     n.id > ?)";
 
         $lastNewsId = $this->getLastNewsId();
 
@@ -54,7 +55,6 @@ class Mir24Importer
         if (count($result)) {
             return $result[0]->lastId;
         } else {
-            # TODO "Can't get last news id: " + sqlex.toString());
             return 0;
         }
     }
@@ -118,8 +118,8 @@ class Mir24Importer
         $query = "SELECT id, title as name "
             . "FROM   tags "
             . "WHERE  type = 1 "
-// TODO            . "AND    (created_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE) "
-//            . "OR      updated_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE)) "
+            . "AND    (created_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE) "
+            . "OR      updated_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE)) "
             . "OR     id > ?";
 
         $lastTagId = $this->getLastTagId();
@@ -136,7 +136,6 @@ class Mir24Importer
         if (count($result)) {
             return $result[0]->lastId;
         } else {
-            # TODO "Can't get last tag id: " + sqlex.toString());
             return 0;
         }
 
@@ -198,6 +197,10 @@ class Mir24Importer
 
     public function getNewsCountryLinks($news): array
     {
+        if ($news == null || count($news) == 0) {
+            return [];
+        }
+
         $whereIn = implode(',', array_fill(0, count($news), '?'));
         $query = "SELECT nt.news_id news_id, UPPER(t.title) AS country "
             . "FROM   news_tag nt "
@@ -252,16 +255,7 @@ class Mir24Importer
 // */
 //public class NewsParser extends Thread {
 //
-//private final int PROMO_NEWS_COUNT = 5;
-//private static int UPDATE_PERIOD = 60; // период обновления новостей в минутах
 //private final String DEFAULT_VIDEO_URL;
-//
-//    @Override
-//    public void run() {
-//setUpdateComplete(Boolean.FALSE);
-//
-//        setUpdateComplete(Boolean.TRUE);
-//    }
 //
 //    private void saveGalleries(HashMap<Integer, Set<Gallery>> galleries) throws SQLException {
 //
