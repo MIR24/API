@@ -8,7 +8,53 @@ class Mir24Importer
 {
     public function getLastNews(): array
     {
-        return []; # TODO
+        $query = "SELECT    n.id, n.created_at, n.published_at, n.advert, n.text, "
+            . "          n.title, imn.image_id, t.id AS rubric_id, UPPER(t.title) AS category_name, "
+            . "          nv.video_id, v.url AS video_url, a.name AS author, "
+            . "          c.origin, c.link, n.lightning, n.main_top, "
+            . "          (n.status = 'active') AS published, "
+            . "          n.main_center, (nt1.tag_id IS NOT NULL) AS with_gallery "
+            . "FROM      news n "
+            . "LEFT JOIN news_tag nt ON nt.news_id = n.id "
+            . "LEFT JOIN tags t ON t.id = nt.tag_id AND t.type = 3 "
+            . "LEFT JOIN news_tag nt1 ON nt1.news_id = n.id AND nt1.tag_id = '4459785' "
+            . "LEFT JOIN news_video nv ON nv.news_id = n.id "
+            . "LEFT JOIN image_news imn ON imn.news_id = n.id AND imn.image_id = "
+            . "          (SELECT image_id FROM image_news WHERE news_id = n.id LIMIT 1) "
+            . "LEFT JOIN copyright_news cn ON cn.news_id = n.id "
+            . "LEFT JOIN images i ON i.id = imn.image_id "
+            . "LEFT JOIN copyrights c ON c.id = i.copyright_id "
+            . "LEFT JOIN authors a ON a.id = i.author_id "
+            . "LEFT JOIN videos v ON v.id = nv.video_id "
+            . "WHERE     n.title IS NOT NULL "
+            . "AND       n.text  IS NOT NULL "
+            . "AND       t.type = 3 "
+// TODO            . "AND       ((n.created_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE) "
+//            . "   OR       n.updated_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE))"
+            . "     OR     n.id > ?";
+
+        $lastNewsId = $this->getLastNewsId();
+
+        $result = DB::connection('mir24')->select($query, [$lastNewsId]);
+
+// TODO        news = parseItemsFromResultSet(resultSet);
+// TODO       news = filterNewsForAvailableCategories(news, getAvailableCategories());
+
+        return $result;
+    }
+
+    private function getLastNewsId(): int
+    {
+        $query = "SELECT MAX(id) AS lastId FROM news";
+
+        $result = DB::connection('mir24')->select($query);
+
+        if (count($result)) {
+            return $lastNewsId = $result[0]->lastId;
+        } else {
+            # TODO "Can't get last news id: " + sqlex.toString());
+            return 0;
+        }
     }
 
     public function saveLastNews($news): void
@@ -60,7 +106,7 @@ class Mir24Importer
             . "WHERE     imn.news_id in ($whereIn)";
 
         $ids = array_map(function ($i) {
-            return $i['id'];
+            return $i->id;
         }, $news);
 
         return DB::connection('mir24')->select($query, $ids);
@@ -278,46 +324,6 @@ class Mir24Importer
 //        return filtered;
 //    }
 //
-//    private ArrayList<NewsItem> getLastNews() {
-//
-//            DBMessanger messanger = new DBMessanger("mir24");
-//        ArrayList<NewsItem> news;
-//
-//        Integer lastNewsId = getLastNewsId();
-//
-//        query = "SELECT    n.id, n.created_at, n.published_at, n.advert, n.text, "
-//            + "          n.title, imn.image_id, t.id AS rubric_id, UPPER(t.title) AS category_name, "
-//            + "          nv.video_id, v.url AS video_url, a.name AS author, "
-//            + "          c.origin, c.link, n.lightning, n.main_top, "
-//            + "          (n.status = 'active') AS published, "
-//            + "          n.main_center, (nt1.tag_id IS NOT NULL) AS with_gallery "
-//            + "FROM      news n "
-//            + "LEFT JOIN news_tag nt ON nt.news_id = n.id "
-//            + "LEFT JOIN tags t ON t.id = nt.tag_id AND t.type = 3 "
-//            + "LEFT JOIN news_tag nt1 ON nt1.news_id = n.id AND nt1.tag_id = '4459785' "
-//            + "LEFT JOIN news_video nv ON nv.news_id = n.id "
-//            + "LEFT JOIN image_news imn ON imn.news_id = n.id AND imn.image_id = "
-//            + "          (SELECT image_id FROM image_news WHERE news_id = n.id LIMIT 1) "
-//            + "LEFT JOIN copyright_news cn ON cn.news_id = n.id "
-//            + "LEFT JOIN images i ON i.id = imn.image_id "
-//            + "LEFT JOIN copyrights c ON c.id = i.copyright_id "
-//            + "LEFT JOIN authors a ON a.id = i.author_id "
-//            + "LEFT JOIN videos v ON v.id = nv.video_id "
-//            + "WHERE     n.title IS NOT NULL "
-//            + "AND       n.text  IS NOT NULL "
-//            + "AND       t.type = 3 "
-//            + "AND       ((n.created_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE) "
-//            + "   OR       n.updated_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE))"
-//            + "     OR     n.id > " + lastNewsId + ")";
-//
-//        ResultSet resultSet = messanger.doQuery(query);
-//        news = parseItemsFromResultSet(resultSet);
-//        news = filterNewsForAvailableCategories(news, getAvailableCategories());
-//
-//        messanger.closeConnection();
-//
-//        return news;
-//    }
 //
 //    private ArrayList<NewsItem> parseItemsFromResultSet(ResultSet resultSet) {
 //
@@ -582,28 +588,6 @@ class Mir24Importer
 //        return lastTagId;
 //    }
 //
-//    private int getLastNewsId() {
-//            int lastNewsId = 0;
-//
-//        query = "SELECT MAX(id) "
-//            + "AS     lastID "
-//            + "FROM   news";
-//
-//        DBMessanger messanger = new DBMessanger("m24api");
-//        ResultSet resultSet = messanger.doQuery(query);
-//
-//        try {
-//            if (resultSet.next()) {
-//                lastNewsId = resultSet.getInt("lastID");
-//            }
-//        } catch (SQLException sqlex) {
-//                logger.error("Can't get last news id: " + sqlex.toString());
-//            } finally {
-//                messanger.closeConnection();
-//            }
-//
-//        return lastNewsId;
-//    }
 //
 //    private ArrayList<Tag> getTags() {
 //
