@@ -35,15 +35,83 @@ class Mir24Importer
             . "AND       ((n.created_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE) "
             . "   OR       n.updated_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE))"
             . "     OR     n.id > ?)";
+//        query = "SELECT    n.id, n.created_at, n.published_at, n.advert, n.text, " +
+//            "          n.title, im.image_id, t.id AS rubric_id, nv.video_id, " +
+//            "          c.origin, c.link, n.lightning, n.main_top, (n.status = 'active') AS published, " +
+//            "          n.main_center, (t1.id IS NULL) AS with_gallery " +
+//            "FROM      news n " +
+//            "LEFT JOIN image_news im ON im.news_id = n.id " +
+//            "LEFT JOIN news_tag nt ON nt.news_id = n.id " +
+//            "LEFT JOIN tags t ON t.id = nt.tag_id AND t.type = 3 " +
+//            "LEFT JOIN tags t1 ON t1.id = nt.tag_id AND t1.title = 'фото' " +
+//            "LEFT JOIN news_video nv ON nv.news_id = n.id " +
+//            "LEFT JOIN copyright_news cn ON cn.news_id = n.id " +
+//            "LEFT JOIN copyrights c ON cn.copyright_id = c.id " +
+//            "WHERE     n.title IS NOT NULL " +
+//            "AND       n.text  IS NOT NULL " +
+//            "AND       t.type = 3 " +
+//            "AND       ((n.created_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE) " +
+//            "   OR       n.updated_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE))" +
+//            "     OR     n.id > " + lastNewsId + ")";
 
         $lastNewsId = $this->getLastNewsId();
 
-        $result = DB::connection('mir24')->select($query, [$lastNewsId]);
+        $resultSet = DB::connection('mir24')->select($query, [$lastNewsId]);
 
-// TODO        news = parseItemsFromResultSet(resultSet);
+        $news = $this->parseItemsFromResultSet($resultSet);
 // TODO       news = filterNewsForAvailableCategories(news, getAvailableCategories());
 
-        return $result;
+        return $news;
+    }
+
+    private function parseItemsFromResultSet($rs) {
+        return $rs;
+//                item.setDate(resultSet.getTimestamp("created_at"));
+//                item.setShortText(resultSet.getString("advert"));
+//                item.setShortTextSrc(resultSet.getString("advert"));
+
+//                $text = $rs.getString("text");
+//                text = text.replaceAll("\\{(.*)\\}", "");
+//                Document doc = Jsoup.parse(StringEscapeUtils.unescapeHtml4(text));
+//                for (Element el : doc.getAllElements()) {
+//                    if (el.tagName().equals("img")) {
+//                        el.attr("width", "90%");
+//                        el.attr("style", "padding:5px;");
+//                        el.removeAttr("height");
+//                    } else if (el.tagName().equals("iframe")) {
+//                        el.remove();
+//                    }
+//                }
+//                String safe = Jsoup.clean(doc.toString(), "https://mir24.tv/",
+//                            Whitelist.basicWithImages().addAttributes("img", "style"));
+//                item.setText(safe);
+//                item.setTextSrc(safe);
+//
+//                item.setSerieID(null);
+//                item.setEpisodeID(null);
+//
+//                String origin = resultSet.getString("origin");
+//                String link = resultSet.getString("link");
+//                String author = resultSet.getString("author");
+//                if (origin == null) {
+//                    origin = "";
+//                }
+//                if (link == null) {
+//                    link = "";
+//                }
+//                if (author == null || author.equals("Автор не указан") || author.equals("не указан")) {
+//                    author = "";
+//                } else {
+//                    author = "Фото: " + author + " ";
+//                }
+//                item.setCopyright(author + "<a href='" + link + "'>" + origin + "</a>");
+//                item.setCopyrightSrc(author + origin);
+//
+//                item.setRushHourNews(resultSet.getBoolean("lightning"));
+//                item.setTopListNews(resultSet.getBoolean("main_top"));
+//                item.setHasGallery(resultSet.getBoolean("with_gallery"));
+//                item.setPublished(resultSet.getBoolean("published"));
+//                item.setOnMainPagePosition(resultSet.getInt("main_center"));
     }
 
     private function getLastNewsId(): int
@@ -84,6 +152,7 @@ class Mir24Importer
         if (count($news) < $this::PROMO_NEWS_COUNT) {
             $limitAdditional = $this::PROMO_NEWS_COUNT - count($news);
 
+            # TODO первый подселект был с ошибками. Запрос никогда не вызывался?
             # TODO ??? AND id IN (15348025, 15348024, 15348023, 15348067, 15348062) "
             $queryAdditional = "SELECT news.id FROM news "
                 . "WHERE EXISTS (SELECT * FROM images INNER JOIN image_news"
@@ -107,6 +176,41 @@ class Mir24Importer
 
         return $news;
     }
+//public HashMap<Integer, Integer> getActualNews(){
+//
+//HashMap<Integer,Integer> news        = new HashMap<Integer, Integer>();
+//DBMessanger              pgMessanger = new DBMessanger("mir24");
+//
+//query = "SELECT    id " +
+//"FROM      news " +
+//"WHERE     lightning = '1' AND status = 'active' " +
+//"ORDER BY  id DESC " +
+//"LIMIT     200";
+//
+//ResultSet resultSet = pgMessanger.doQuery(query);
+//
+//try {
+//int i = 0;
+//while(resultSet.next()){
+//news.put(i++, resultSet.getInt("id"));
+//}
+//}
+//catch(SQLException sqlex){
+//    logger.error("Can't get actual news from db: " + sqlex);
+//}
+//    finally {
+//    pgMessanger.closeConnection();
+//}
+//
+//    return news;
+//  }
+//
+//  private void dropActualNews(){
+//query = "DELETE FROM actual_news";
+//    DBMessanger messanger = new DBMessanger("m24api");
+//    messanger.doUpdate(query);
+//    messanger.closeConnection();
+//  }
 
     public function updateActualNews($actualNews): void
     {
@@ -201,6 +305,8 @@ class Mir24Importer
             return [];
         }
 
+        //        int lastNewsId = getLastCountryLinkId();
+
         $whereIn = implode(',', array_fill(0, count($news), '?'));
         $query = "SELECT nt.news_id news_id, UPPER(t.title) AS country "
             . "FROM   news_tag nt "
@@ -209,6 +315,13 @@ class Mir24Importer
             . "WHERE  nt.news_id in ($whereIn) "
             . "AND    t.type = 2 "
             . "AND    status = 'active'";
+//        query = "SELECT nt.news_id news_id, nt.tag_id tag_id " +
+//            "FROM   news_tag nt " +
+//            "LEFT JOIN tags t " +
+//            "ON t.id = nt.tag_id " +
+//            "WHERE  nt.news_id > " + (lastNewsId - 100) + " " +
+//            "AND    t.type = 2 " +
+//            "AND    status = 'active'";
 
         $countries = $this->getAvailableCountries(); # TODO
 
@@ -227,6 +340,39 @@ class Mir24Importer
 
         return $rs;
     }
+
+//private HashMap<Integer, Integer> getNewsCountryLinks(){
+//
+//HashMap<Integer, Integer> links = new HashMap<>();
+//
+//int lastNewsId = getLastCountryLinkId();
+//
+//DBMessanger messanger = new DBMessanger("mir24");
+//
+//query = "SELECT nt.news_id news_id, nt.tag_id tag_id " +
+//"FROM   news_tag nt " +
+//"LEFT JOIN tags t " +
+//"ON t.id = nt.tag_id " +
+//"WHERE  nt.news_id > " + (lastNewsId - 100) + " " +
+//"AND    t.type = 2 " +
+//"AND    status = 'active'";
+//
+//ResultSet resultSet = messanger.doQuery(query);
+//
+//try {
+//while(resultSet.next()){
+//links.put(resultSet.getInt("news_id"), resultSet.getInt("tag_id"));
+//}
+//}
+//catch(SQLException sqlex){
+//    logger.error("Can't get country links: " + sqlex);
+//}
+//    finally {
+//    messanger.closeConnection();
+//}
+//
+//    return links;
+//  }
 
     private function getAvailableCountries(): array
     {
@@ -696,3 +842,240 @@ class Mir24Importer
 //    }
 //
 //}
+
+////metatags instead
+//private ArrayList<Country> getCountries(){
+//
+//ArrayList<Country> countries = new ArrayList<Country>();
+//
+//    query = "SELECT  id, (deleted_at IS NULL) AS published, UPPER(title) as name " +
+//        "FROM    tags " +
+//        "WHERE   type = 2 ";
+//
+//    DBMessanger messanger = new DBMessanger("mir24");
+//
+//    ResultSet resultSet = messanger.doQuery(query);
+//
+//    try {
+//        while(resultSet.next()){
+//            Country country = new Country();
+//        country.setId(resultSet.getInt("id"));
+//        country.setName(resultSet.getString("name"));
+//        country.setPublished(resultSet.getBoolean("published"));
+//        countries.add(country);
+//      }
+//    }
+//    catch(SQLException sqlex){
+//    logger.error("Can't get country list from db: " + sqlex);
+//}
+//    finally {
+//    messanger.closeConnection();
+//}
+//
+//    return countries;
+//  }
+//
+//  //metatags instead
+//  private void saveCountries(ArrayList<Country> countries){
+//
+//    DBMessanger messanger = new DBMessanger("m24api");
+//
+//    for(Country country: countries){
+//
+//        query = "INSERT INTO country (`id`,`name`,`published`) " +
+//            "VALUES ('" + country.getId() + "', '" + country.getName() + "','" +
+//            country.getPublished()+ "') " +
+//            "ON DUPLICATE KEY UPDATE name='" + country.getName()+"', published='" +
+//            country.getPublished() + "'";
+//
+//        messanger.doUpdate(query);
+//    }
+//
+//    messanger.closeConnection();
+//  }
+
+//private int getLastCountryLinkId(){
+//
+//int lastID = 0;
+//
+//    DBMessanger messanger = new DBMessanger("m24api");
+//
+//    query = "SELECT MAX(news_id) AS last_id FROM news_country";
+//
+//    ResultSet resultSet = messanger.doQuery(query);
+//
+//    try {
+//        if(resultSet.next()){
+//            lastID = resultSet.getInt("last_id");
+//        }
+//    }
+//    catch(SQLException sqlex){
+//    logger.error("Can't get last country link id: " + sqlex);
+//}
+//    finally {
+//    messanger.closeConnection();
+//}
+//
+//    return lastID;
+//  }
+
+//private ArrayList<Category> getCategories() {
+//
+//ArrayList<Category> categories = new ArrayList<Category>();
+//
+//    query = "SELECT id, title, translateTitle AS url, deleted_at, priority " +
+//        "FROM   tags " +
+//        "WHERE  title IS NOT NULL " +
+//        "AND    type = 3 " +
+//        "AND    (deleted_at IS NULL OR deleted_at >= DATE_SUB(CURDATE(), INTERVAL 12 HOUR))";
+//
+//    DBMessanger messanger = new DBMessanger("mir24");
+//    ResultSet   resultSet = messanger.doQuery(query);
+//
+//    try {
+//        while(resultSet.next()){
+//            Category category = new Category();
+//        category.setId(resultSet.getInt("id"));
+//        if(resultSet.getObject("deleted_at") != null){
+//            category.setRemoved(Boolean.TRUE);
+//        } else {
+//            category.setRemoved(Boolean.FALSE);
+//            category.setName(resultSet.getString("title"));
+//            category.setUrl(resultSet.getString("url"));
+//            category.setOrder(resultSet.getInt("priority"));
+//        }
+//        categories.add(category);
+//      }
+//    }
+//    catch(SQLException sqlex){
+//    logger.error("Can't get categories: " + sqlex);
+//}
+//    finally {
+//    messanger.closeConnection();
+//}
+//
+//    return categories;
+//  }
+
+//private void updateCategories(ArrayList<Category> categories){
+//    for(Category category : categories){
+//        if(category.getRemoved()){
+//            removeCategory(category.getId());
+//            categories.remove(category);
+//        }
+//    }
+//    try {
+//        saveCategories(categories);
+//    } catch(SQLException sqlex){
+//            logger.error("Error while saving categories: " + sqlex);
+//        }
+//  }
+//
+//  private void saveCategories(ArrayList<Category> categories) throws SQLException{
+//
+//    query = "INSERT INTO categories (id, name, url, `order`) " +
+//        "VALUES (?, ?, ?, ?)" +
+//        "ON DUPLICATE KEY UPDATE " +
+//        "   id = VALUES(id), name = VALUES(name), url = VALUES(url), " +
+//        "   `order` = VALUES(`order`)";
+//
+//    DBMessanger messanger   = new DBMessanger("m24api");
+//    Connection  connection  = messanger.getConnection();
+//
+//    PreparedStatement addStatement = null;
+//
+//    try {
+//        connection.setAutoCommit(Boolean.FALSE);
+//        for(Category category:categories){
+//            addStatement = connection.prepareCall(query);
+//            addStatement.setInt   (1, category.getId());
+//            addStatement.setString(2, category.getName());
+//            addStatement.setString(3, category.getUrl());
+//            addStatement.setInt   (4, category.getOrder());
+//            addStatement.execute();
+//        }
+//      connection.commit();
+//    } catch(SQLException sqlex){
+//        connection.rollback();
+//        logger.error("Can't save categories: " + sqlex.toString());
+//    } finally {
+//        if(addStatement != null) addStatement.close();
+//        connection.setAutoCommit(Boolean.TRUE);
+//        messanger.closeConnection();
+//    }
+//  }
+
+//private void removeCategory(int id){
+//    query = "DELETE FROM categories WHERE id = " + id;
+//    DBMessanger messanger = new DBMessanger("m24api");
+//    messanger.doUpdate(query);
+//    messanger.closeConnection();
+//  }
+
+
+//  Закоментировано  т.к. данные о размерах изображений берутся из images.properties
+//  В дальнейшем продумать парсинг из базы данных. Может быть через distinc или group by
+
+/*  public ArrayList<ImageType> getImageTypes() { //private
+
+    ArrayList<ImageType> types       = new ArrayList<ImageType>();
+    PGDBMessanger        pgMessanger = new PGDBMessanger();
+
+    query = "SELECT name, width, height " +
+            "FROM   imageresize";
+
+    ResultSet resultSet = pgMessanger.doQuery(query);
+
+    try {
+      while(resultSet.next()){
+        ImageType imageType = new ImageType();
+        imageType.setAlias(resultSet.getString("name"));
+        imageType.setWidth(resultSet.getInt("width"));
+        imageType.setHeight(resultSet.getInt("height"));
+        types.add(imageType);
+        if(types.size()>10){
+          saveImageTypes(types);
+          types.clear();
+        }
+      }
+    }
+    catch(SQLException sqlex){
+      logger.error("Can't get image types: " + sqlex.toString());
+    }
+    finally {
+      pgMessanger.closeConnection();
+    }
+
+    return types;
+  }
+
+  private void saveImageTypes(ArrayList<ImageType> types) {
+
+    DBMessanger messanger  = new DBMessanger();
+    Connection  connection = messanger.getConnection();
+
+    for(ImageType imageType:types){
+      try {
+        query = "INSERT INTO image_types (alias, size) " +
+                "VALUES (?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "   alias = VALUES(alias), size = VALUES(size)";
+        CallableStatement preparedCall = connection.prepareCall(query);
+        preparedCall.setString(1, imageType.getAlias());
+        preparedCall.setString(2, imageType.getWidth() + "x" + imageType.getHeight());
+        preparedCall.execute();
+      }
+      catch(SQLException sqlex){
+        logger.error("Error while updating image types: " + sqlex.toString());
+      }
+    }
+
+    messanger.closeConnection();
+  }
+*/
+
+//  public void dropTheBase() {
+//DBMessanger messanger = new DBMessanger("m24api");
+//    messanger.doUpdate("CALL dropOldInfo");
+//    messanger.closeConnection();
+//  }

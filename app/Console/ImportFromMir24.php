@@ -46,6 +46,12 @@ class ImportFromMir24 extends Command
 
         $this->info("Starting update.");
 
+//        logger.info("Getting categories.");
+//        ArrayList categories = getCategories();
+//    logger.info("Got " + categories.size() + " categories.");
+//    logger.info("Saving...");
+//      updateCategories(categories);
+
         $this->info("Getting news.");
         $news = $this->importer->getLastNews();
         $this->info("Got " . count($news) . " news. Saving...");
@@ -70,6 +76,11 @@ class ImportFromMir24 extends Command
         $galleries = $this->importer->getGalleries($news);
         $this->info("Got " . count($galleries) . " galleries. Saving...");
         $this->importer->saveGalleries($galleries);
+
+//        logger.info("Getting countries. ");
+//        ArrayList countries = getCountries();
+//    logger.info("Got " + countries.size() + " countries. Saving...");
+//      saveCountries(countries);
 
         $this->info("Getting country links.");
         $links = $this->importer->getNewsCountryLinks($news);
