@@ -20,9 +20,8 @@ class CreateCommentsTable extends Migration {
 			$table->string('profile');
 			$table->string('email')->nullable();
 			$table->string('text');
-			$table->dateTime('time')->default('0000-00-00 00:00:00');
+			$table->dateTime('time');
 			$table->boolean('type_id')->index('type');
-			$table->primary(['id','entity_id']);
 		});
 	}
 
