@@ -423,7 +423,7 @@ class Mir24Importer
 //            "AND    t.type = 2 " +
 //            "AND    status = 'active'";
 
-        $countries = $this->getAvailableCountries(); # TODO
+        $countries = $this->getAvailableCountries();
 
         $ids = array_map(function ($i) {
             return $i->id;
@@ -431,12 +431,12 @@ class Mir24Importer
 
         $rs = DB::connection('mir24')->select($query, $ids);
 
-//        foreach ($rs as $row) { TODO need $countries
-//            $row->country = $countries[$row->country];
-//            if ($row->country == null) {
-//                $row->country = $countries["РОССИЯ"]; # TODO
-//            }
-//        }
+        foreach ($rs as $row) {
+            $row->country = $countries[$row->country];
+            if ($row->country == null) {
+                $row->country = $countries["РОССИЯ"];
+            }
+        }
 
         return $rs;
     }
@@ -476,11 +476,16 @@ class Mir24Importer
 
     private function getAvailableCountries(): array
     {
-        return []; # TODO Table 'mir24_7.country' doesn't exist
-
         $query = "SELECT UPPER(name) AS name, id FROM country WHERE published = 'true'";
 
-        return DB::connection('mir24')->select($query);
+        $rs = DB::select($query);
+
+        $countries = [];
+        foreach($rs as $row) {
+            $countries[$row->name] = $row->id;
+        }
+
+        return $countries;
     }
 
     public function saveNewsCountryLinks($links): void
