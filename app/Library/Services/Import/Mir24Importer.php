@@ -315,6 +315,20 @@ class Mir24Importer
         # TODO
     }
 
+    public function getCountries(): array
+    {
+        $query = "SELECT  id, (deleted_at IS NULL) AS published, UPPER(title) as name "
+            . "FROM    tags "
+            . "WHERE   type = 2 ";
+
+        return DB::connection('mir24')->select($query);
+    }
+
+    public function saveCountries(array $countries): void
+    {
+        # TODO
+    }
+
     public function getNewsCountryLinks($news): array
     {
         if ($news == null || count($news) == 0) {
@@ -859,38 +873,6 @@ class Mir24Importer
 //
 //}
 
-////metatags instead
-//private ArrayList<Country> getCountries(){
-//
-//ArrayList<Country> countries = new ArrayList<Country>();
-//
-//    query = "SELECT  id, (deleted_at IS NULL) AS published, UPPER(title) as name " +
-//        "FROM    tags " +
-//        "WHERE   type = 2 ";
-//
-//    DBMessanger messanger = new DBMessanger("mir24");
-//
-//    ResultSet resultSet = messanger.doQuery(query);
-//
-//    try {
-//        while(resultSet.next()){
-//            Country country = new Country();
-//        country.setId(resultSet.getInt("id"));
-//        country.setName(resultSet.getString("name"));
-//        country.setPublished(resultSet.getBoolean("published"));
-//        countries.add(country);
-//      }
-//    }
-//    catch(SQLException sqlex){
-//    logger.error("Can't get country list from db: " + sqlex);
-//}
-//    finally {
-//    messanger.closeConnection();
-//}
-//
-//    return countries;
-//  }
-//
 //  //metatags instead
 //  private void saveCountries(ArrayList<Country> countries){
 //
