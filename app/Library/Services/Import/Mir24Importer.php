@@ -305,6 +305,8 @@ class Mir24Importer
 
         $galleries = [];
         foreach ($rs as $row) {
+            // TODO сейчас автор почему то всегда NULL, если профильтровано с $newsItem->with_gallery
+            // if($row->author) { dump($row); }
             $galleries[$row->newsId][] = $row;
         }
 
@@ -313,7 +315,20 @@ class Mir24Importer
 
     public function saveGalleries($galleries): void
     {
-        # TODO
+        $queryDelete = "DELETE FROM photos WHERE news_id = ?";
+
+        $queryInsert = "INSERT INTO photos(author, link, news_id, image_id) "
+            . "VALUES (?, ?, ?, ?) "
+            . "ON DUPLICATE KEY UPDATE "
+            . "   author = VALUES(author), link = VALUES(link), "
+            . "   news_id = VALUES(news_id), image_id = VALUES(image_id)";
+
+        foreach ($galleries as $newsId => $photos) {
+            DB::delete($queryDelete, [$newsId]);
+            foreach ($photos as $photo) {
+                DB::insert($queryInsert, [$photo->author, $photo->link, $newsId, $photo->imageId]);
+            }
+        }
     }
 
     public function getCategories(): array
@@ -487,58 +502,6 @@ class Mir24Importer
 //public class NewsParser extends Thread {
 //
 //private final String DEFAULT_VIDEO_URL;
-//
-//    private void saveGalleries(HashMap<Integer, Set<Gallery>> galleries) throws SQLException {
-//
-//    query = "INSERT INTO photos(author, link, news_id, image_id) "
-//        + "VALUES (?, ?, ?, ?) "
-//        + "ON DUPLICATE KEY UPDATE "
-//        + "   author = VALUES(author), link = VALUES(link), "
-//        + "   news_id = VALUES(news_id), image_id = VALUES(image_id)";
-//
-//    DBMessanger messanger = new DBMessanger("m24api");
-//        Connection connection = messanger.getConnection();
-//
-//        PreparedStatement addStatement = null;
-//        Statement dropStatement = null;
-//
-//        Set<Integer> news = galleries.keySet();
-//        Iterator<Integer> it = news.iterator();
-//
-//        connection.setAutoCommit(Boolean.FALSE);
-//
-//        try {
-//            addStatement = connection.prepareStatement(query);
-//            dropStatement = connection.createStatement();
-//
-//            while (it.hasNext()) {
-//                Integer newsId = it.next();
-//                dropStatement.execute("DELETE FROM photos WHERE news_id = " + newsId);
-//                Set<Gallery> photos = galleries.get(newsId);
-//                for (Gallery photo : photos) {
-//                    addStatement.setString(1, photo.getAuthor());
-//                    addStatement.setString(2, photo.getLink());
-//                    addStatement.setInt(3, photo.getNewsID());
-//                    addStatement.setInt(4, photo.getImageID());
-//                    addStatement.execute();
-//                }
-//            }
-//
-//            connection.commit();
-//        } catch (SQLException sqlex) {
-//        connection.rollback();
-//        logger.error("Can't save galleries. Rolled back. Error: " + sqlex);
-//    } finally {
-//        if (addStatement != null) {
-//            addStatement.close();
-//        }
-//        if (dropStatement != null) {
-//            dropStatement.close();
-//        }
-//        connection.setAutoCommit(Boolean.TRUE);
-//        connection.close();
-//    }
-//    }
 //
 //    private void saveNewsCountryLinks(HashMap<Integer, Integer> links) {
 //
