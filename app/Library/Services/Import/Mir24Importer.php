@@ -264,7 +264,7 @@ class Mir24Importer
         }
 
         $whereIn = implode(',', array_fill(0, count($news), '?'));
-        $query = "SELECT nt.tag_id, (nt.status = 'active') AS published "
+        $query = "SELECT nt.news_id as newsId, nt.tag_id as tagId, (nt.status = 'active') AS published "
             . "FROM      news_tag nt "
             . "LEFT JOIN tags t ON t.id = nt.tag_id "
             . "WHERE     t.type = 1 AND nt.news_id in ($whereIn)";
@@ -273,12 +273,28 @@ class Mir24Importer
             return $row->id;
         }, $news);
 
-        return DB::connection('mir24')->select($query, $ids);
+        $newsTags = [];
+
+        $rs = DB::connection('mir24')->select($query, $ids);
+        foreach ($rs as $row) {
+            $newsTags[$row->newsId][] = $row;
+        }
+
+        return $newsTags;
     }
 
     public function saveNewsTags($newsTags): void
     {
-        # TODO
+        $queryDelete = "DELETE FROM news_tags WHERE news_id = ?";
+        $queryInsert = "INSERT IGNORE INTO news_tags(news_id, tag_id) VALUES (?, ?)";
+
+        foreach ($newsTags as $newsId => $tags) {
+            DB::delete($queryDelete, [$newsId]);
+            # TODO Не вставляет из-за foreign('news_id', 'news_tags_ibfk_1'), но и не показывает ошибку
+            foreach ($tags as $tag) {
+                DB::insert($queryInsert, [$tag->newsId, $tag->tagId]);
+            }
+        }
     }
 
     public function getGalleries(?array $news): array
@@ -722,63 +738,6 @@ class Mir24Importer
 //        return duration;
 //    }
 //
-//    private void saveNewsTags(HashMap<Integer, Set<Integer>> newsTags)
-//            throws SQLException {
-//
-//                DBMessanger messanger = new DBMessanger("m24api");
-//        Connection connection = messanger.getConnection();
-//
-//        String dropQuery = "DELETE FROM news_tags WHERE news_id = ?";
-//        String addQuery = "INSERT IGNORE INTO news_tags(news_id, tag_id) "
-//                    + "VALUES (?, ?)";
-//
-//        PreparedStatement dropTags = null;
-//        PreparedStatement addTags = null;
-//
-//        try {
-//            //we need transaction to rollback records if error occurs
-//            connection.setAutoCommit(false);
-//            dropTags = connection.prepareStatement(dropQuery);
-//            addTags = connection.prepareStatement(addQuery);
-//
-//            Set keys = newsTags.keySet();
-//            Iterator<Integer> it = keys.iterator();
-//
-//            while (it.hasNext()) {
-//                Integer newsId = it.next();
-//                //drop all existing tags for this news_id
-//                dropTags.setInt(1, newsId);
-//                dropTags.executeUpdate();
-//                //add new tags
-//                Set<Integer> tags = newsTags.get(newsId);
-//                addTags.setInt(1, newsId);
-//                for (Integer tagId : tags) {
-//                    addTags.setInt(2, tagId);
-//                    addTags.executeUpdate();
-//                }
-//                connection.commit();
-//            }
-//        } catch (SQLException sqlex) {
-//                    try {
-//                        if (connection != null) {
-//                            connection.rollback();
-//                        }
-//                        logger.error("Can't save news tags. Rollback executed. Error: " + sqlex);
-//                    } catch (SQLException rlex) {
-//                        logger.error("Can't save news tags. Can't rollback changes. Error: " + rlex);
-//                    }
-//        } finally {
-//                    if (dropTags != null) {
-//                        dropTags.close();
-//                    }
-//                    if (addTags != null) {
-//                        addTags.close();
-//                    }
-//                    if (connection != null) {
-//                        connection.close();
-//                    }
-//                }
-//    }
 //
 //    /**
 //     *
