@@ -46,11 +46,10 @@ class ImportFromMir24 extends Command
 
         $this->info("Starting update.");
 
-//        logger.info("Getting categories.");
-//        ArrayList categories = getCategories();
-//    logger.info("Got " + categories.size() + " categories.");
-//    logger.info("Saving...");
-//      updateCategories(categories);
+        $this->info("Getting categories.");
+        $categories = $this->importer->getCategories();
+        $this->info("Got " . count($categories) . " categories. Saving...");
+        $this->importer->updateCategories($categories);
 
         $this->info("Getting news.");
         $news = $this->importer->getLastNews();

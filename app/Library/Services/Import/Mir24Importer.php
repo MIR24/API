@@ -299,6 +299,22 @@ class Mir24Importer
         # TODO
     }
 
+    public function getCategories(): array
+    {
+        $query = "SELECT id, title, translateTitle AS url, deleted_at, priority "
+            . "FROM   tags "
+            . "WHERE  title IS NOT NULL "
+            . "AND    type = 3 "
+            . "AND    (deleted_at IS NULL OR deleted_at >= DATE_SUB(CURDATE(), INTERVAL 12 HOUR))";
+
+        return DB::connection('mir24')->select($query);
+    }
+
+    public function updateCategories(array $categories): void
+    {
+        # TODO
+    }
+
     public function getNewsCountryLinks($news): array
     {
         if ($news == null || count($news) == 0) {
@@ -919,23 +935,6 @@ class Mir24Importer
 //    return lastID;
 //  }
 
-//private ArrayList<Category> getCategories() {
-//
-//ArrayList<Category> categories = new ArrayList<Category>();
-//
-//    query = "SELECT id, title, translateTitle AS url, deleted_at, priority " +
-//        "FROM   tags " +
-//        "WHERE  title IS NOT NULL " +
-//        "AND    type = 3 " +
-//        "AND    (deleted_at IS NULL OR deleted_at >= DATE_SUB(CURDATE(), INTERVAL 12 HOUR))";
-//
-//    DBMessanger messanger = new DBMessanger("mir24");
-//    ResultSet   resultSet = messanger.doQuery(query);
-//
-//    try {
-//        while(resultSet.next()){
-//            Category category = new Category();
-//        category.setId(resultSet.getInt("id"));
 //        if(resultSet.getObject("deleted_at") != null){
 //            category.setRemoved(Boolean.TRUE);
 //        } else {
@@ -944,19 +943,6 @@ class Mir24Importer
 //            category.setUrl(resultSet.getString("url"));
 //            category.setOrder(resultSet.getInt("priority"));
 //        }
-//        categories.add(category);
-//      }
-//    }
-//    catch(SQLException sqlex){
-//    logger.error("Can't get categories: " + sqlex);
-//}
-//    finally {
-//    messanger.closeConnection();
-//}
-//
-//    return categories;
-//  }
-
 //private void updateCategories(ArrayList<Category> categories){
 //    for(Category category : categories){
 //        if(category.getRemoved()){
