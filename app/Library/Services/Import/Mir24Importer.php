@@ -247,7 +247,14 @@ class Mir24Importer
 
     public function saveTags($tags): void
     {
-        # TODO
+        $query = "INSERT INTO tags (id, name) "
+            . "VALUES (?,?) "
+            . "ON DUPLICATE KEY "
+            . "UPDATE name = VALUES(name)";
+
+        foreach ($tags as $tag) {
+            DB::insert($query, [$tag->id, $tag->name]);
+        }
     }
 
     public function getNewsTags($news): array
@@ -355,7 +362,16 @@ class Mir24Importer
 
     public function saveCountries(array $countries): void
     {
-        # TODO
+        $query = "INSERT INTO country (`id`,`name`,`published`) "
+            . "VALUES (?, ?, ?) "
+            . "ON DUPLICATE KEY UPDATE name=?, published=?";
+
+        foreach ($countries as $country) {
+            DB::insert(
+                $query,
+                [$country->id, $country->name, $country->published, $country->name, $country->published]
+            );
+        }
     }
 
     public function getNewsCountryLinks($news): array
@@ -786,30 +802,6 @@ class Mir24Importer
 //                }
 //    }
 //
-//    private void saveTags(ArrayList<Tag> tags) {
-//
-//                query = "INSERT INTO tags (id, name) "
-//                    + "VALUES (?,?) "
-//                    + "ON DUPLICATE KEY "
-//                    + "UPDATE name = VALUES(name)";
-//
-//                DBMessanger messanger = new DBMessanger("m24api");
-//        Connection connection = messanger.getConnection();
-//
-//        for (Tag tag : tags) {
-//            try {
-//                CallableStatement preparedCall = connection.prepareCall(query);
-//                preparedCall.setInt(1, tag.getId());
-//                preparedCall.setString(2, tag.getName());
-//                preparedCall.execute();
-//            } catch (SQLException sqlex) {
-//                logger.error("Can't save tags: " + sqlex.toString());
-//            }
-//        }
-//
-//        messanger.closeConnection();
-//    }
-//
 //    /**
 //     *
 //     * @param news
@@ -902,24 +894,6 @@ class Mir24Importer
 //
 //}
 
-//  //metatags instead
-//  private void saveCountries(ArrayList<Country> countries){
-//
-//    DBMessanger messanger = new DBMessanger("m24api");
-//
-//    for(Country country: countries){
-//
-//        query = "INSERT INTO country (`id`,`name`,`published`) " +
-//            "VALUES ('" + country.getId() + "', '" + country.getName() + "','" +
-//            country.getPublished()+ "') " +
-//            "ON DUPLICATE KEY UPDATE name='" + country.getName()+"', published='" +
-//            country.getPublished() + "'";
-//
-//        messanger.doUpdate(query);
-//    }
-//
-//    messanger.closeConnection();
-//  }
 
 //private int getLastCountryLinkId(){
 //
