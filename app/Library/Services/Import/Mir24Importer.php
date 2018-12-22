@@ -59,7 +59,7 @@ class Mir24Importer
         $resultSet = DB::connection('mir24')->select($query, [$lastNewsId]);
 
         $news = $this->parseItemsFromResultSet($resultSet);
-// TODO       news = filterNewsForAvailableCategories(news, getAvailableCategories());
+        $news = $this->filterNewsForAvailableCategories($news, $this->getAvailableCategories());
 
         return $news;
     }
@@ -112,6 +112,34 @@ class Mir24Importer
 //                item.setHasGallery(resultSet.getBoolean("with_gallery"));
 //                item.setPublished(resultSet.getBoolean("published"));
 //                item.setOnMainPagePosition(resultSet.getInt("main_center"));
+    }
+
+    private function filterNewsForAvailableCategories($news, $availableCategories)
+    {
+        $filtered = [];
+
+        foreach ($news as $item) {
+            switch ($item->categoryName) {
+                //change last english C on full russian name
+                case "ШОУ-БИЗНЕC":
+                    $item->categoryName = "ШОУ-БИЗНЕС";
+                    break;
+                case "НАУКА И ТЕХНОЛОГИИ":
+                    $item->categoryName = $item->id % 2 == 0 ? "НАУКА" : "HI-TECH";
+                    break;
+            }
+
+            if (array_key_exists($item->categoryName, $availableCategories)) {
+                $categoryId = $availableCategories[$item->categoryName];
+
+                if ($categoryId != null) {
+                    $item->categoryID = $categoryId;
+                    $filtered[] = $item;
+                }
+            }
+        }
+
+        return $filtered;
     }
 
     private function getLastNewsId(): int
@@ -358,6 +386,20 @@ class Mir24Importer
         return DB::connection('mir24')->select($query);
     }
 
+    private function getAvailableCategories(): array
+    {
+        $query = "SELECT UPPER(name) AS name, id FROM categories";
+// TODO        $query = "SELECT UPPER(name) AS name, id FROM categories WHERE `show` = 'true'";
+
+        $availableCategories = [];
+        $rs = DB::select($query);
+        foreach ($rs as $row) {
+            $availableCategories[$row->name] = $row->id;
+        }
+
+        return $availableCategories;
+    }
+
     public function updateCategories(array $categories): void
     {
         $insertCategories = [];
@@ -539,51 +581,6 @@ class Mir24Importer
 //
 //        messanger.closeConnection();
 //
-//    }
-//
-//    private HashMap<String, Integer> getAvailableCategories() {
-//
-//            DBMessanger messanger = new DBMessanger("m24api");
-//        HashMap<String, Integer> categories = new HashMap<>();
-//
-//        query = "SELECT UPPER(name) AS name, id FROM categories WHERE `show` = 'true'";
-//
-//        ResultSet rs = messanger.doQuery(query);
-//        try {
-//            while (rs.next()) {
-//                categories.put(rs.getString("name"), rs.getInt("id"));
-//            }
-//        } catch (SQLException sqlex) {
-//                logger.error("Can't get available categories for api database: " + sqlex);
-//            } finally {
-//                messanger.closeConnection();
-//            }
-//
-//        return categories;
-//    }
-//
-//    private ArrayList<NewsItem> filterNewsForAvailableCategories(
-//                ArrayList<NewsItem> news, HashMap<String, Integer> availableCategories) {
-//                ArrayList<NewsItem> filtered = new ArrayList<>();
-//        for (NewsItem item : news) {
-//
-//            //change last english C on full russian name
-//            switch (item.getCategoryName()) {
-//                case "ШОУ-БИЗНЕC":
-//                    item.setCategoryName("ШОУ-БИЗНЕС");
-//                    break;
-//                case "НАУКА И ТЕХНОЛОГИИ":
-//                    item.setCategoryName(item.getId() % 2 == 0 ? "НАУКА" : "HI-TECH");
-//                    break;
-//            }
-//
-//            Integer categoryId = availableCategories.get(item.getCategoryName());
-//            if (categoryId != null) {
-//                item.setCategoryID(categoryId);
-//                filtered.add(item);
-//            }
-//        }
-//        return filtered;
 //    }
 //
 //
