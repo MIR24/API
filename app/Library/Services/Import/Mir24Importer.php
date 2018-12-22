@@ -301,7 +301,7 @@ class Mir24Importer
 
     public function getCategories(): array
     {
-        $query = "SELECT id, title, translateTitle AS url, deleted_at, priority "
+        $query = "SELECT id, title as name, translateTitle AS url, deleted_at, priority "
             . "FROM   tags "
             . "WHERE  title IS NOT NULL "
             . "AND    type = 3 "
@@ -312,7 +312,36 @@ class Mir24Importer
 
     public function updateCategories(array $categories): void
     {
-        # TODO
+        $insertCategories = [];
+
+        foreach ($categories as $category) {
+            if ($category->deleted_at != null) {
+                $this->removeCategory($category->id);
+            } else {
+                $insertCategories[] = $category;
+            }
+        }
+
+        $this->saveCategories($insertCategories);
+    }
+
+    private function saveCategories($categories)
+    {
+        $query = "INSERT INTO categories (`id`, `name`, `url`, `order`) "
+            . "VALUES (?, ?, ?, ?)"
+            . "ON DUPLICATE KEY UPDATE "
+            . "   id = VALUES(id), name = VALUES(name), url = VALUES(url), "
+            . "   `order` = VALUES(`order`)";
+
+        foreach ($categories as $category) {
+            DB::insert($query, [$category->id, $category->name, $category->url, $category->priority ?? 0]);
+        }
+    }
+
+    private function removeCategory($id)
+    {
+        $query = "DELETE FROM categories WHERE id = ?";
+        DB::delete($query, [$id]);
     }
 
     public function getCountries(): array
@@ -916,70 +945,6 @@ class Mir24Importer
 //
 //    return lastID;
 //  }
-
-//        if(resultSet.getObject("deleted_at") != null){
-//            category.setRemoved(Boolean.TRUE);
-//        } else {
-//            category.setRemoved(Boolean.FALSE);
-//            category.setName(resultSet.getString("title"));
-//            category.setUrl(resultSet.getString("url"));
-//            category.setOrder(resultSet.getInt("priority"));
-//        }
-//private void updateCategories(ArrayList<Category> categories){
-//    for(Category category : categories){
-//        if(category.getRemoved()){
-//            removeCategory(category.getId());
-//            categories.remove(category);
-//        }
-//    }
-//    try {
-//        saveCategories(categories);
-//    } catch(SQLException sqlex){
-//            logger.error("Error while saving categories: " + sqlex);
-//        }
-//  }
-//
-//  private void saveCategories(ArrayList<Category> categories) throws SQLException{
-//
-//    query = "INSERT INTO categories (id, name, url, `order`) " +
-//        "VALUES (?, ?, ?, ?)" +
-//        "ON DUPLICATE KEY UPDATE " +
-//        "   id = VALUES(id), name = VALUES(name), url = VALUES(url), " +
-//        "   `order` = VALUES(`order`)";
-//
-//    DBMessanger messanger   = new DBMessanger("m24api");
-//    Connection  connection  = messanger.getConnection();
-//
-//    PreparedStatement addStatement = null;
-//
-//    try {
-//        connection.setAutoCommit(Boolean.FALSE);
-//        for(Category category:categories){
-//            addStatement = connection.prepareCall(query);
-//            addStatement.setInt   (1, category.getId());
-//            addStatement.setString(2, category.getName());
-//            addStatement.setString(3, category.getUrl());
-//            addStatement.setInt   (4, category.getOrder());
-//            addStatement.execute();
-//        }
-//      connection.commit();
-//    } catch(SQLException sqlex){
-//        connection.rollback();
-//        logger.error("Can't save categories: " + sqlex.toString());
-//    } finally {
-//        if(addStatement != null) addStatement.close();
-//        connection.setAutoCommit(Boolean.TRUE);
-//        messanger.closeConnection();
-//    }
-//  }
-
-//private void removeCategory(int id){
-//    query = "DELETE FROM categories WHERE id = " + id;
-//    DBMessanger messanger = new DBMessanger("m24api");
-//    messanger.doUpdate(query);
-//    messanger.closeConnection();
-//  }
-
 
 //  Закоментировано  т.к. данные о размерах изображений берутся из images.properties
 //  В дальнейшем продумать парсинг из базы данных. Может быть через distinc или group by
