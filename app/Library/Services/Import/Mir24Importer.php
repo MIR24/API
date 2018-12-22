@@ -287,18 +287,28 @@ class Mir24Importer
             return [];
         }
 
-        $whereIn = implode(',', array_fill(0, count($news), '?'));
+        $ids = [];
+        foreach ($news as $newsItem) {
+            if ($newsItem->with_gallery) {
+                $ids[] = $newsItem->id;
+            }
+        }
+
+        $whereIn = implode(',', array_fill(0, count($ids), '?'));
         $query = "SELECT imn.news_id AS newsId, imn.image_id AS imageId, i.src AS link, a.name AS author "
             . "FROM      image_news imn "
             . "LEFT JOIN images i ON i.id = imn.image_id "
             . "LEFT JOIN authors a ON a.id = i.author_id "
             . "WHERE     imn.news_id in ($whereIn)";
 
-        $ids = array_map(function ($i) {
-            return $i->id;
-        }, $news);
+        $rs = DB::connection('mir24')->select($query, $ids);
 
-        return DB::connection('mir24')->select($query, $ids);
+        $galleries = [];
+        foreach ($rs as $row) {
+            $galleries[$row->newsId][] = $row;
+        }
+
+        return $galleries;
     }
 
     public function saveGalleries($galleries): void
