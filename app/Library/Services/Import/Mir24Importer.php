@@ -11,12 +11,12 @@ class Mir24Importer
 
     public function getLastNews(): array
     {
-        $query = "SELECT    n.id, n.created_at, n.published_at, n.advert, n.text, "
-            . "          n.title, imn.image_id, t.id AS rubric_id, UPPER(t.title) AS category_name, "
-            . "          nv.video_id, v.url AS video_url, a.name AS author, "
-            . "          c.origin, c.link, n.lightning, n.main_top, "
+        $query = "SELECT    n.id, n.created_at as date, n.published_at, n.advert as shortText, n.text, "
+            . "          n.title, imn.image_id as imageId, t.id AS rubric_id, UPPER(t.title) AS categoryName, "
+            . "          nv.video_id as videoId, v.url AS videoUrl, a.name AS author, "
+            . "          c.origin, c.link, n.lightning as rushHourNews, n.main_top as topListNews, "
             . "          (n.status = 'active') AS published, "
-            . "          n.main_center, (nt1.tag_id IS NOT NULL) AS with_gallery "
+            . "          n.main_center as onMainPagePosition, (nt1.tag_id IS NOT NULL) AS hasGallery "
             . "FROM      news n "
             . "LEFT JOIN news_tag nt ON nt.news_id = n.id "
             . "LEFT JOIN tags t ON t.id = nt.tag_id AND t.type = 3 "
@@ -64,13 +64,10 @@ class Mir24Importer
         return $news;
     }
 
-    private function parseItemsFromResultSet($rs) {
-        return $rs;
-//                item.setDate(resultSet.getTimestamp("created_at"));
-//                item.setShortText(resultSet.getString("advert"));
-//                item.setShortTextSrc(resultSet.getString("advert"));
-
-//                $text = $rs.getString("text");
+    private function parseItemsFromResultSet($news)
+    {
+        foreach ($news as $item) {
+// TODO                $text = $rs.getString("text");
 //                text = text.replaceAll("\\{(.*)\\}", "");
 //                Document doc = Jsoup.parse(StringEscapeUtils.unescapeHtml4(text));
 //                for (Element el : doc.getAllElements()) {
@@ -87,31 +84,22 @@ class Mir24Importer
 //                item.setText(safe);
 //                item.setTextSrc(safe);
 //
-//                item.setSerieID(null);
-//                item.setEpisodeID(null);
-//
-//                String origin = resultSet.getString("origin");
-//                String link = resultSet.getString("link");
-//                String author = resultSet.getString("author");
-//                if (origin == null) {
-//                    origin = "";
-//                }
-//                if (link == null) {
-//                    link = "";
-//                }
-//                if (author == null || author.equals("Автор не указан") || author.equals("не указан")) {
-//                    author = "";
-//                } else {
-//                    author = "Фото: " + author + " ";
-//                }
-//                item.setCopyright(author + "<a href='" + link + "'>" + origin + "</a>");
-//                item.setCopyrightSrc(author + origin);
-//
-//                item.setRushHourNews(resultSet.getBoolean("lightning"));
-//                item.setTopListNews(resultSet.getBoolean("main_top"));
-//                item.setHasGallery(resultSet.getBoolean("with_gallery"));
-//                item.setPublished(resultSet.getBoolean("published"));
-//                item.setOnMainPagePosition(resultSet.getInt("main_center"));
+            if ($item->origin == null) {
+                $item->origin = "";
+            }
+            if ($item->link == null) {
+                $item->link = "";
+            }
+            if ($item->author == null || $item->author == "Автор не указан" || $item->author == "не указан") {
+                $item->author = "";
+            } else {
+                $item->author = "Фото: " . $item->author . " ";
+            }
+            $item->copyright = $item->author . "<a href='" . $item->link . "'>" . $item->origin . "</a>";
+            $item->copyrightSrc = $item->author . $item->origin;
+        }
+
+        return $news;
     }
 
     private function filterNewsForAvailableCategories($news, $availableCategories)
@@ -133,7 +121,7 @@ class Mir24Importer
                 $categoryId = $availableCategories[$item->categoryName];
 
                 if ($categoryId != null) {
-                    $item->categoryID = $categoryId;
+                    $item->categoryId = $categoryId;
                     $filtered[] = $item;
                 }
             }
@@ -157,7 +145,52 @@ class Mir24Importer
 
     public function saveLastNews($news): void
     {
-        # TODO
+        $query = "INSERT INTO news (id, date, title, shortText, shortTextSrc, text, textSrc, "
+            . "                  imageID, categoryID, serieID, videoID, episodeID, "
+            . "                  copyright, copyrightSrc, rushHourNews, topListNews, "
+            . "                  hasGallery, published, onMainPagePosition, videoDuration) "
+            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            . "ON DUPLICATE KEY UPDATE "
+            . "       id = VALUES(id), date = VALUES(date), title = VALUES(title), "
+            . "       shortText = VALUES(shortText), shortTextSrc = VALUES(shortTextSrc), "
+            . "       text = VALUES(text), textSrc = VALUES(textSrc), imageID = "
+            . "       VALUES(imageID), categoryID = VALUES(categoryID), serieID = VALUES("
+            . "       serieID), videoID = VALUES(videoID), episodeID = VALUES(episodeID), "
+            . "       copyright = VALUES(copyright), copyrightSrc = VALUES(copyrightSrc), "
+            . "       rushHourNews = VALUES(rushHourNews), topListNews = VALUES(topListNews), "
+            . "       hasGallery = VALUES(hasGallery), published = VALUES(published), "
+            . "       onMainPagePosition = VALUES(onMainPagePosition), videoDuration = "
+            . "       VALUES(videoDuration)";
+
+        foreach ($news as $newsItem) {
+            $duration = "00:00:00.00";
+            if ($newsItem->videoId) {
+// TODO                $duration = $this->getDuration($newsItem->videoUrl);
+            }
+
+            DB::insert($query, [
+                $newsItem->id,
+                $newsItem->date,
+                $newsItem->title,
+                $newsItem->shortText,
+                $newsItem->shortText,
+                $newsItem->text, # TODO != mir24
+                $newsItem->text, # TODO
+                $newsItem->imageId,
+                $newsItem->categoryId,
+                null, # serieID,
+                $newsItem->videoId,
+                null, # episodeID,
+                $newsItem->copyright,
+                $newsItem->copyrightSrc,
+                $newsItem->rushHourNews ?? 0,
+                $newsItem->topListNews ?? 0,
+                $newsItem->hasGallery,
+                $newsItem->published,
+                $newsItem->onMainPagePosition ?? 0,
+                $duration
+            ]);
+        }
     }
 
     /**
@@ -333,7 +366,7 @@ class Mir24Importer
 
         $ids = [];
         foreach ($news as $newsItem) {
-            if ($newsItem->with_gallery) {
+            if ($newsItem->hasGallery) {
                 $ids[] = $newsItem->id;
             }
         }
@@ -349,7 +382,7 @@ class Mir24Importer
 
         $galleries = [];
         foreach ($rs as $row) {
-            // TODO сейчас автор почему то всегда NULL, если профильтровано с $newsItem->with_gallery
+            // TODO сейчас автор почему то всегда NULL, если профильтровано с $newsItem->hasGallery
             // if($row->author) { dump($row); }
             $galleries[$row->newsId][] = $row;
         }
@@ -649,63 +682,6 @@ class Mir24Importer
 //        return news;
 //    }
 //
-//    private void saveLastNews(ArrayList<NewsItem> news) {
-//
-//                query = "INSERT INTO news (id, date, title, shortText, shortTextSrc, text, textSrc, "
-//                    + "                  imageID, categoryID, serieID, videoID, episodeID, "
-//                    + "                  copyright, copyrightSrc, rushHourNews, topListNews, "
-//                    + "                  hasGallery, published, onMainPagePosition, videoDuration) "
-//                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
-//                    + "ON DUPLICATE KEY UPDATE "
-//                    + "       id = VALUES(id), date = VALUES(date), title = VALUES(title), "
-//                    + "       shortText = VALUES(shortText), shortTextSrc = VALUES(shortTextSrc), "
-//                    + "       text = VALUES(text), textSrc = VALUES(textSrc), imageID = "
-//                    + "       VALUES(imageID), categoryID = VALUES(categoryID), serieID = VALUES("
-//                    + "       serieID), videoID = VALUES(videoID), episodeID = VALUES(episodeID), "
-//                    + "       copyright = VALUES(copyright), copyrightSrc = VALUES(copyrightSrc), "
-//                    + "       rushHourNews = VALUES(rushHourNews), topListNews = VALUES(topListNews), "
-//                    + "       hasGallery = VALUES(hasGallery), published = VALUES(published), "
-//                    + "       onMainPagePosition = VALUES(onMainPagePosition), videoDuration = "
-//                    + "       VALUES(videoDuration)";
-//
-//                DBMessanger messanger = new DBMessanger("m24api");
-//        Connection connection = messanger.getConnection();
-//
-//        for (NewsItem item : news) {
-//            try {
-//                CallableStatement preparedCall = connection.prepareCall(query);
-//                preparedCall.setInt(1, item.getId());
-//                preparedCall.setTimestamp(2, item.getDate());
-//                preparedCall.setString(3, item.getTitle());
-//                preparedCall.setString(4, item.getShortText());
-//                preparedCall.setString(5, item.getShortTextSrc());
-//                preparedCall.setString(6, item.getText());
-//                preparedCall.setString(7, item.getTextSrc());
-//                preparedCall.setInt(8, item.getImageID());
-//                preparedCall.setInt(9, item.getCategoryID());
-//                preparedCall.setInt(10, 0);
-//                preparedCall.setInt(11, item.getVideoID());
-//                preparedCall.setInt(12, 0);
-//                preparedCall.setString(13, item.getCopyright());
-//                preparedCall.setString(14, item.getCopyrightSrc());
-//                preparedCall.setBoolean(15, item.getRushHourNews());
-//                preparedCall.setBoolean(16, item.getTopListNews());
-//                preparedCall.setBoolean(17, item.getHasGallery());
-//                preparedCall.setBoolean(18, item.getPublished());
-//                preparedCall.setInt(19, item.getOnMainPagePosition());
-//                String duration = "00:00:00.00";
-//                if (item.getVideoID() != 0) {
-//                    duration = getDuration(item.getVideoURL());
-//                }
-//                preparedCall.setString(20, duration);
-//                preparedCall.execute();
-//            } catch (SQLException sqlex) {
-//                logger.error("Can't save last news: " + sqlex.toString());
-//            }
-//        }
-//
-//        messanger.closeConnection();
-//    }
 //
 //    /**
 //     * Get duration of file using system script and ffmpeg library.
