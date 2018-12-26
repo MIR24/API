@@ -411,6 +411,15 @@ class Mir24Importer
         return $rs;
     }
 
+    public function saveNewsCountryLinks($links): void
+    {
+        $query = "INSERT IGNORE INTO news_country (`news_id`, `country_id`) VALUES (?, ?)";
+
+        foreach ($links as $link) {
+            DB::insert($query, [$link->news_id, $link->country]);
+        }
+    }
+
     private function getAvailableCountries(): array
     {
         $query = "SELECT UPPER(name) AS name, id FROM country WHERE published = 'true'";
@@ -418,16 +427,11 @@ class Mir24Importer
         $rs = DB::select($query);
 
         $countries = [];
-        foreach($rs as $row) {
+        foreach ($rs as $row) {
             $countries[$row->name] = $row->id;
         }
 
         return $countries;
-    }
-
-    public function saveNewsCountryLinks($links): void
-    {
-        # TODO
     }
 }
 
@@ -444,24 +448,6 @@ class Mir24Importer
 //public class NewsParser extends Thread {
 //
 //private final String DEFAULT_VIDEO_URL;
-//
-//    private void saveNewsCountryLinks(HashMap<Integer, Integer> links) {
-//
-//DBMessanger messanger = new DBMessanger("m24api");
-//        Set<Integer> keySet = links.keySet();
-//        for (Integer newsId : keySet) {
-//            Integer countryId = links.get(newsId);
-//
-//            query = "INSERT IGNORE INTO news_country (`news_id`, `country_id`) "
-//                + "VALUES ('" + newsId + "', '" + countryId + "')";
-//
-//            messanger.doUpdate(query);
-//        }
-//
-//        messanger.closeConnection();
-//
-//    }
-//
 //
 //    private ArrayList<NewsItem> parseItemsFromResultSet(ResultSet resultSet) {
 //
