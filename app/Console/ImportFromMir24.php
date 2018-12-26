@@ -42,7 +42,8 @@ class ImportFromMir24 extends Command
      */
     public function handle()
     {
-        # TODO setUpdateComplete(Boolean.FALSE);
+        $this->importer->setUpdateComplete(false);
+// TODO INSERT INTO `status` VALUES (1,'UPDATE_COMPLETE',1,NULL,NULL);
 
         $this->info("Starting update.");
 
@@ -110,6 +111,6 @@ class ImportFromMir24 extends Command
 //        context.setAttribute("searchTable", getter.getSearchTable());
         $this->info("Done.");
 
-        # TODO setUpdateComplete(Boolean.FALSE);
+        $this->importer->setUpdateComplete(true);
     }
 }

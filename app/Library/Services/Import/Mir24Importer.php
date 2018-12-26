@@ -9,6 +9,12 @@ class Mir24Importer
     private const PROMO_NEWS_COUNT = 5;
     private const UPDATE_PERIOD_IN_MINUTES = 60; // период обновления новостей в минутах
 
+    public function setUpdateComplete(bool $status)
+    {
+        $query = "UPDATE status SET int_value=? WHERE variable_name = 'UPDATE_COMPLETE'";
+        DB::update($query, [$status]);
+    }
+
     public function getLastNews(): array
     {
         $query = "SELECT    n.id, n.created_at as date, n.published_at, n.advert as shortText, n.text, "
@@ -575,14 +581,4 @@ class Mir24Importer
 //
 //        return newsItem;
 //    }
-//
-//    private void setUpdateComplete(Boolean status) {
-//                query = "UPDATE status "
-//                    + "SET    int_value = " + status + " "
-//                    + "WHERE  variable_name = 'UPDATE_COMPLETE'";
-//                DBMessanger messanger = new DBMessanger("m24api");
-//        messanger.doUpdate(query);
-//        messanger.closeConnection();
-//    }
-//
 //}
