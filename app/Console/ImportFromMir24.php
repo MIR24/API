@@ -46,10 +46,10 @@ class ImportFromMir24 extends Command
 
         $this->info("Starting update.");
 
-        $this->info("Getting categories.");
-        $categories = $this->importer->getCategories();
-        $this->info("Got " . count($categories) . " categories. Saving...");
-        $this->importer->updateCategories($categories);
+//        $this->info("Getting categories.");
+//        $categories = $this->importer->getCategories();
+//        $this->info("Got " . count($categories) . " categories. Saving...");
+//        $this->importer->updateCategories($categories);
 
         $this->info("Getting news.");
         $news = $this->importer->getLastNews();
