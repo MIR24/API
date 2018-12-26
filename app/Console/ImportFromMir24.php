@@ -76,10 +76,10 @@ class ImportFromMir24 extends Command
         $this->info("Got " . count($galleries) . " galleries. Saving...");
         $this->importer->saveGalleries($galleries);
 
-        $this->info("Getting countries.");
-        $countries = $this->importer->getCountries();
-        $this->info("Got " . count($countries) . " countries. Saving...");
-        $this->importer->saveCountries($countries);
+//        $this->info("Getting countries.");
+//        $countries = $this->importer->getCountries();
+//        $this->info("Got " . count($countries) . " countries. Saving...");
+//        $this->importer->saveCountries($countries);
 
         $this->info("Getting country links.");
         $links = $this->importer->getNewsCountryLinks($news);
