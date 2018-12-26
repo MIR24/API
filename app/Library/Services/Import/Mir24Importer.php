@@ -35,24 +35,6 @@ class Mir24Importer
             . "AND       ((n.created_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE) "
             . "   OR       n.updated_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE))"
             . "     OR     n.id > ?)";
-//        query = "SELECT    n.id, n.created_at, n.published_at, n.advert, n.text, " +
-//            "          n.title, im.image_id, t.id AS rubric_id, nv.video_id, " +
-//            "          c.origin, c.link, n.lightning, n.main_top, (n.status = 'active') AS published, " +
-//            "          n.main_center, (t1.id IS NULL) AS with_gallery " +
-//            "FROM      news n " +
-//            "LEFT JOIN image_news im ON im.news_id = n.id " +
-//            "LEFT JOIN news_tag nt ON nt.news_id = n.id " +
-//            "LEFT JOIN tags t ON t.id = nt.tag_id AND t.type = 3 " +
-//            "LEFT JOIN tags t1 ON t1.id = nt.tag_id AND t1.title = 'фото' " +
-//            "LEFT JOIN news_video nv ON nv.news_id = n.id " +
-//            "LEFT JOIN copyright_news cn ON cn.news_id = n.id " +
-//            "LEFT JOIN copyrights c ON cn.copyright_id = c.id " +
-//            "WHERE     n.title IS NOT NULL " +
-//            "AND       n.text  IS NOT NULL " +
-//            "AND       t.type = 3 " +
-//            "AND       ((n.created_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE) " +
-//            "   OR       n.updated_at > (NOW() - INTERVAL " + (UPDATE_PERIOD + 1) + " MINUTE))" +
-//            "     OR     n.id > " + lastNewsId + ")";
 
         $lastNewsId = $this->getLastNewsId();
 
@@ -237,41 +219,6 @@ class Mir24Importer
 
         return $news;
     }
-//public HashMap<Integer, Integer> getActualNews(){
-//
-//HashMap<Integer,Integer> news        = new HashMap<Integer, Integer>();
-//DBMessanger              pgMessanger = new DBMessanger("mir24");
-//
-//query = "SELECT    id " +
-//"FROM      news " +
-//"WHERE     lightning = '1' AND status = 'active' " +
-//"ORDER BY  id DESC " +
-//"LIMIT     200";
-//
-//ResultSet resultSet = pgMessanger.doQuery(query);
-//
-//try {
-//int i = 0;
-//while(resultSet.next()){
-//news.put(i++, resultSet.getInt("id"));
-//}
-//}
-//catch(SQLException sqlex){
-//    logger.error("Can't get actual news from db: " + sqlex);
-//}
-//    finally {
-//    pgMessanger.closeConnection();
-//}
-//
-//    return news;
-//  }
-//
-//  private void dropActualNews(){
-//query = "DELETE FROM actual_news";
-//    DBMessanger messanger = new DBMessanger("m24api");
-//    messanger.doUpdate(query);
-//    messanger.closeConnection();
-//  }
 
     public function updateActualNews($actualNews): void
     {
@@ -346,6 +293,7 @@ class Mir24Importer
 
     public function saveNewsTags($newsTags): void
     {
+        # TODO даже если не изменялось, то удаляет и создаёт заново
         $queryDelete = "DELETE FROM news_tags WHERE news_id = ?";
         $queryInsert = "INSERT IGNORE INTO news_tags(news_id, tag_id) VALUES (?, ?)";
 
@@ -496,8 +444,6 @@ class Mir24Importer
             return [];
         }
 
-        //        int lastNewsId = getLastCountryLinkId();
-
         $whereIn = implode(',', array_fill(0, count($news), '?'));
         $query = "SELECT nt.news_id news_id, UPPER(t.title) AS country "
             . "FROM   news_tag nt "
@@ -506,13 +452,6 @@ class Mir24Importer
             . "WHERE  nt.news_id in ($whereIn) "
             . "AND    t.type = 2 "
             . "AND    status = 'active'";
-//        query = "SELECT nt.news_id news_id, nt.tag_id tag_id " +
-//            "FROM   news_tag nt " +
-//            "LEFT JOIN tags t " +
-//            "ON t.id = nt.tag_id " +
-//            "WHERE  nt.news_id > " + (lastNewsId - 100) + " " +
-//            "AND    t.type = 2 " +
-//            "AND    status = 'active'";
 
         $countries = $this->getAvailableCountries();
 
@@ -531,39 +470,6 @@ class Mir24Importer
 
         return $rs;
     }
-
-//private HashMap<Integer, Integer> getNewsCountryLinks(){
-//
-//HashMap<Integer, Integer> links = new HashMap<>();
-//
-//int lastNewsId = getLastCountryLinkId();
-//
-//DBMessanger messanger = new DBMessanger("mir24");
-//
-//query = "SELECT nt.news_id news_id, nt.tag_id tag_id " +
-//"FROM   news_tag nt " +
-//"LEFT JOIN tags t " +
-//"ON t.id = nt.tag_id " +
-//"WHERE  nt.news_id > " + (lastNewsId - 100) + " " +
-//"AND    t.type = 2 " +
-//"AND    status = 'active'";
-//
-//ResultSet resultSet = messanger.doQuery(query);
-//
-//try {
-//while(resultSet.next()){
-//links.put(resultSet.getInt("news_id"), resultSet.getInt("tag_id"));
-//}
-//}
-//catch(SQLException sqlex){
-//    logger.error("Can't get country links: " + sqlex);
-//}
-//    finally {
-//    messanger.closeConnection();
-//}
-//
-//    return links;
-//  }
 
     private function getAvailableCountries(): array
     {
@@ -803,96 +709,3 @@ class Mir24Importer
 //    }
 //
 //}
-
-
-//private int getLastCountryLinkId(){
-//
-//int lastID = 0;
-//
-//    DBMessanger messanger = new DBMessanger("m24api");
-//
-//    query = "SELECT MAX(news_id) AS last_id FROM news_country";
-//
-//    ResultSet resultSet = messanger.doQuery(query);
-//
-//    try {
-//        if(resultSet.next()){
-//            lastID = resultSet.getInt("last_id");
-//        }
-//    }
-//    catch(SQLException sqlex){
-//    logger.error("Can't get last country link id: " + sqlex);
-//}
-//    finally {
-//    messanger.closeConnection();
-//}
-//
-//    return lastID;
-//  }
-
-//  Закоментировано  т.к. данные о размерах изображений берутся из images.properties
-//  В дальнейшем продумать парсинг из базы данных. Может быть через distinc или group by
-
-/*  public ArrayList<ImageType> getImageTypes() { //private
-
-    ArrayList<ImageType> types       = new ArrayList<ImageType>();
-    PGDBMessanger        pgMessanger = new PGDBMessanger();
-
-    query = "SELECT name, width, height " +
-            "FROM   imageresize";
-
-    ResultSet resultSet = pgMessanger.doQuery(query);
-
-    try {
-      while(resultSet.next()){
-        ImageType imageType = new ImageType();
-        imageType.setAlias(resultSet.getString("name"));
-        imageType.setWidth(resultSet.getInt("width"));
-        imageType.setHeight(resultSet.getInt("height"));
-        types.add(imageType);
-        if(types.size()>10){
-          saveImageTypes(types);
-          types.clear();
-        }
-      }
-    }
-    catch(SQLException sqlex){
-      logger.error("Can't get image types: " + sqlex.toString());
-    }
-    finally {
-      pgMessanger.closeConnection();
-    }
-
-    return types;
-  }
-
-  private void saveImageTypes(ArrayList<ImageType> types) {
-
-    DBMessanger messanger  = new DBMessanger();
-    Connection  connection = messanger.getConnection();
-
-    for(ImageType imageType:types){
-      try {
-        query = "INSERT INTO image_types (alias, size) " +
-                "VALUES (?, ?) " +
-                "ON DUPLICATE KEY UPDATE " +
-                "   alias = VALUES(alias), size = VALUES(size)";
-        CallableStatement preparedCall = connection.prepareCall(query);
-        preparedCall.setString(1, imageType.getAlias());
-        preparedCall.setString(2, imageType.getWidth() + "x" + imageType.getHeight());
-        preparedCall.execute();
-      }
-      catch(SQLException sqlex){
-        logger.error("Error while updating image types: " + sqlex.toString());
-      }
-    }
-
-    messanger.closeConnection();
-  }
-*/
-
-//  public void dropTheBase() {
-//DBMessanger messanger = new DBMessanger("m24api");
-//    messanger.doUpdate("CALL dropOldInfo");
-//    messanger.closeConnection();
-//  }
