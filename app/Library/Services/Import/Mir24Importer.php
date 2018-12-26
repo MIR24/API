@@ -222,7 +222,16 @@ class Mir24Importer
 
     public function updateActualNews($actualNews): void
     {
-        # TODO
+        $queryDelete = "DELETE FROM actual_news";
+        $queryInsert = "INSERT INTO actual_news(id, news_id) VALUES (?,?) "
+            . "ON DUPLICATE KEY "
+            . "UPDATE id = VALUES(id), news_id = VALUES(news_id)";
+
+        # TODO транзакция? заменить на update + "delete where i>x"?
+        DB::delete($queryDelete);
+        foreach ($actualNews as $i => $newsId) {
+            DB::insert($queryInsert, [$i, $newsId]);
+        }
     }
 
     public function getTags(): array
@@ -546,55 +555,6 @@ class Mir24Importer
 //                    logger.error("Can't get duration of file with url " + videoURL + ": " + ex);
 //                }
 //        return duration;
-//    }
-//
-//
-//    /**
-//     *
-//     * @param news
-//     */
-//    public void updateActualNews(int[] news) {
-//                dropActualNews();
-//                saveActualNews(news);
-//            }
-//
-//    private void dropActualNews() {
-//            query = "DELETE FROM actual_news";
-//        DBMessanger messanger = new DBMessanger("m24api");
-//        messanger.doUpdate(query);
-//        messanger.closeConnection();
-//    }
-//
-//    /**
-//     * Save id's of actual news to separate table for fast access.
-//     *
-//     * @param news array of news id
-//     */
-//    private void saveActualNews(int[] news) {
-//
-//                DBMessanger messanger = new DBMessanger("m24api");
-//        Connection connection = messanger.getConnection();
-//
-//        query = "INSERT INTO actual_news(id, news_id) VALUES (?,?) "
-//            + "ON DUPLICATE KEY "
-//            + "UPDATE id = VALUES(id), news_id = VALUES(news_id)";
-//
-//        try {
-//            PreparedStatement addStatement = connection.prepareCall(query);
-//            for (int i = 0; i < news.length; i++) {
-//                try {
-//                    addStatement.setInt(1, i);
-//                    addStatement.setInt(2, news[i]);
-//                    addStatement.execute();
-//                } catch (SQLException sqlex) {
-//                    logger.error("Error while adding actual news: " + sqlex);
-//                }
-//            }
-//        } catch (SQLException ex) {
-//                    logger.error("Can't save actual news: " + ex.toString());
-//                } finally {
-//                    messanger.closeConnection();
-//                }
 //    }
 //
 //    /**
