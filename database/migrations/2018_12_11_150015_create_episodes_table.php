@@ -23,8 +23,6 @@ class CreateEpisodesTable extends Migration
             $table->dateTime('time_end');
             $table->string('url');
             $table->integer('archive_id')->unsigned()->nullable();
-            $table->foreign('archive_id')->references('id')->on('archives');
-
         });
     }
 

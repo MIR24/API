@@ -14,10 +14,7 @@ class Broadcasts extends Migration
     public function up()
     {
         Schema::table('broadcasts', function (Blueprint $table) {
-
             $table->integer('channel_id')->nullable()->unsigned();
-            $table->foreign('channel_id')->references('id')->on('channel');
-            //$table->timestamps();
         });
     }
 

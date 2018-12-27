@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -15,17 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'smart/v1'], function () {
+Route::get('smart/v1/categories','CategoryController@show');
 
-    Route::get('/categories', 'CategoryController@show');
+Route::get('smart/v1/channels','ChannelsController@show');
 
-    Route::get('/channels', 'ChannelsController@show');
-
-    Route::get('/archives', 'ArchiveController@show');
-
-});
+Route::get('smart/v1/archives','ArchiveController@show');
