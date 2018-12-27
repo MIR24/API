@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Library\Services\Command\GetListOfCatagories;
+use App\Library\Services\Command\GetNewsById;
 use App\Library\Services\ResultOfCommand;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -50,7 +51,7 @@ class ApiController extends BaseController
      *   ),
      * )
      */
-    public function index(Request $request, GetListOfCatagories $getListOfCatagories)
+    public function index(Request $request, GetListOfCatagories $getListOfCatagories, GetNewsById $getNewsById)
     {
         $responseData = null;
 
@@ -60,13 +61,15 @@ class ApiController extends BaseController
 
             switch ($operation) {
                 case "categorylist":
+                    # Категории новостей
                     $resultOfCommand = $getListOfCatagories->handle($options);
                     break;
                 case "newslist":
                     # TODO
                     break;
                 case "newsById":
-                    # TODO
+                    # Получение новости по её ID
+                    $resultOfCommand = $getNewsById->handle($options);
                     break;
                 case "config":
                     # TODO
