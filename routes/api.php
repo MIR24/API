@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('smart/v1/categories','CategoryController@show');
+Route::get('smart/v1/categories','CategoryController@show')->middleware('token');
 
 Route::get('smart/v1/channels','ChannelsController@show');
 
