@@ -51,15 +51,59 @@ class ApiController extends BaseController
 
     public function index(Request $request)
     {
-        $operation = $request->get('request');
-        $options = $request->get('options');
+        try {
+            $operation = $request->get('request');
+            $options = $request->get('options');
 
-        $responseData = [
-            'answer' => $operation,
-            'status' => 200,
-//            'message' => 'TODO',
-//            'content' => 'TODO'
-        ];
-        return response()->json($responseData);
+            $responseData = [
+                'answer' => $operation,
+                'status' => 200,
+                'message' => null,
+                'content' => null,
+            ];
+
+            switch ($operation) {
+                case "categorylist":
+                    # TODO
+                    break;
+                case "newslist":
+                    # TODO
+                    break;
+                case "newsById":
+                    # TODO
+                    break;
+                case "config":
+                    # TODO
+                    break;
+                case "text":
+                    # TODO
+                    break;
+                case "tags":
+                    # TODO
+                    break;
+                case "gallery":
+                    # TODO
+                    break;
+                case "push":
+                    # TODO
+                    break;
+                case "comment":
+                    # TODO
+                    break;
+                case "types":
+                    # TODO
+                    break;
+                case "countries":
+                    # TODO
+                    break;
+                default:
+                    # TODO
+            }
+        } catch (\Exception $e) {
+            $responseData['message'] = $e->getMessage();
+            $responseData['status'] = 500;
+        } finally {
+            return response()->json($responseData);
+        }
     }
 }
