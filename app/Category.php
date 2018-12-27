@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="name", type="string"),
  * )
  */
+# TODO Add 'url' and 'order' in documentation?
 class Category extends Model
 {
     protected $table = 'categories';
@@ -29,6 +30,18 @@ class Category extends Model
             [
                 'id',
                 'name',
+            ]
+        );
+    }
+
+    public function scopeGetForOldApi(Builder $query)
+    {
+        return $query->select(
+            [
+                'id',
+                'name',
+                'url',
+                'order'
             ]
         );
     }

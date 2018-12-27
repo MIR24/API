@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Library\Services\Command\GetListOfCatagories;
+use App\Library\Services\ResultOfCommand;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -36,7 +38,7 @@ class ApiController extends BaseController
      *
      * @OA\Post(
      *   path="/",
-     *   summary="Унифицированная форма API",
+     *   summary="Унифицированная форма API. Доступно: categorylist",
      *   @OA\RequestBody(
      *       description="Унифицированная форма запроса",
      *       @OA\JsonContent(ref="#/components/schemas/apiRequest"),
@@ -48,23 +50,17 @@ class ApiController extends BaseController
      *   ),
      * )
      */
-
-    public function index(Request $request)
+    public function index(Request $request, GetListOfCatagories $getListOfCatagories)
     {
+        $responseData = null;
+
         try {
             $operation = $request->get('request');
             $options = $request->get('options');
 
-            $responseData = [
-                'answer' => $operation,
-                'status' => 200,
-                'message' => null,
-                'content' => null,
-            ];
-
             switch ($operation) {
                 case "categorylist":
-                    # TODO
+                    $resultOfCommand = $getListOfCatagories->handle($options);
                     break;
                 case "newslist":
                     # TODO
@@ -97,11 +93,21 @@ class ApiController extends BaseController
                     # TODO
                     break;
                 default:
-                    # TODO
+                    $resultOfCommand = (new ResultOfCommand())
+                        ->setOperation($operation)
+                        ->setMessage("Unknown answer.")
+                        ->setStatus(400);
+                    break;
             }
+
+            $responseData = $resultOfCommand->getAsArray();
         } catch (\Exception $e) {
-            $responseData['message'] = $e->getMessage();
-            $responseData['status'] = 500;
+            $responseData = [
+                'answer' => $operation,
+                'status' => 500,
+                'message' => $e->getMessage(),
+                'content' => null,
+            ];
         } finally {
             return response()->json($responseData);
         }
