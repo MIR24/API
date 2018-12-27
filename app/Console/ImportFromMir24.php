@@ -42,15 +42,10 @@ class ImportFromMir24 extends Command
      */
     public function handle()
     {
+        # TODO Не запускать, если обновление уже запущено
         $this->importer->setUpdateComplete(false);
-// TODO INSERT INTO `status` VALUES (1,'UPDATE_COMPLETE',1,NULL,NULL);
 
         $this->info("Starting update.");
-
-//        $this->info("Getting categories.");
-//        $categories = $this->importer->getCategories();
-//        $this->info("Got " . count($categories) . " categories. Saving...");
-//        $this->importer->updateCategories($categories);
 
         $this->info("Getting news.");
         $news = $this->importer->getLastNews();
@@ -76,11 +71,6 @@ class ImportFromMir24 extends Command
         $galleries = $this->importer->getGalleries($news);
         $this->info("Got " . count($galleries) . " galleries. Saving...");
         $this->importer->saveGalleries($galleries);
-
-//        $this->info("Getting countries.");
-//        $countries = $this->importer->getCountries();
-//        $this->info("Got " . count($countries) . " countries. Saving...");
-//        $this->importer->saveCountries($countries);
 
         $this->info("Getting country links.");
         $links = $this->importer->getNewsCountryLinks($news);
