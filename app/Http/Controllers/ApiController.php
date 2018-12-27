@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Library\Services\Command\GetListOfCatagories;
+use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetNewsById;
 use App\Library\Services\ResultOfCommand;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class ApiController extends BaseController
      *
      * @OA\Post(
      *   path="/",
-     *   summary="Унифицированная форма API. Доступно: categorylist",
+     *   summary="Унифицированная форма API. Доступно: categorylist, countries",
      *   @OA\RequestBody(
      *       description="Унифицированная форма запроса",
      *       @OA\JsonContent(ref="#/components/schemas/apiRequest"),
@@ -51,8 +52,12 @@ class ApiController extends BaseController
      *   ),
      * )
      */
-    public function index(Request $request, GetListOfCatagories $getListOfCatagories, GetNewsById $getNewsById)
-    {
+    public function index(
+        Request $request,
+        GetListOfCatagories $getListOfCatagories,
+        GetListOfCountries $getListOfCountries,
+        GetNewsById $getNewsById
+    )    {
         $responseData = null;
 
         try {
@@ -93,7 +98,8 @@ class ApiController extends BaseController
                     # TODO
                     break;
                 case "countries":
-                    # TODO
+                    # Запрос списка стран
+                    $resultOfCommand = $getListOfCountries->handle($options);
                     break;
                 default:
                     $resultOfCommand = (new ResultOfCommand())
