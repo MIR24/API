@@ -14,7 +14,7 @@ class CategoryController extends Controller
      *   @OA\Response(
      *      response=200,
      *      description="Список категорий передач",
-     *      @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Category"))
+     *      @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CategoryMin"))
      *   ),
      * )
      */
