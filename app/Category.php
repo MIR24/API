@@ -7,13 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @OA\Schema(
- *   schema="Category",
+ *   schema="CategoryMin",
  *   type="object",
  *     @OA\Property(property="id", type="integer"),
  *     @OA\Property(property="name", type="string"),
  * )
+ * @OA\Schema(
+ *   schema="CategoryMax",
+ *   type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="url", type="string"),
+ *     @OA\Property(property="order", type="integer"),
+ * )
  */
-# TODO Add 'url' and 'order' in documentation?
 class Category extends Model
 {
     protected $table = 'categories';
