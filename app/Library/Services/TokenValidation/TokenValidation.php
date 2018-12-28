@@ -20,7 +20,7 @@ class TokenValidation
      * @return bool
      */
     public function isValid(Request $request):bool {
-        throw new InvalidOldTokenException($request->get('request'));
+      //  throw new InvalidOldTokenException($request->get('request'));
         return true;
     }
 }

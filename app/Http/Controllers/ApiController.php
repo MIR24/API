@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AnswerOldException;
+use App\Exceptions\OldException;
+use App\Exceptions\ServerOldException;
 use App\Library\Services\Command\GetListOfCatagories;
 use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetNewsById;
@@ -57,13 +60,14 @@ class ApiController extends BaseController
         GetListOfCatagories $getListOfCatagories,
         GetListOfCountries $getListOfCountries,
         GetNewsById $getNewsById
-    )    {
+    )
+    {
         $responseData = null;
 
-        try {
-            $operation = $request->get('request');
-            $options = $request->get('options');
+        $operation = $request->get('request');
+        $options = $request->get('options');
 
+        try {
             switch ($operation) {
                 case "categorylist":
                     # Категории новостей
@@ -102,23 +106,20 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListOfCountries->handle($options);
                     break;
                 default:
-                    $resultOfCommand = (new ResultOfCommand())
-                        ->setOperation($operation)
-                        ->setMessage("Unknown answer.")
-                        ->setStatus(400);
-                    break;
+                    throw new AnswerOldException($operation);
+
             }
 
             $responseData = $resultOfCommand->getAsArray();
+
         } catch (\Exception $e) {
-            $responseData = [
-                'answer' => $operation,
-                'status' => 500,
-                'message' => $e->getMessage(),
-                'content' => null,
-            ];
-        } finally {
-            return response()->json($responseData);
+            if ($e instanceof OldException) {
+                throw $e;
+            }
+            throw new ServerOldException($operation);
         }
+
+        return response()->json($responseData);
+
     }
 }
