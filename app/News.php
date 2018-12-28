@@ -13,6 +13,7 @@ class News extends Model
 {
     protected $table = 'news';
 
+    private const DEFAULT_COUNTRY = 4453; # TODO
 
     public function scopeGetText(Builder $query, $newsId): Builder
     {
@@ -97,7 +98,7 @@ class News extends Model
         }
 
         if ($options->getTags() !== null && count($options->getTags()) && !$options->isLastNews()) {
-            $tagsAsArray = preg_split("/,/", $options->getTags()) || [];
+            $tagsAsArray = preg_split("/,/", $options->getTags());
             $query->rightJoinWhere("news_tags as nt", "news.id", "=", "nt.news_id")
                 ->where("nt.tag_id", "IN", $tagsAsArray);
         }
@@ -118,44 +119,29 @@ class News extends Model
 //            }
     }
 
-    private function postQueryList(array $news): array
+    public static function postprocessingOfGetList($newsItem, NewsOption $options)
     {
-//                if (options.getOnlyWithGallery()) {
-//                    item.setHasGallery(Boolean.TRUE);
-//                } else {
-//                    item.setHasGallery(set.getBoolean("hasGallery"));
-//                }
-//                String tmp = set.getString("tags");
-//                ArrayList<Integer> tags = new ArrayList();
-//                if (tmp != null) {
-//                    while (tmp.length() > 0) {
-//                        if (tmp.contains(",")) {
-//                            tags.add(Integer.parseInt(tmp.substring(0, tmp.indexOf(","))));
-//                            tmp = tmp.substring(tmp.indexOf(",") + 1, tmp.length());
-//                        } else {
-//                            tags.add(Integer.parseInt(tmp));
-//                            tmp = "";
-//                        }
-//                    }
-//                }
-//                item.setTags(tags);
-//                tmp = set.getString("country");
-//                ArrayList<Integer> countries = new ArrayList<>();
-//                if (tmp != null) {
-//                    while (tmp.length() > 0) {
-//                        if (tmp.contains(",")) {
-//                            countries.add(Integer.parseInt(tmp.substring(0, tmp.indexOf(","))));
-//                            tmp = tmp.substring(tmp.indexOf(",") + 1, tmp.length());
-//                        } else {
-//                            countries.add(Integer.parseInt(tmp));
-//                            tmp = "";
-//                        }
-//                    }
-//                } else {
-//                    countries.add(4453);
-//                }
-//                item.setCountry(countries);
-        return $news;
+        if ($newsItem->tags !== null) {
+            $tagsAsArray = preg_split("/,/", $newsItem->tags);
+            if ($tagsAsArray !== false) {
+                $newsItem->tags = $tagsAsArray;
+            } else {
+                $newsItem->tags = [$newsItem->tags];
+            }
+        }
+
+        if ($newsItem->country !== null) {
+            $countriesAsArray = preg_split("/,/", $newsItem->country);
+            if ($countriesAsArray !== false) {
+                $newsItem->country = $countriesAsArray;
+            } else {
+                $newsItem->country = [$newsItem->country];
+            }
+        } else {
+            $newsItem->country = [self::DEFAULT_COUNTRY];
+        }
+
+        return $newsItem;
     }
 
     private function updateActual()

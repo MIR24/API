@@ -27,6 +27,9 @@ class GetNewsById implements CommandInterface
         }
 
         $newsItem = News::GetList($newsOption)->get()->get(0);
+
+        $newsItem = News::postprocessingOfGetList($newsItem, $newsOption);
+
         // TODO item.setNewsText(getNewsText(newsID)); # TODO News::GetText
 
         if ($newsItem === null) {
