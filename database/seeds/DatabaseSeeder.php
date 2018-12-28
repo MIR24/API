@@ -14,11 +14,12 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTableSeeder::class);
         $this->call(
             [
-                CategoryTableSeader::class,
-                ChannelTableSeeder::class,
-                BroadcastsTableSeeder::class,
-                ArchiveTableSeeder::class,
-                EpisodeTableSeeder::class,
+             //   CategoryTableSeader::class,
+             //   ChannelTableSeeder::class,
+            //    BroadcastsTableSeeder::class,
+             //   ArchiveTableSeeder::class,
+              //  EpisodeTableSeeder::class,
+                UsersTableSeeder::class
             ]
         );
     }
