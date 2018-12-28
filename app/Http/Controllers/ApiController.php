@@ -70,8 +70,9 @@ class ApiController extends BaseController
 
         $validator = Validator::make($request->all(), [
             'request' => ["required", Rule::in(['auth', 'categorylist', 'newslist', 'newsById', 'config', 'text', 'tags', 'gallery', 'push', 'comment', 'types', 'countries'])],
-            'options' => 'required|array',
+            'options' => 'array',
         ]);
+
 
         if ($validator->fails()) {
             throw new InvalidOldTokenException([]);
