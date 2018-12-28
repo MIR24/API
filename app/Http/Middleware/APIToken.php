@@ -22,9 +22,13 @@ class APIToken
      * @param $request
      * @param Closure $next
      * @return \Illuminate\Http\JsonResponse|mixed
+     * @throws \App\Exceptions\RestrictedOldException
      */
     public function handle($request, Closure $next)
     {
+        if($request->get('request')==='auth'){
+            return $next($request);
+        }
         if($this->validation->isValid($request)){
             return $next($request);
         }

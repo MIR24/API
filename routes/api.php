@@ -17,7 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/','ApiController@index');
+Route::post('/','ApiController@index')->middleware('token');
 
 Route::get('smart/v1/categories','CategoryController@show');
 
