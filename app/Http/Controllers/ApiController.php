@@ -9,6 +9,7 @@ use App\Library\Services\Command\GetListOfCatagories;
 use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetNewsById;
 use App\Library\Services\ResultOfCommand;
+use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -59,16 +60,21 @@ class ApiController extends BaseController
         Request $request,
         GetListOfCatagories $getListOfCatagories,
         GetListOfCountries $getListOfCountries,
-        GetNewsById $getNewsById
+        GetNewsById $getNewsById,
+        RegistrationUser $getRegistrationUser
     )
     {
         $responseData = null;
 
         $operation = $request->get('request');
         $options = $request->get('options');
-
+        $resultOfCommand=[];
         try {
             switch ($operation) {
+                case "auth":
+                    # Авторизация
+                    $resultOfCommand=$getRegistrationUser->handle($options);
+                    break;
                 case "categorylist":
                     # Категории новостей
                     $resultOfCommand = $getListOfCatagories->handle($options);
