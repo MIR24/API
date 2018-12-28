@@ -3,6 +3,7 @@
 namespace App\Library\Services\Command;
 
 
+use App\Library\Components\EloquentOptions\NewsOption;
 use App\Library\Services\ResultOfCommand;
 use App\News;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,24 +12,21 @@ class GetNewsById implements CommandInterface
 {
     public function handle(array $options): ResultOfCommand
     {
-        $newsId = null;
         $newsItem = null;
 
+        $newsOption = (new NewsOption())
+            ->setActual(false)
+            ->setLastNews(false)
+            ->setOnlyVideo(false)
+            ->setOnlyWithGallery(false)
+            ->setPage(1)
+            ->setLimit(1);
+
         if (isset($options["newsID"])) {
-            $newsId = $options["newsID"];
+            $newsOption->setNewsID($options["newsID"]);
         }
 
-        $where = [
-            'id' => $newsId,
-// TODO        options.setActual(Boolean.FALSE);
-//        options.setLastNews(Boolean.FALSE);
-//        options.setOnlyVideo(Boolean.FALSE);
-//        options.setOnlyWithGallery(Boolean.FALSE);
-//        options.setPage(1);
-//        options.setLimit(1);
-        ];
-
-        $newsItem = News::GetList($where)->get()->get(0);
+        $newsItem = News::GetList($newsOption)->get()->get(0);
         // TODO item.setNewsText(getNewsText(newsID)); # TODO News::GetText
 
         if ($newsItem === null) {
