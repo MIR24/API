@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Library\Services\TimeReplacer\TimeReplacer;
+use App\Library\Services\TokenValidation\RegistrationUser;
+use App\Library\Services\TokenValidation\TokenValidation;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,8 +27,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('App\Library\Services\TimeReplacer',function ($app){
+        $this->app->bind('App\Library\Services\TimeReplacer', function ($app) {
             return new TimeReplacer();
         });
+        $this->app->bind('App\Library\Services\TokenValidation', function ($app) {
+            return new TokenValidation();
+        });
+        $this->app->bind('App\Library\Services\RegistrationUser', function ($app) {
+            return new RegistrationUser();
+        });
+
     }
 }

@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AnswerOldException;
+use App\Exceptions\InvalidOldTokenException;
+use App\Exceptions\OldException;
+use App\Exceptions\ServerOldException;
 use App\Library\Services\Command\GetListOfCatagories;
 use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetNewsById;
 use App\Library\Services\ResultOfCommand;
+use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ApiController extends BaseController
 {
@@ -56,15 +63,31 @@ class ApiController extends BaseController
         Request $request,
         GetListOfCatagories $getListOfCatagories,
         GetListOfCountries $getListOfCountries,
-        GetNewsById $getNewsById
-    )    {
+        GetNewsById $getNewsById,
+        RegistrationUser $getRegistrationUser
+    )
+    {
+
+        $validator = Validator::make($request->all(), [
+            'request' => ["required", Rule::in(['auth', 'categorylist', 'newslist', 'newsById', 'config', 'text', 'tags', 'gallery', 'push', 'comment', 'types', 'countries'])],
+            'options' => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            throw new InvalidOldTokenException([]);
+        }
+
         $responseData = null;
 
+        $operation = $request->get('request');
+        $options = $request->get('options');
+        $resultOfCommand = [];
         try {
-            $operation = $request->get('request');
-            $options = $request->get('options');
-
             switch ($operation) {
+                case "auth":
+                    # Авторизация
+                    $resultOfCommand = $getRegistrationUser->handle($options);
+                    break;
                 case "categorylist":
                     # Категории новостей
                     $resultOfCommand = $getListOfCatagories->handle($options);
@@ -102,23 +125,20 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListOfCountries->handle($options);
                     break;
                 default:
-                    $resultOfCommand = (new ResultOfCommand())
-                        ->setOperation($operation)
-                        ->setMessage("Unknown answer.")
-                        ->setStatus(400);
-                    break;
+                    throw new AnswerOldException($operation);
+
             }
 
             $responseData = $resultOfCommand->getAsArray();
+
         } catch (\Exception $e) {
-            $responseData = [
-                'answer' => $operation,
-                'status' => 500,
-                'message' => $e->getMessage(),
-                'content' => null,
-            ];
-        } finally {
-            return response()->json($responseData);
+            if ($e instanceof OldException) {
+                throw $e;
+            }
+            throw new ServerOldException($operation);
         }
+
+        return response()->json($responseData);
+
     }
 }
