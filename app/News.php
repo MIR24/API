@@ -120,7 +120,7 @@ class News extends Model
 //            }
     }
 
-    public static function postprocessingOfGetList($newsItem)
+    public static function postprocessingOfGetList(News $newsItem)
     {
         if ($newsItem->tags !== null) {
             $tagsAsArray = preg_split("/,/", $newsItem->tags);

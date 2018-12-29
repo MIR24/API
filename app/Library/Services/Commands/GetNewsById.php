@@ -3,6 +3,7 @@
 namespace App\Library\Services\Command;
 
 
+use App\Exceptions\NotFoundOldException;
 use App\Library\Components\EloquentOptions\NewsOption;
 use App\Library\Components\NewsTextConverter;
 use App\Library\Services\ResultOfCommand;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class GetNewsById implements CommandInterface
 {
+    private const OPERATION = "newsById";
+
     public function handle(array $options): ResultOfCommand
     {
         $newsItem = null;
@@ -27,7 +30,10 @@ class GetNewsById implements CommandInterface
             $newsOption->setNewsID($options["newsID"]);
         }
 
-        $newsItem = News::GetList($newsOption)->get()->get(0);
+        $newsItem = News::GetList($newsOption)->first();
+        if ($newsItem === null) {
+            throw new NotFoundOldException($this::OPERATION);
+        }
 
         $newsItem = News::postprocessingOfGetList($newsItem);
 
@@ -38,12 +44,9 @@ class GetNewsById implements CommandInterface
             ->changeTextLinks()
             ->getText();
 
-        if ($newsItem === null) {
-            # TODO 404?
-        }
 
         return (new ResultOfCommand())
-            ->setOperation('newsById')
+            ->setOperation($this::OPERATION)
             ->setContent($newsItem)
             ->setMessage("News by id parsed correct.")
             ->setStatus(200);
