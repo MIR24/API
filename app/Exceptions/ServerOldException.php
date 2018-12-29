@@ -11,17 +11,10 @@ namespace App\Exceptions;
 
 class ServerOldException extends OldException
 {
-    /**
-     * ServerOldException constructor.
-     * @param $operation
-     * @param string $message
-     */
-    public function __construct($operation, $message = null)
+    public function __construct(string $operation, string $message = "SERVER ERROR")
     {
-        parent::__construct($message ?? "SERVER ERROR");
+        parent::__construct($operation, $message);
 
         $this->newStatus = 502;
-
-        $this->operation = $operation;
     }
 }

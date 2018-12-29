@@ -11,17 +11,10 @@ namespace App\Exceptions;
 
 class AnswerOldException extends OldException
 {
-    /**
-     * AnswerOldException constructor.
-     * @param $operation
-     * @param string $message
-     */
-    public function __construct($operation, $message = 'Unknown answer.')
+    public function __construct(string $operation, string $message = 'Unknown answer.')
     {
-        parent::__construct($message);
+        parent::__construct($operation, $message);
 
         $this->newStatus = 400;
-
-        $this->operation = $operation;
     }
 }

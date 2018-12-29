@@ -16,6 +16,13 @@ class OldException extends Exception implements OldExceptionInterface
 
     protected $newStatus;
 
+    public function __construct(string $operation, string $message)
+    {
+        parent::__construct($message);
+
+        $this->operation = $operation;
+    }
+
     function getResponseData()
     {
         return [

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 class Mir24Importer
 {
+    # TODO INSERT IGNORE - везде ли нужен IGNORE? Может exception выкидывать?
     private const PROMO_NEWS_COUNT = 5;
     private const UPDATE_PERIOD_IN_MINUTES = 60; // период обновления новостей в минутах
 
@@ -229,13 +230,14 @@ class Mir24Importer
     public function updateActualNews($actualNews): void
     {
         $queryDelete = "DELETE FROM actual_news";
-        $queryInsert = "INSERT INTO actual_news(id, news_id) VALUES (?,?) "
+        $queryInsert = "INSERT IGNORE INTO actual_news(id, news_id) VALUES (?,?) "
             . "ON DUPLICATE KEY "
             . "UPDATE id = VALUES(id), news_id = VALUES(news_id)";
 
         # TODO транзакция? заменить на update + "delete where i>x"?
         DB::delete($queryDelete);
         foreach ($actualNews as $i => $newsId) {
+            # TODO из-за INSERT IGNORE в id пропуски могут быть
             DB::insert($queryInsert, [$i, $newsId]);
         }
     }

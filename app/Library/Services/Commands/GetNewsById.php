@@ -34,6 +34,7 @@ class GetNewsById implements CommandInterface
         // TODO item.setNewsText(getNewsText(newsID)); # TODO News::GetText
         $newsItem->newsText = (new NewsTextConverter())
             ->setText($newsItem->newsText)
+//            ->cutGalleryTags() TODO
             ->changeTextLinks()
             ->getText();
 

@@ -11,17 +11,10 @@ namespace App\Exceptions;
 
 class RestrictedOldException extends OldException
 {
-    /**
-     * RestrictedOldException constructor.
-     * @param $operation
-     * @param string $message
-     */
-    public function __construct($operation, $message = 'RESTRICTED')
+    public function __construct(string $operation, string $message = 'RESTRICTED')
     {
-        parent::__construct($message);
+        parent::__construct($operation, $message);
 
         $this->newStatus = 403;
-
-        $this->operation = $operation;
     }
 }

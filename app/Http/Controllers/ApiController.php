@@ -73,9 +73,8 @@ class ApiController extends BaseController
             'options' => 'array',
         ]);
 
-
         if ($validator->fails()) {
-            throw new InvalidOldTokenException([]);
+            throw new InvalidOldTokenException($request->get('request') ?? "");
         }
 
         $responseData = null;
@@ -136,7 +135,7 @@ class ApiController extends BaseController
             if ($e instanceof OldException) {
                 throw $e;
             }
-            throw new ServerOldException($operation, env("APP_DEBUG") ? $e->getMessage() : null);
+            throw new ServerOldException($operation);
         }
 
         return response()->json($responseData);

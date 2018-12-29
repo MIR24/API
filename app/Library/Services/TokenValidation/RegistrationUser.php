@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
-
 class RegistrationUser implements CommandInterface
 {
+    private const OPERATION = 'auth';
 
     /**
      * @param array $options
@@ -35,12 +35,12 @@ class RegistrationUser implements CommandInterface
     {
 
         if ($this->isNotValidUserData($options)) {
-            throw new InvalidOldTokenException($options);
+            throw new InvalidOldTokenException($this::OPERATION);
         }
 
 
         return (new ResultTokenOfCommand)
-            ->setOperation('auth')
+            ->setOperation($this::OPERATION)
             ->setMessage("Authentication successful.")
             ->setToken($this->getTokenIdByUserData($options))
             ->setStatus(200);
@@ -68,7 +68,7 @@ class RegistrationUser implements CommandInterface
     {
 
         if (!Auth::attempt(['name' => $options['login'], 'password' => $options['password']])) {
-            throw new RestrictedOldException($options);
+            throw new RestrictedOldException($this::OPERATION);
         }
 
         try {
@@ -78,12 +78,12 @@ class RegistrationUser implements CommandInterface
                 ->first(['id'])->id;
 
         } catch (\Exception $ex) {
-            throw new ServerOldException($options);
+            throw new ServerOldException($this::OPERATION);
         }
 
 
         if (!$res) {
-            throw new RestrictedOldException($options,'RESTRICTED. NOT FOUND TOKEN');
+            throw new RestrictedOldException($this::OPERATION, 'RESTRICTED. NOT FOUND TOKEN');
         }
 
         return $res;
