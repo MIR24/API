@@ -9,18 +9,23 @@
 namespace App\Library\Services\TokenValidation;
 
 
-use App\Exceptions\InvalidOldTokenException;
+use App\Exceptions\RestrictedOldException;
 use Illuminate\Http\Request;
+use Laravel\Passport\Token;
+
 
 class TokenValidation
 {
     /**
-     * TODO create actual validation token
      * @param Request $request
      * @return bool
+     * @throws RestrictedOldException
      */
     public function isValid(Request $request):bool {
-      //  throw new InvalidOldTokenException($request->get('request'));
+        $token= Token::find($request->get('token'));
+        if(!$token){
+            throw new RestrictedOldException($request->get('operation'));
+        }
         return true;
     }
 }

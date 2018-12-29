@@ -57,7 +57,13 @@ class RegistrationUser implements CommandInterface
             ])->fails();
     }
 
-
+    /**
+     * TODO may be need more
+     * @param array $options
+     * @return mixed
+     * @throws RestrictedOldException
+     * @throws ServerOldException
+     */
     private function getTokenIdByUserData(array $options)
     {
 
