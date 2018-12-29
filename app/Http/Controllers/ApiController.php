@@ -136,7 +136,7 @@ class ApiController extends BaseController
             if ($e instanceof OldException) {
                 throw $e;
             }
-            throw new ServerOldException($operation);
+            throw new ServerOldException($operation, env("APP_DEBUG") ? $e->getMessage() : null);
         }
 
         return response()->json($responseData);

@@ -16,9 +16,9 @@ class ServerOldException extends OldException
      * @param $operation
      * @param string $message
      */
-    public function __construct($operation, $message = 'SERVER ERROR')
+    public function __construct($operation, $message = null)
     {
-        parent::__construct($message);
+        parent::__construct($message ?? "SERVER ERROR");
 
         $this->newStatus = 502;
 

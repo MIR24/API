@@ -15,14 +15,14 @@ class News extends Model
 
     private const DEFAULT_COUNTRY = 4453; # TODO
 
-    public function scopeGetText(Builder $query, $newsId): Builder
+    public function scopeGetText(Builder $query, $newsId): Builder # TODO no used. See NewsTextConverter
     {
         return $query->where('id', $newsId); # TODO
     }
 
     public function scopeGetList(Builder $query, NewsOption $options): Builder
     {
-        $fieldsForSelect = "news.id, date, shortText, shortTextSrc, textSrc, title, imageID, "
+        $fieldsForSelect = "news.id, date, shortText, shortTextSrc, text as newsText, textSrc, title, imageID, "
             . "       categoryID, serieID, videoID, episodeID, copyright, copyrightSrc, "
             . "       rushHourNews, topListNews, hasGallery, videoDuration, (SELECT GROUP_CONCAT("
             . "       tag_id SEPARATOR ',') FROM news_tags WHERE news_id = news.id) AS tags, "
@@ -31,6 +31,7 @@ class News extends Model
 
         $query->select(DB::raw($fieldsForSelect));
 
+//        TODO кеширование при options.getPreSearch?
 //        if (options.getPreSearch() != null) {
 //            ArrayList<Integer> preSearch = options.getPreSearch();
 //            if (options.getPreSearch().isEmpty()) {
@@ -52,7 +53,7 @@ class News extends Model
 ////            && options.getPage() == 1
 ////            && news.size() < SiteConfig.PROMO_NEWS_COUNT
 ////           ) {
-//            $this->updateActual();
+// TODO            $this->updateActual();
 ////      }
 
         return $query;
@@ -119,7 +120,7 @@ class News extends Model
 //            }
     }
 
-    public static function postprocessingOfGetList($newsItem, NewsOption $options)
+    public static function postprocessingOfGetList($newsItem)
     {
         if ($newsItem->tags !== null) {
             $tagsAsArray = preg_split("/,/", $newsItem->tags);
