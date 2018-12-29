@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class CreateUserPassport extends Command
 {
+    private const MIN_LENGHT_OF_LOGIN = 3;
+    private const MIN_LENGHT_OF_PASSWORD = 3;
+
     /**
      * The name and signature of the console command.
      *
@@ -25,7 +28,7 @@ class CreateUserPassport extends Command
      *
      * @var string
      */
-    protected $description = 'Create user, and get toke_id ';
+    protected $description = 'Create user and token';
 
     /**
      * Create a new command instance.
@@ -72,8 +75,8 @@ class CreateUserPassport extends Command
         }
 
         $validator = Validator::make(["name" => $username, "pass" => $pass, "email" => $email], [
-            'name' => 'required|string|min:5|unique:users',
-            'pass' => 'required|string|min:6',
+            'name' => 'required|string|min:' . $this::MIN_LENGHT_OF_LOGIN . '|unique:users',
+            'pass' => 'required|string|min:' . $this::MIN_LENGHT_OF_PASSWORD,
             'email' => 'required|unique:users|email'
         ]);
 
