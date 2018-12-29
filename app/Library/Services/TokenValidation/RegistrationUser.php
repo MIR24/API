@@ -33,6 +33,9 @@ class RegistrationUser implements CommandInterface
      */
     function handle(array $options): ResultOfCommand
     {
+        if (array_key_exists('pass', $options) && !array_key_exists('password', $options)) {
+            $options['password'] = $options['pass'];
+        }
 
         if ($this->isNotValidUserData($options)) {
             throw new InvalidOldTokenException($this::OPERATION);
@@ -72,10 +75,18 @@ class RegistrationUser implements CommandInterface
         }
 
         try {
-            $res = DB::table('oauth_access_tokens')
+            $queryToToken = DB::table('oauth_access_tokens')
                 ->where(['user_id' => Auth::user()->id])
-                ->limit(1)
-                ->first(['id'])->id;
+                ->limit(1);
+
+            $res = $queryToToken->first(['id']);
+
+            if ($res === null) {
+                Auth::user()->createToken('Personal Access Token')->token->save();
+
+                $res = $queryToToken->first(['id']);
+            }
+            $res = $res->id;
 
         } catch (\Exception $ex) {
             throw new ServerOldException($this::OPERATION);
