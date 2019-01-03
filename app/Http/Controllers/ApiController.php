@@ -11,6 +11,7 @@ use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetListOfNews;
 use App\Library\Services\Command\GetNewsById;
 use App\Library\Services\Commands\GetListOfConfig;
+use App\Library\Services\Commands\GetListOfPhotos;
 use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -67,7 +68,8 @@ class ApiController extends BaseController
         GetListOfNews $getListOfNews,
         GetNewsById $getNewsById,
         RegistrationUser $getRegistrationUser,
-        GetListOfConfig $getListConfig
+        GetListOfConfig $getListConfig,
+        GetListOfPhotos $getListOfPhotos
     )
     {
 
@@ -114,7 +116,7 @@ class ApiController extends BaseController
                     # TODO
                     break;
                 case "gallery":
-                    # TODO
+                    $resultOfCommand = $getListOfPhotos->handle($options);
                     break;
                 case "push":
                     # TODO
