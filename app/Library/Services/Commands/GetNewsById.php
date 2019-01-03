@@ -5,10 +5,9 @@ namespace App\Library\Services\Command;
 
 use App\Exceptions\NotFoundOldException;
 use App\Library\Components\EloquentOptions\NewsOption;
-use App\Library\Components\NewsTextConverter;
 use App\Library\Services\ResultOfCommand;
 use App\News;
-use Illuminate\Database\Eloquent\Collection;
+
 
 class GetNewsById implements CommandInterface
 {
@@ -36,14 +35,7 @@ class GetNewsById implements CommandInterface
         }
 
         $newsItem = News::postprocessingOfGetList($newsItem);
-
-        // TODO item.setNewsText(getNewsText(newsID)); # TODO News::GetText
-        $newsItem->newsText = (new NewsTextConverter())
-            ->setText($newsItem->newsText)
-//            ->cutGalleryTags() TODO
-            ->changeTextLinks()
-            ->getText();
-
+        $newsItem = News::replaceText($newsItem);
 
         return (new ResultOfCommand())
             ->setOperation($this::OPERATION)
