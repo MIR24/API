@@ -3,7 +3,7 @@
 namespace App\Exceptions;
 
 
-class InvalidOldTokenException extends OldException
+class InvalidClientOldException extends OldException
 {
     public function __construct(string $operation, string $message = 'CLIENT ERROR')
     {

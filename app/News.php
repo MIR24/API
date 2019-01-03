@@ -4,6 +4,8 @@ namespace App;
 
 
 use App\Library\Components\EloquentOptions\NewsOption;
+use App\Library\Components\NewsTextConverter;
+use App\Library\Services\Transliterator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -15,14 +17,9 @@ class News extends Model
 
     private const DEFAULT_COUNTRY = 4453; # TODO
 
-    public function scopeGetText(Builder $query, $newsId): Builder # TODO no used. See NewsTextConverter
-    {
-        return $query->where('id', $newsId); # TODO
-    }
-
     public function scopeGetList(Builder $query, NewsOption $options): Builder
     {
-        $fieldsForSelect = "news.id, date, shortText, shortTextSrc, text as newsText, textSrc, title, imageID, "
+        $fieldsForSelect = "news.id, date, shortText, shortTextSrc, text, textSrc, title, imageID, "
             . "       categoryID, serieID, videoID, episodeID, copyright, copyrightSrc, "
             . "       rushHourNews, topListNews, hasGallery, videoDuration, (SELECT GROUP_CONCAT("
             . "       tag_id SEPARATOR ',') FROM news_tags WHERE news_id = news.id) AS tags, "
@@ -120,7 +117,7 @@ class News extends Model
 //            }
     }
 
-    public static function postprocessingOfGetList($newsItem)
+    public static function postprocessingOfGetList(News $newsItem)
     {
         if ($newsItem->tags !== null) {
             $tagsAsArray = preg_split("/,/", $newsItem->tags);
@@ -145,6 +142,29 @@ class News extends Model
         return $newsItem;
     }
 
+    public static function replaceText(News $newsItem): News
+    {
+        $textWithTags = (new NewsTextConverter())
+            ->setText($newsItem->text)
+            // ->cutGalleryTags() TODO
+            ->changeTextLinks()
+            ->getText();
+        unset($newsItem->text);
+
+        $newsItem->newsText = [
+            "textWithTags" => $textWithTags,
+            "textSource" => $newsItem->textSrc,
+            "link" => sprintf(
+                "http://mir24.tv/news/%d/%s",
+                $newsItem->id,
+                (new Transliterator())->toUrl($newsItem->title)
+            )
+        ];
+        unset($newsItem->textSrc);
+
+        return $newsItem;
+    }
+
     private function updateActual()
     {
 //            options.setActual(Boolean.FALSE);
@@ -157,34 +177,3 @@ class News extends Model
 //            news.addAll(getNewsList(options));
     }
 }
-///**
-// * Get text of news with specified id.
-// *
-// * @param newsID
-// * @return NewsText object which contains text with and without html tags
-// */
-//public NewsText getNewsText(int newsID) {
-//    query = "SELECT title, text, textsrc, hasGallery, url "
-//        + "FROM   news n "
-//        + "LEFT JOIN categories c ON c.id = n.categoryID "
-//        + "WHERE n.id = '" + newsID + "'";
-//    DBMessanger messanger = new DBMessanger("m24api");
-//        ResultSet set = messanger.doQuery(query);
-//        NewsText newsText = new NewsText();
-//        try {
-//            if (set.next()) {
-//                String text = set.getString("text");
-//                String title = set.getString("title");
-//                text = cutGalleryTags(text);
-//                text = changeTextLinks(text);
-//                newsText.setTextWithTags(text);
-//                newsText.setTextSource(set.getString("textsrc"));
-//                newsText.setLink("http://mir24.tv/news/" + newsID + "/" + Transliterator.toTranslit(title).toLowerCase());
-//            }
-//        } catch (SQLException ex) {
-//        logger.error("Can't get newstext: " + ex.toString());
-//    } finally {
-//        messanger.closeConnection();
-//    }
-//        return newsText;
-//    }

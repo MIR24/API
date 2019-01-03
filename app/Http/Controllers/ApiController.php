@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AnswerOldException;
-use App\Exceptions\InvalidOldTokenException;
+use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\OldException;
 use App\Exceptions\ServerOldException;
 use App\Library\Services\Command\GetListOfCatagories;
 use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetNewsById;
-use App\Library\Services\Commands\GetListOfConfig;
-use App\Library\Services\ResultOfCommand;
 use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -48,7 +46,7 @@ class ApiController extends BaseController
      *
      * @OA\Post(
      *   path="/",
-     *   summary="Унифицированная форма API. Доступно: categorylist, countries",
+     *   summary="Унифицированная форма API. Доступно: categorylist, countries, newsById",
      *   @OA\RequestBody(
      *       description="Унифицированная форма запроса",
      *       @OA\JsonContent(ref="#/components/schemas/apiRequest"),
@@ -65,8 +63,7 @@ class ApiController extends BaseController
         GetListOfCatagories $getListOfCatagories,
         GetListOfCountries $getListOfCountries,
         GetNewsById $getNewsById,
-        RegistrationUser $getRegistrationUser,
-        GetListOfConfig $getListConfig
+        RegistrationUser $getRegistrationUser
     )
     {
 
@@ -76,7 +73,7 @@ class ApiController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            throw new InvalidOldTokenException($request->get('request') ?? "");
+            throw new InvalidClientOldException($request->get('request') ?? "");
         }
 
         $responseData = null;
@@ -102,7 +99,7 @@ class ApiController extends BaseController
                     $resultOfCommand = $getNewsById->handle($options);
                     break;
                 case "config":
-                    $resultOfCommand =  $getListConfig->handle([]);
+                    # TODO
                     break;
                 case "text":
                     # TODO

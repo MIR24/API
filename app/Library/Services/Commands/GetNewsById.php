@@ -3,18 +3,25 @@
 namespace App\Library\Services\Command;
 
 
+use App\Exceptions\InvalidClientOldException;
+use App\Exceptions\NotFoundOldException;
 use App\Library\Components\EloquentOptions\NewsOption;
-use App\Library\Components\NewsTextConverter;
 use App\Library\Services\ResultOfCommand;
 use App\News;
-use Illuminate\Database\Eloquent\Collection;
+
 
 class GetNewsById implements CommandInterface
 {
+    private const OPERATION = "newsById";
+
+    /**
+     * @param array $options
+     * @return ResultOfCommand
+     * @throws InvalidClientOldException
+     * @throws NotFoundOldException
+     */
     public function handle(array $options): ResultOfCommand
     {
-        $newsItem = null;
-
         $newsOption = (new NewsOption())
             ->setActual(false)
             ->setLastNews(false)
@@ -25,25 +32,20 @@ class GetNewsById implements CommandInterface
 
         if (isset($options["newsID"])) {
             $newsOption->setNewsID($options["newsID"]);
+        } else {
+            throw new InvalidClientOldException($this::OPERATION, "Required option: newsID");
         }
 
-        $newsItem = News::GetList($newsOption)->get()->get(0);
+        $newsItem = News::GetList($newsOption)->first();
+        if ($newsItem === null) {
+            throw new NotFoundOldException($this::OPERATION);
+        }
 
         $newsItem = News::postprocessingOfGetList($newsItem);
-
-        // TODO item.setNewsText(getNewsText(newsID)); # TODO News::GetText
-        $newsItem->newsText = (new NewsTextConverter())
-            ->setText($newsItem->newsText)
-//            ->cutGalleryTags() TODO
-            ->changeTextLinks()
-            ->getText();
-
-        if ($newsItem === null) {
-            # TODO 404?
-        }
+        $newsItem = News::replaceText($newsItem);
 
         return (new ResultOfCommand())
-            ->setOperation('newsById')
+            ->setOperation($this::OPERATION)
             ->setContent($newsItem)
             ->setMessage("News by id parsed correct.")
             ->setStatus(200);
