@@ -31,6 +31,18 @@ class NewsOption
 //        buffer.add(id);
 //    }
 
+    public function initFromArray(array $options): NewsOption
+    {
+        foreach ($options as $key => $value) {
+            $methodName = "set" . ucfirst($key);
+            if (method_exists($this, $methodName)) {
+                $this->$methodName($value);
+            }
+        }
+
+        return $this;
+    }
+
     public function getPage(): int
     {
         return $this->page;

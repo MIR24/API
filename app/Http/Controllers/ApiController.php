@@ -8,6 +8,7 @@ use App\Exceptions\OldException;
 use App\Exceptions\ServerOldException;
 use App\Library\Services\Command\GetListOfCatagories;
 use App\Library\Services\Command\GetListOfCountries;
+use App\Library\Services\Command\GetListOfNews;
 use App\Library\Services\Command\GetNewsById;
 use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class ApiController extends BaseController
      *
      * @OA\Post(
      *   path="/",
-     *   summary="Унифицированная форма API. Доступно: categorylist, countries, newsById",
+     *   summary="Унифицированная форма API. Доступно: categorylist, countries, newsById, newslist",
      *   @OA\RequestBody(
      *       description="Унифицированная форма запроса",
      *       @OA\JsonContent(ref="#/components/schemas/apiRequest"),
@@ -62,6 +63,7 @@ class ApiController extends BaseController
         Request $request,
         GetListOfCatagories $getListOfCatagories,
         GetListOfCountries $getListOfCountries,
+        GetListOfNews $getListOfNews,
         GetNewsById $getNewsById,
         RegistrationUser $getRegistrationUser
     )
@@ -92,7 +94,8 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListOfCatagories->handle($options);
                     break;
                 case "newslist":
-                    # TODO
+                    # Список новостей
+                    $resultOfCommand = $getListOfNews->handle($options);
                     break;
                 case "newsById":
                     # Получение новости по её ID
@@ -134,7 +137,12 @@ class ApiController extends BaseController
             if ($e instanceof OldException) {
                 throw $e;
             }
-            throw new ServerOldException($operation);
+
+            if (env("APP_DEBUG")) {
+                throw new ServerOldException($operation, $e->getMessage());
+            } else {
+                throw new ServerOldException($operation);
+            }
         }
 
         return response()->json($responseData);
