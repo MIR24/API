@@ -10,6 +10,7 @@ use App\Library\Services\Command\GetListOfCatagories;
 use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetListOfNews;
 use App\Library\Services\Command\GetNewsById;
+use App\Library\Services\Commands\GetListOfConfig;
 use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -65,7 +66,8 @@ class ApiController extends BaseController
         GetListOfCountries $getListOfCountries,
         GetListOfNews $getListOfNews,
         GetNewsById $getNewsById,
-        RegistrationUser $getRegistrationUser
+        RegistrationUser $getRegistrationUser,
+        GetListOfConfig $getListConfig
     )
     {
 
@@ -102,7 +104,8 @@ class ApiController extends BaseController
                     $resultOfCommand = $getNewsById->handle($options);
                     break;
                 case "config":
-                    # TODO
+                    //TODO GetListOfConfig::handle(array $array) array may be null
+                    $resultOfCommand = $getListConfig->handle([]);
                     break;
                 case "text":
                     # TODO
