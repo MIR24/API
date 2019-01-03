@@ -9,6 +9,7 @@ use App\Exceptions\ServerOldException;
 use App\Library\Services\Command\GetListOfCatagories;
 use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetNewsById;
+use App\Library\Services\Commands\GetListOfConfig;
 use App\Library\Services\ResultOfCommand;
 use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
@@ -64,7 +65,8 @@ class ApiController extends BaseController
         GetListOfCatagories $getListOfCatagories,
         GetListOfCountries $getListOfCountries,
         GetNewsById $getNewsById,
-        RegistrationUser $getRegistrationUser
+        RegistrationUser $getRegistrationUser,
+        GetListOfConfig $getListConfig
     )
     {
 
@@ -100,7 +102,7 @@ class ApiController extends BaseController
                     $resultOfCommand = $getNewsById->handle($options);
                     break;
                 case "config":
-                    # TODO
+                    $resultOfCommand =  $getListConfig->handle([]);
                     break;
                 case "text":
                     # TODO
