@@ -8,7 +8,7 @@
 
 namespace App\Library\Services\TokenValidation;
 
-use App\Exceptions\InvalidOldTokenException;
+use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\RestrictedOldException;
 use App\Exceptions\ServerOldException;
 use App\Library\Services\Command\CommandInterface;
@@ -27,7 +27,7 @@ class RegistrationUser implements CommandInterface
     /**
      * @param array $options
      * @return ResultOfCommand
-     * @throws InvalidOldTokenException
+     * @throws InvalidClientOldException
      * @throws RestrictedOldException
      * @throws ServerOldException
      */
@@ -38,7 +38,7 @@ class RegistrationUser implements CommandInterface
         }
 
         if ($this->isNotValidUserData($options)) {
-            throw new InvalidOldTokenException($this::OPERATION);
+            throw new InvalidClientOldException($this::OPERATION);
         }
 
 

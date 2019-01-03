@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\AnswerOldException;
-use App\Exceptions\InvalidOldTokenException;
+use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\OldException;
 use App\Exceptions\ServerOldException;
 use App\Library\Services\Command\GetListOfCatagories;
@@ -46,7 +46,7 @@ class ApiController extends BaseController
      *
      * @OA\Post(
      *   path="/",
-     *   summary="Унифицированная форма API. Доступно: categorylist, countries",
+     *   summary="Унифицированная форма API. Доступно: categorylist, countries, newsById",
      *   @OA\RequestBody(
      *       description="Унифицированная форма запроса",
      *       @OA\JsonContent(ref="#/components/schemas/apiRequest"),
@@ -73,7 +73,7 @@ class ApiController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            throw new InvalidOldTokenException($request->get('request') ?? "");
+            throw new InvalidClientOldException($request->get('request') ?? "");
         }
 
         $responseData = null;

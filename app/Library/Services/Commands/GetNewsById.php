@@ -3,6 +3,7 @@
 namespace App\Library\Services\Command;
 
 
+use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\NotFoundOldException;
 use App\Library\Components\EloquentOptions\NewsOption;
 use App\Library\Services\ResultOfCommand;
@@ -13,10 +14,14 @@ class GetNewsById implements CommandInterface
 {
     private const OPERATION = "newsById";
 
+    /**
+     * @param array $options
+     * @return ResultOfCommand
+     * @throws InvalidClientOldException
+     * @throws NotFoundOldException
+     */
     public function handle(array $options): ResultOfCommand
     {
-        $newsItem = null;
-
         $newsOption = (new NewsOption())
             ->setActual(false)
             ->setLastNews(false)
@@ -27,6 +32,8 @@ class GetNewsById implements CommandInterface
 
         if (isset($options["newsID"])) {
             $newsOption->setNewsID($options["newsID"]);
+        } else {
+            throw new InvalidClientOldException($this::OPERATION, "Required option: newsID");
         }
 
         $newsItem = News::GetList($newsOption)->first();
