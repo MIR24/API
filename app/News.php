@@ -17,6 +17,14 @@ class News extends Model
 
     private const DEFAULT_COUNTRY = 4453; # TODO
 
+    public function scopeGetNewsText(Builder $query, $newsId): Builder
+    {
+        return $query
+            ->select(['title', 'text', 'textSrc', 'hasGallery', 'c.url'])
+            ->leftJoin("categories as c", "c.id", "=", "news.categoryID")
+            ->where("news.id", $newsId);
+    }
+
     public function scopeGetList(Builder $query, NewsOption $options): Builder
     {
         $fieldsForSelect = "news.id, date, shortText, shortTextSrc, text, textSrc, title, imageID, "

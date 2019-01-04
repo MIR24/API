@@ -10,6 +10,7 @@ use App\Library\Services\Command\GetListOfCatagories;
 use App\Library\Services\Command\GetListOfCountries;
 use App\Library\Services\Command\GetListOfNews;
 use App\Library\Services\Command\GetNewsById;
+use App\Library\Services\Command\GetNewsTextById;
 use App\Library\Services\Commands\GetListOfConfig;
 use App\Library\Services\Commands\GetListOfPhotos;
 use App\Library\Services\TokenValidation\RegistrationUser;
@@ -67,6 +68,7 @@ class ApiController extends BaseController
         GetListOfCountries $getListOfCountries,
         GetListOfNews $getListOfNews,
         GetNewsById $getNewsById,
+        GetNewsTextById $getNewsTextById,
         RegistrationUser $getRegistrationUser,
         GetListOfConfig $getListConfig,
         GetListOfPhotos $getListOfPhotos
@@ -110,7 +112,11 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListConfig->handle([]);
                     break;
                 case "text":
-                    # TODO
+                    # TODO Получает полный текст новости по ID в двух вариантах – без тегов и с разметкой?
+                    # TODO В Java возвращаются одни поля, а в вики другие
+                    # TODO В Java: ["title", "hasGallery", "url", "newsText" => ["textWithTags", "textSource", "link"]]
+                    # TODO В wiki: ["textWithTags", "textSource"]
+                    $resultOfCommand = $getNewsTextById->handle($options);
                     break;
                 case "tags":
                     # TODO
