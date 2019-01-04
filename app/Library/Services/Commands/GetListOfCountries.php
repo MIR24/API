@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Library\Services\Command;
+namespace App\Library\Services\Commands;
 
 
 use App\Country;

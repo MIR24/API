@@ -10,7 +10,7 @@ namespace App\Library\Services\Commands;
 
 
 use App\Exceptions\InvalidClientOldException;
-use App\Library\Services\Command\CommandInterface;
+use App\Library\Services\Commands\CommandInterface;
 use App\Library\Services\ResultOfCommand;
 use App\Photos;
 use Illuminate\Support\Facades\Validator;

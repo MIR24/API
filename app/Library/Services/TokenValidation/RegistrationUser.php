@@ -11,7 +11,7 @@ namespace App\Library\Services\TokenValidation;
 use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\RestrictedOldException;
 use App\Exceptions\ServerOldException;
-use App\Library\Services\Command\CommandInterface;
+use App\Library\Services\Commands\CommandInterface;
 use App\Library\Services\ResultOfCommand;
 use App\Library\Services\ResultTokenOfCommand;
 

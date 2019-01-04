@@ -9,7 +9,7 @@
 namespace App\Library\Services\Commands;
 
 
-use App\Library\Services\Command\CommandInterface;
+use App\Library\Services\Commands\CommandInterface;
 use App\Library\Services\ResultOfCommand;
 use Illuminate\Support\Facades\Config;
 
