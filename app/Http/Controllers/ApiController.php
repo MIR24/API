@@ -6,6 +6,7 @@ use App\Exceptions\AnswerOldException;
 use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\OldException;
 use App\Exceptions\ServerOldException;
+use App\Library\Services\Commands\GetComment;
 use App\Library\Services\Commands\GetListOfCatagories;
 use App\Library\Services\Commands\GetListOfConfig;
 use App\Library\Services\Commands\GetListOfCountries;
@@ -13,6 +14,7 @@ use App\Library\Services\Commands\GetListOfNews;
 use App\Library\Services\Commands\GetListOfPhotos;
 use App\Library\Services\Commands\GetNewsById;
 use App\Library\Services\Commands\GetNewsTextById;
+use App\Library\Services\Commands\SendComment;
 use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
@@ -64,12 +66,14 @@ class ApiController extends BaseController
      */
     public function index(
         Request $request,
+        GetComment $getComment,
         GetListOfCatagories $getListOfCatagories,
         GetListOfCountries $getListOfCountries,
         GetListOfNews $getListOfNews,
         GetNewsById $getNewsById,
         GetNewsTextById $getNewsTextById,
         RegistrationUser $getRegistrationUser,
+        SendComment $sendComment,
         GetListOfConfig $getListConfig,
         GetListOfPhotos $getListOfPhotos
     )
@@ -128,7 +132,20 @@ class ApiController extends BaseController
                     # TODO
                     break;
                 case "comment":
-                    # TODO
+                    if (!isset($options["action"])) {
+                        throw new AnswerOldException($operation,
+                            sprintf("Required action for operation \"%s\".", $operation));
+                    }
+
+                    if ($options["action"] == "add") {
+                        $resultOfCommand = $sendComment->handle($options);
+                    } elseif ($options["action"] == "get") {
+                        $resultOfCommand = $getComment->handle($options);
+                    } else {
+                        throw new AnswerOldException($operation,
+                            sprintf("Unknown action \"%s\" for operation \"%s\".", $options["action"], $operation));
+                    }
+
                     break;
                 case "types":
                     # TODO
