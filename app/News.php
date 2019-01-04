@@ -74,7 +74,7 @@ class News extends Model
 
         if ($options->getLimit() !== null) {
             $query->limit($options->getLimit())
-                ->offset($options->getLimit() * ($options->getPage() - 1));
+                ->offset($options->getCalculatedOffset());
         }
 
         if ($options->getNewsID() !== null) {

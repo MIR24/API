@@ -3,6 +3,8 @@
 namespace App;
 
 
+use App\Library\Components\EloquentOptions\CommentOptions;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -17,34 +19,17 @@ class Comment extends Model
     protected $fillable = ["name", "profile", "email", "entity_id", "text", "type_id"];
 
     public $timestamps = false;
-}
-//    /**
-//     * Get user comment based on filters passed with CommentOptions instance.
-//     *
-//     * @param options
-//     * @return array of Comment objects or empty array if error occurs
-//     */
-//    public ArrayList<Comment> getComments(CommentOptions options) {
-//        DBMessanger messanger = new DBMessanger("m24api");
-//        ArrayList<Comment> comments = new ArrayList<>();
-//        query = "SELECT   id, name, profile, time, text, email "
-//                + "FROM     comments "
-//                + "WHERE    entity_id = '" + options.getEntityID() + "' "
-//                + "AND      type_id = " + options.getType() + " "
-//                + "ORDER BY id DESC "
-//                + "LIMIT " + (options.getPage() - 1) * options.getLimit() + ", "
-//                + options.getLimit();
-//        try {
-//            ResultSet resultSet = messanger.doQuery(query);
-//            while (resultSet.next()) {
-//                Comment comment = new Comment();
-//                comment.setName(resultSet.getString("name"));
-//                comment.setText(resultSet.getString("text"));
-//                comment.setTime(resultSet.getTimestamp("time"));
-//                comment.setProfile(resultSet.getString("profile"));
-//                comment.setId(resultSet.getInt("id"));
-//                comments.add(comment);
-//            }
+
+    public function scopeGetComments(Builder $query, CommentOptions $options): Builder
+    {
+        return $query->select("id", "name", "profile", "time", "text", "email")
+            ->where("entity_id", $options->getEntityID())
+            ->where("type_id", $options->getType())
+            ->orderBy("id", "DESC")
+            ->limit($options->getLimit())
+            ->offset($options->getCalculatedOffset());
+
+// TODO fill total:
 //            query = "SELECT COUNT(id) AS count "
 //                    + "FROM   comments "
 //                    + "WHERE  entity_id = '" + options.getEntityID() + "'";
@@ -52,10 +37,5 @@ class Comment extends Model
 //            if (resultSet.next()) {
 //                options.setTotal(resultSet.getInt("count"));
 //            }
-//        } catch (SQLException sqlex) {
-//            logger.error("Can't get comments for news id " + options.getEntityID() + ":"
-//                    + sqlex.getMessage());
-//        }
-//        return comments;
-//    }
-//}
+    }
+}

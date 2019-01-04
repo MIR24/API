@@ -43,6 +43,11 @@ class NewsOption
         return $this;
     }
 
+    public function getCalculatedOffset()
+    {
+        return $this->getLimit() * ($this->getPage() - 1);
+    }
+
     public function getPage(): int
     {
         return $this->page;
