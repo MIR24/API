@@ -28,14 +28,12 @@ class Comment extends Model
             ->orderBy("id", "DESC")
             ->limit($options->getLimit())
             ->offset($options->getCalculatedOffset());
+    }
 
-// TODO fill total:
-//            query = "SELECT COUNT(id) AS count "
-//                    + "FROM   comments "
-//                    + "WHERE  entity_id = '" + options.getEntityID() + "'";
-//            resultSet = messanger.doQuery(query);
-//            if (resultSet.next()) {
-//                options.setTotal(resultSet.getInt("count"));
-//            }
+    public function scopeGetTotalCommentsForEntity(Builder $query, CommentOptions $options): Builder
+    {
+        return $query
+            ->where("entity_id", $options->getEntityID())
+            ->where("type_id", $options->getType());
     }
 }

@@ -36,14 +36,14 @@ class GetComment implements CommandInterface
         $commentOptions = (new CommentOptions())->initFromArray($options);
 
         $comments = Comment::GetComments($commentOptions)->get();
+        $totalComments = Comment::GetTotalCommentsForEntity($commentOptions)->count();
         if (count($comments)) {
             return $result
                 ->setContent($comments)
                 ->setMessage(sprintf(
-//                    "%d of %d comments shown.",  # TODO require calculated $commentOptions->getTotal()
-                    "%d comments shown.",
-                    count($comments)
-//                    $options["total"]
+                    "%d of %d comments shown.",
+                    count($comments),
+                    $totalComments
                 ));
         } else {
             return $result->setMessage("No comments for this news.");
