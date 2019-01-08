@@ -8,6 +8,7 @@ class Mir24Importer
 {
     # TODO INSERT IGNORE - везде ли нужен IGNORE? Может exception выкидывать?
     private const PROMO_NEWS_COUNT = 5;
+    # TODO UPDATE_PERIOD_IN_MINUTES как параметр в консоли
     private const UPDATE_PERIOD_IN_MINUTES = 60; // период обновления новостей в минутах
 
     public function setUpdateComplete(bool $status)

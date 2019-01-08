@@ -45,6 +45,7 @@ class InitialImportFromMir24 extends Command
      */
     public function handle()
     {
+        // TODO INSERT INTO `types` VALUES (0,'news'),(1,'photo'),(2,'video');
         // TODO INSERT INTO `status` VALUES (1,'UPDATE_COMPLETE',1,NULL,NULL);
         # TODO $this->importer->setUpdateComplete(false);
 

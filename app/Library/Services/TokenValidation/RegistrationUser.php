@@ -54,7 +54,7 @@ class RegistrationUser implements CommandInterface
     {
         return Validator::make($options,
             [
-                'login' => 'required|min:4',
+                'login' => 'required|min:4', # TODO see const MIN_LENGHT_OF_LOGIN
                 'password' => 'required|min:4',
 
             ])->fails();

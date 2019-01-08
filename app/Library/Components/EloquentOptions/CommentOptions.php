@@ -7,14 +7,9 @@ class CommentOptions
 {
     private $page = 1;
     private $limit = 10;
-//    private $action;    //принимает значения add и get
     private $entityID;
-//    private $text;
-    private $type = 0;  //news, photos, videos - к чему комментарий
-//    private $total;     //всего комментариев для данной новости
-//    private $name;
-//    private $profile;
-//    private $email;
+    private $type = 0;  // news, photos, videos - к чему комментарий
+
 
     public function initFromArray(array $options): CommentOptions
     {

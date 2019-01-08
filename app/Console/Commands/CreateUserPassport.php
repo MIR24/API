@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CreateUserPassport extends Command
 {
-    private const MIN_LENGHT_OF_LOGIN = 3;
+    private const MIN_LENGHT_OF_LOGIN = 3; #  TODO
     private const MIN_LENGHT_OF_PASSWORD = 3;
 
     /**

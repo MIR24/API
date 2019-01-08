@@ -129,7 +129,7 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListOfPhotos->handle($options);
                     break;
                 case "push":
-                    # TODO
+                    # TODO from Java: "Used to register tokens of app client to send push notifications. Not used in current apps."
                     break;
                 case "comment":
                     if (!isset($options["action"])) {
