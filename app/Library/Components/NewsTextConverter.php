@@ -20,7 +20,7 @@ class NewsTextConverter
 
     public function cutGalleryTags()
     {
-        # TODO lightbox не встречается в новых новостях. Есть в id=5735245,'2012-10-04 10:48:04'
+        # TODO lightbox встречается в новостях. Есть в id=5 735 245,'2012-10-04 10:48:04' и 16 319 955, "2018-03-07 00:00:00"
         return $this;
 
 //        while (srcText.contains("lightbox")) {
