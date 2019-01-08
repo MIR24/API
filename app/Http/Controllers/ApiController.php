@@ -7,6 +7,7 @@ use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\OldException;
 use App\Exceptions\ServerOldException;
 use App\Library\Services\Commands\GetComment;
+use App\Library\Services\Commands\GetListOfEntityTypesForComment;
 use App\Library\Services\Commands\GetListOfCatagories;
 use App\Library\Services\Commands\GetListOfConfig;
 use App\Library\Services\Commands\GetListOfCountries;
@@ -68,6 +69,7 @@ class ApiController extends BaseController
     public function index(
         Request $request,
         GetComment $getComment,
+        GetListOfEntityTypesForComment $getListOfEntityTypesForComment,
         GetListOfCatagories $getListOfCatagories,
         GetListOfCountries $getListOfCountries,
         GetListOfNews $getListOfNews,
@@ -150,7 +152,8 @@ class ApiController extends BaseController
 
                     break;
                 case "types":
-                    # TODO
+                    # Список типов контента, который комментируется
+                     $resultOfCommand = $getListOfEntityTypesForComment->handle($options);
                     break;
                 case "countries":
                     # Запрос списка стран

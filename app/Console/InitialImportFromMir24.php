@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Library\Services\Import\Mir24CategoryImporter;
 use App\Library\Services\Import\Mir24CountryImporter;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class InitialImportFromMir24 extends Command
 {
@@ -45,8 +46,9 @@ class InitialImportFromMir24 extends Command
      */
     public function handle()
     {
-        // TODO INSERT INTO `types` VALUES (0,'news'),(1,'photo'),(2,'video');
-        // TODO INSERT INTO `status` VALUES (1,'UPDATE_COMPLETE',1,NULL,NULL);
+        $this->info("Init UPDATE_COMPLETE parameter");
+        DB::insert("INSERT IGNORE INTO `status` VALUES (1,'UPDATE_COMPLETE',1,NULL,NULL);");
+
         # TODO $this->importer->setUpdateComplete(false);
 
         $this->info("Starting update.");
@@ -62,6 +64,9 @@ class InitialImportFromMir24 extends Command
         $countries = $this->countryImporter->getCountries();
         $this->info("Got " . count($countries) . " countries. Saving...");
         $this->countryImporter->saveCountries($countries);
+
+        $this->info("Saving types of comments...");
+        DB::insert("INSERT IGNORE INTO `types` VALUES (0,'news'),(1,'photo'),(2,'video');");
 
         $this->info("Done.");
 
