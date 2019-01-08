@@ -12,6 +12,7 @@ use App\Library\Services\Commands\GetListOfConfig;
 use App\Library\Services\Commands\GetListOfCountries;
 use App\Library\Services\Commands\GetListOfNews;
 use App\Library\Services\Commands\GetListOfPhotos;
+use App\Library\Services\Commands\GetListOfTags;
 use App\Library\Services\Commands\GetNewsById;
 use App\Library\Services\Commands\GetNewsTextById;
 use App\Library\Services\Commands\SendComment;
@@ -75,7 +76,8 @@ class ApiController extends BaseController
         RegistrationUser $getRegistrationUser,
         SendComment $sendComment,
         GetListOfConfig $getListConfig,
-        GetListOfPhotos $getListOfPhotos
+        GetListOfPhotos $getListOfPhotos,
+        GetListOfTags $getListOfTags
     )
     {
 
@@ -123,7 +125,7 @@ class ApiController extends BaseController
                     $resultOfCommand = $getNewsTextById->handle($options);
                     break;
                 case "tags":
-                    # TODO
+                    $resultOfCommand = $getListOfTags->handle($options);
                     break;
                 case "gallery":
                     $resultOfCommand = $getListOfPhotos->handle($options);

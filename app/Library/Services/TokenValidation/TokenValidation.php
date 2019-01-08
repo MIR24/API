@@ -24,7 +24,7 @@ class TokenValidation
     public function isValid(Request $request):bool {
         $token= Token::find($request->get('token'));
         if(!$token){
-            throw new RestrictedOldException($request->get('operation'));
+            throw new RestrictedOldException($request->get('request')??"");
         }
         return true;
     }
