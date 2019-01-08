@@ -26,6 +26,14 @@ use Illuminate\Validation\Rule;
 class ApiController extends BaseController
 {
     /**
+     * @OA\Tag(
+     *     name="Mobile Api",
+     *     description="http://wiki.mir24.tv/index.php/Api.mir24.tv",
+     * )
+     * @OA\Tag(
+     *     name="SmartTV",
+     * )
+     *
      * @OA\Schema(
      *   schema="apiRequest",
      *   type="object",
@@ -54,7 +62,8 @@ class ApiController extends BaseController
      *
      * @OA\Post(
      *   path="/",
-     *   summary="Унифицированная форма API. Доступно: categorylist, countries, newsById, newslist",
+     *   tags={"Mobile Api"},
+     *   summary="Унифицированная форма API. Доступно: auth, categorylist, comment, config, countries, gallery, newsById, newslist, tags, text, types",
      *   @OA\RequestBody(
      *       description="Унифицированная форма запроса",
      *       @OA\JsonContent(ref="#/components/schemas/apiRequest"),
@@ -116,8 +125,7 @@ class ApiController extends BaseController
                     $resultOfCommand = $getNewsById->handle($options);
                     break;
                 case "config":
-                    //TODO GetListOfConfig::handle(array $array) array may be null
-                    $resultOfCommand = $getListConfig->handle([]);
+                    $resultOfCommand = $getListConfig->handle($options);
                     break;
                 case "text":
                     # TODO Получает полный текст новости по ID в двух вариантах – без тегов и с разметкой?
@@ -132,7 +140,7 @@ class ApiController extends BaseController
                 case "gallery":
                     $resultOfCommand = $getListOfPhotos->handle($options);
                     break;
-                case "push":
+                    # case "push":
                     # TODO from Java: "Used to register tokens of app client to send push notifications. Not used in current apps."
                     break;
                 case "comment":
@@ -153,7 +161,7 @@ class ApiController extends BaseController
                     break;
                 case "types":
                     # Список типов контента, который комментируется
-                     $resultOfCommand = $getListOfEntityTypesForComment->handle($options);
+                    $resultOfCommand = $getListOfEntityTypesForComment->handle($options);
                     break;
                 case "countries":
                     # Запрос списка стран

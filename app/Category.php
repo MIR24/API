@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Category extends Model
 {
+    # TODO категории новостей и категории передач - это разное?
     protected $table = 'categories';
 
     public $timestamps = false;
