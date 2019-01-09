@@ -15,8 +15,6 @@ class News extends Model
 {
     protected $table = 'news';
 
-    private const DEFAULT_COUNTRY = 4453; # TODO
-
     public function scopeGetNewsText(Builder $query, $newsId): Builder
     {
         return $query
@@ -144,7 +142,7 @@ class News extends Model
                 $newsItem->country = [$newsItem->country];
             }
         } else {
-            $newsItem->country = [self::DEFAULT_COUNTRY];
+            $newsItem->country = [env('DEFAULT_COUNTRY')];
         }
 
         return $newsItem;
