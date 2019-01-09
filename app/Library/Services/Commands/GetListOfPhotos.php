@@ -33,7 +33,6 @@ class GetListOfPhotos implements CommandInterface
                 ->setStatus(200)
                 ->setContent($photos);
         } else {
-            //TODO delete from result array content key
             return $result->setMessage('No photos found by this id.')
                 ->setStatus(200);
         }

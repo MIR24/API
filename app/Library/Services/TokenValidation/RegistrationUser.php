@@ -16,6 +16,7 @@ use App\Library\Services\ResultOfCommand;
 use App\Library\Services\ResultTokenOfCommand;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,9 +55,8 @@ class RegistrationUser implements CommandInterface
     {
         return Validator::make($options,
             [
-                'login' => 'required|min:4', # TODO see const MIN_LENGHT_OF_LOGIN
-                'password' => 'required|min:4',
-
+                'login' => 'required|min:' . Config::get("auth.MIN_LENGHT_OF_LOGIN"),
+                'password' => 'required|min:' . Config::get("auth.MIN_LENGHT_OF_PASSWORD"),
             ])->fails();
     }
 

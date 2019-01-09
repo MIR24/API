@@ -5,14 +5,12 @@ namespace App\Console\Commands;
 
 use App\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 
 
 class CreateUserPassport extends Command
 {
-    private const MIN_LENGHT_OF_LOGIN = 3; #  TODO
-    private const MIN_LENGHT_OF_PASSWORD = 3;
-
     /**
      * The name and signature of the console command.
      *
@@ -75,8 +73,8 @@ class CreateUserPassport extends Command
         }
 
         $validator = Validator::make(["name" => $username, "pass" => $pass, "email" => $email], [
-            'name' => 'required|string|min:' . $this::MIN_LENGHT_OF_LOGIN . '|unique:users',
-            'pass' => 'required|string|min:' . $this::MIN_LENGHT_OF_PASSWORD,
+            'name' => 'required|string|min:' . Config::get("auth.MIN_LENGHT_OF_LOGIN") . '|unique:users',
+            'pass' => 'required|string|min:' . Config::get("auth.MIN_LENGHT_OF_PASSWORD"),
             'email' => 'required|unique:users|email'
         ]);
 
