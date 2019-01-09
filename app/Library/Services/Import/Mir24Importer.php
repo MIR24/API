@@ -8,8 +8,12 @@ class Mir24Importer
 {
     # TODO INSERT IGNORE - везде ли нужен IGNORE? Может exception выкидывать?
     private const PROMO_NEWS_COUNT = 5;
-    # TODO UPDATE_PERIOD_IN_MINUTES как параметр в консоли
-    private const UPDATE_PERIOD_IN_MINUTES = 60; // период обновления новостей в минутах
+    private const DEFAULT_UPDATE_PERIOD_IN_MINUTES = 60; // период обновления новостей в минутах
+
+    public function getUpdatePeriod(?int $default): int
+    {
+        return $default ? $default : $this::DEFAULT_UPDATE_PERIOD_IN_MINUTES;
+    }
 
     public function setUpdateComplete(bool $status)
     {
@@ -17,7 +21,7 @@ class Mir24Importer
         DB::update($query, [$status]);
     }
 
-    public function getLastNews(): array
+    public function getLastNews(?int $period): array
     {
         $query = "SELECT    n.id, n.created_at as date, n.published_at, n.advert as shortText, n.text, "
             . "          n.title, imn.image_id as imageId, t.id AS rubric_id, UPPER(t.title) AS categoryName, "
@@ -40,8 +44,8 @@ class Mir24Importer
             . "WHERE     n.title IS NOT NULL "
             . "AND       n.text  IS NOT NULL "
             . "AND       t.type = 3 "
-            . "AND       ((n.created_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE) "
-            . "   OR       n.updated_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE))"
+            . "AND       ((n.created_at > (NOW() - INTERVAL " . ($this->getUpdatePeriod($period) + 1) . " MINUTE) "
+            . "   OR       n.updated_at > (NOW() - INTERVAL " . ($this->getUpdatePeriod($period) + 1) . " MINUTE))"
             . "     OR     n.id > ?)";
 
         $lastNewsId = $this->getLastNewsId();
@@ -243,13 +247,13 @@ class Mir24Importer
         }
     }
 
-    public function getTags(): array
+    public function getTags(?int $period): array
     {
         $query = "SELECT id, title as name "
             . "FROM   tags "
             . "WHERE  type = 1 "
-            . "AND    (created_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE) "
-            . "OR      updated_at > (NOW() - INTERVAL " . ($this::UPDATE_PERIOD_IN_MINUTES + 1) . " MINUTE)) "
+            . "AND    (created_at > (NOW() - INTERVAL " . ($this->getUpdatePeriod($period) + 1) . " MINUTE) "
+            . "OR      updated_at > (NOW() - INTERVAL " . ($this->getUpdatePeriod($period) + 1) . " MINUTE)) "
             . "OR     id > ?";
 
         $lastTagId = $this->getLastTagId();
@@ -335,6 +339,10 @@ class Mir24Importer
             if ($newsItem->hasGallery) {
                 $ids[] = $newsItem->id;
             }
+        }
+
+        if (count($ids) === 0) {
+            return [];
         }
 
         $whereIn = implode(',', array_fill(0, count($ids), '?'));

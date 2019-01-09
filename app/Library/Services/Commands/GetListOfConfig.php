@@ -17,8 +17,6 @@ class GetListOfConfig implements CommandInterface
 
     function handle(array $options): ResultOfCommand
     {
-        //TODO may be need save this config into database?
-        //more information into config file /config/api_images.php
         $config=Config::get('api_images');
 
         return (new ResultOfCommand())

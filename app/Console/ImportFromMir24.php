@@ -12,7 +12,7 @@ class ImportFromMir24 extends Command
      *
      * @var string
      */
-    protected $signature = 'import:mir24';
+    protected $signature = 'import:mir24 { --period= : Период обновления новостей в минутах }';
 
     /**
      * The console command description.
@@ -42,13 +42,15 @@ class ImportFromMir24 extends Command
      */
     public function handle()
     {
+        $period = $this->option("period");
+
         # TODO Не запускать, если обновление уже запущено
         $this->importer->setUpdateComplete(false);
 
         $this->info("Starting update.");
 
         $this->info("Getting news.");
-        $news = $this->importer->getLastNews();
+        $news = $this->importer->getLastNews($period);
         $this->info("Got " . count($news) . " news. Saving...");
         $this->importer->saveLastNews($news);
 
@@ -58,7 +60,7 @@ class ImportFromMir24 extends Command
         $this->importer->updateActualNews($actualNews);
 
         $this->info("Getting tags.");
-        $tags = $this->importer->getTags();
+        $tags = $this->importer->getTags($period);
         $this->info("Got " . count($tags) . " tags. Saving...");
         $this->importer->saveTags($tags);
 
