@@ -152,7 +152,7 @@ class News extends Model
     {
         $textWithTags = (new NewsTextConverter())
             ->setText($newsItem->text)
-            // ->cutGalleryTags() TODO
+            ->cutGalleryTags()
             ->changeTextLinks()
             ->getText();
         unset($newsItem->text);

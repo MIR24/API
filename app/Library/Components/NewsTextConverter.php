@@ -20,17 +20,26 @@ class NewsTextConverter
 
     public function cutGalleryTags()
     {
-        # TODO lightbox встречается в новостях. Есть в id=5 735 245,'2012-10-04 10:48:04' и 16 319 955, "2018-03-07 00:00:00"
-        return $this;
+        $textIn = $this->text;
+        $textOut = "";
 
-//        while (srcText.contains("lightbox")) {
-//            String tmp = srcText.substring(srcText.indexOf("<a"), srcText.indexOf("/a>") + 3);
-//            if (tmp.contains("lightbox")) {
-//                distText = distText.replace(tmp, "");
-//            }
-//            srcText = srcText.replace(tmp, "");
-//        }
-//        distText = distText.replaceAll("<p></p>", "");
+        while (strpos($textIn, "lightbox") !== false) {
+            $aStartPos = strpos($textIn, "<a");
+            $aEndPos = strpos($textIn, "/a>") + 3;
+
+            $tmpSubstr = substr($textIn, $aStartPos, $aEndPos - $aStartPos);
+            if (strpos($tmpSubstr, "lightbox") !== false) {
+                $textOut .= substr($textIn, 0, $aStartPos);
+            } else {
+                $textOut .= substr($textIn, 0, $aEndPos);
+            }
+
+            $textIn = substr($textIn, $aEndPos);
+            $aStartPos = null;
+            $aEndPos = null;
+        }
+
+        return $this->setText(str_replace("<p></p>", "", $textOut));
     }
 
     /**
