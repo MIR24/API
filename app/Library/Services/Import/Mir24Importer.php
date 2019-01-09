@@ -2,12 +2,12 @@
 
 namespace App\Library\Services\Import;
 
+use App\ActualNews;
 use Illuminate\Support\Facades\DB;
 
 class Mir24Importer
 {
     # TODO INSERT IGNORE - везде ли нужен IGNORE? Может exception выкидывать?
-    private const PROMO_NEWS_COUNT = 5;
     private const DEFAULT_UPDATE_PERIOD_IN_MINUTES = 60; // период обновления новостей в минутах
 
     public function getUpdatePeriod(?int $default): int
@@ -197,15 +197,15 @@ class Mir24Importer
     {
         $news = [];
 
-        $queryPromo = "SELECT entity_id FROM promo_cells LIMIT " . $this::PROMO_NEWS_COUNT;
+        $queryPromo = "SELECT entity_id FROM promo_cells LIMIT " . ActualNews::PROMO_NEWS_COUNT;
         $rsPromo = DB::connection('mir24')->select($queryPromo);
 
         foreach ($rsPromo as $row) {
             $news[] = $row->entity_id;
         }
 
-        if (count($news) < $this::PROMO_NEWS_COUNT) {
-            $limitAdditional = $this::PROMO_NEWS_COUNT - count($news);
+        if (count($news) < ActualNews::PROMO_NEWS_COUNT) {
+            $limitAdditional = ActualNews::PROMO_NEWS_COUNT - count($news);
 
             # TODO первый подселект был с ошибками. Запрос никогда не вызывался?
             # TODO ??? AND id IN (15348025, 15348024, 15348023, 15348067, 15348062) "

@@ -51,14 +51,6 @@ class News extends Model
         $this->optionToWhere($query, $options);
 //        }
 
-//        $news = $this->postQueryList($news);
-////        if ($options.getActual()
-////            && options.getPage() == 1
-////            && news.size() < SiteConfig.PROMO_NEWS_COUNT
-////           ) {
-// TODO            $this->updateActual();
-////      }
-
         return $query;
     }
 
@@ -169,17 +161,5 @@ class News extends Model
         unset($newsItem->textSrc);
 
         return $newsItem;
-    }
-
-    private function updateActual()
-    {
-//            options.setActual(Boolean.FALSE);
-//            int[] ignoreId = new int[news.size()];
-//            for (int i = 0; i < ignoreId.length; i++) {
-//                ignoreId[i] = news.get(i).getId();
-//            }
-//            options.setIgnoreId(ignoreId);
-//            options.setLimit(SiteConfig.PROMO_NEWS_COUNT - news.size());
-//            news.addAll(getNewsList(options));
     }
 }

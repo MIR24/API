@@ -23,6 +23,18 @@ class GetListOfNews implements CommandInterface
             News::postprocessingOfGetList($newsItem);
         }
 
+        # TODO Если в актуальных новостях не хватает новостей, то дополнить результат из обычных новостей
+//        if ($options->getActual() && $options->getPage() == 1 && count($news) < ActualNews::PROMO_NEWS_COUNT ) {
+//            $options.setActual(Boolean.FALSE);
+//            int[] ignoreId = new int[news.size()];
+//            for (int i = 0; i < ignoreId.length; i++) {
+//                ignoreId[i] = news.get(i).getId();
+//            }
+//            options.setIgnoreId(ignoreId);
+//            options.setLimit(ActualNews::PROMO_NEWS_COUNT - news.size());
+//            news.addAll(getNewsList(options));
+//        }
+
         return (new ResultOfCommand())
             ->setOperation($this::OPERATION)
             ->setContent($news)
