@@ -10,10 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
-    public const TYPE_ENTITY_NEWS = 0; # TODO In table "types" instead of constant
-    public const TYPE_ENTITY_PHOTO = 1;
-    public const TYPE_ENTITY_VIDEO = 2;
-
     protected $table = 'comments';
 
     protected $fillable = ["name", "profile", "email", "entity_id", "text", "type_id"];

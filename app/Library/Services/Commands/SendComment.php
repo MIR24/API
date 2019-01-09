@@ -28,12 +28,9 @@ class SendComment implements CommandInterface
             "name" => ["required", "string", "min:1"],
             "profile" => ["required", "string", "min:1"],
             "email" => "sometimes|required|email",
-            "entityId" => ["required", "integer", "min:1"],
+            "entityID" => ["required", "integer", "min:1"],
             "text" => ["required"],
-            "type" => [
-                "required",
-                Rule::in([Comment::TYPE_ENTITY_NEWS, Comment::TYPE_ENTITY_PHOTO, Comment::TYPE_ENTITY_VIDEO])
-            ],
+            "type" => ["required"],
         ]);
 
         $filteredOptions = null;
@@ -44,8 +41,8 @@ class SendComment implements CommandInterface
             $filteredOptions = $validator->validated();
         }
 
-        $filteredOptions["entity_id"] = $filteredOptions["entityId"];
-        unset($filteredOptions["entityId"]);
+        $filteredOptions["entity_id"] = $filteredOptions["entityID"];
+        unset($filteredOptions["entityID"]);
         $filteredOptions["type_id"] = $filteredOptions["type"];
         unset($filteredOptions["type"]);
 

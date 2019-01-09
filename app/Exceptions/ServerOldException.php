@@ -15,6 +15,6 @@ class ServerOldException extends OldException
     {
         parent::__construct($operation, $message);
 
-        $this->newStatus = 502;
+        $this->newStatus = 500;
     }
 }
