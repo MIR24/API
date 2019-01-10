@@ -12,28 +12,44 @@ class GetListOfNews implements CommandInterface
 {
     private const OPERATION = "newslist";
 
+    const PROMO_NEWS_COUNT=5;
+
     public function handle(array $options): ResultOfCommand
     {
+
         $newsOption = (new NewsOption())->initFromArray($options);
 
         // TODO if (options.getLastNews() == true) ...
 
+
+
         $news = News::GetList($newsOption)->get()->all();
+
+
+        //TODO если в запросе ищут tags???
+        //Например:
+        //{"request":"newslist",
+        //"options":
+        //{"limit":"10",
+        // "page":"1",
+        // "tags":[10089538]},
+        //"token":"token_id"}
         foreach ($news as $newsItem) {
             News::postprocessingOfGetList($newsItem);
-        }
+        };
 
-        # TODO Если в актуальных новостях не хватает новостей, то дополнить результат из обычных новостей
-//        if ($options->getActual() && $options->getPage() == 1 && count($news) < ActualNews::PROMO_NEWS_COUNT ) {
-//            $options.setActual(Boolean.FALSE);
-//            int[] ignoreId = new int[news.size()];
-//            for (int i = 0; i < ignoreId.length; i++) {
-//                ignoreId[i] = news.get(i).getId();
-//            }
-//            options.setIgnoreId(ignoreId);
-//            options.setLimit(ActualNews::PROMO_NEWS_COUNT - news.size());
-//            news.addAll(getNewsList(options));
-//        }
+        // Если в актуальных новостях не хватает новостей, то дополнить результат из обычных новостей
+        if ($newsOption->isActual() && $newsOption->getPage() == 1 && count($news) < self::PROMO_NEWS_COUNT ) {
+            $newsOption->setActual(false);
+
+            $ignoreId=[];
+            foreach ($news as $newsItem) {
+                $ignoreId[]=$newsItem->id;
+            }
+            $newsOption->setIgnoreId($ignoreId);
+            $newsOption->setLimit(self::PROMO_NEWS_COUNT-count($news));
+            $news=array_merge($news,$this->getContextArray($newsOption));
+        }
 
         return (new ResultOfCommand())
             ->setOperation($this::OPERATION)
@@ -41,6 +57,17 @@ class GetListOfNews implements CommandInterface
             ->setMessage(sprintf("Total of %d news parsed.", count($news)))
             ->setStatus(200);
     }
+
+
+    private function getContextArray(NewsOption $option){
+        $news = News::GetList($option)->get();
+        foreach ($news as $newsItem) {
+            News::postprocessingOfGetList($newsItem);
+        };
+        return $news->toArray();
+
+    }
+
 }
 //    if (options.getLastNews() == true) {
 //        if ((options.getPage() == null
