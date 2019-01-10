@@ -27,6 +27,11 @@ class NewsTextConverter
             $aStartPos = strpos($textIn, "<a");
             $aEndPos = strpos($textIn, "/a>") + 3;
 
+            if ($aStartPos === false || $aEndPos === false) {
+                $textOut .= $textIn;
+                break;
+            }
+
             $tmpSubstr = substr($textIn, $aStartPos, $aEndPos - $aStartPos);
             if (strpos($tmpSubstr, "lightbox") !== false) {
                 $textOut .= substr($textIn, 0, $aStartPos);
