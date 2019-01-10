@@ -34,12 +34,11 @@ class GetListOfNews implements CommandInterface
         // "page":"1",
         // "tags":[10089538]},
         //"token":"token_id"}
-
         foreach ($news as $newsItem) {
             News::postprocessingOfGetList($newsItem);
         };
 
-        # TODO Если в актуальных новостях не хватает новостей, то дополнить результат из обычных новостей
+        // Если в актуальных новостях не хватает новостей, то дополнить результат из обычных новостей
         if ($newsOption->isActual() && $newsOption->getPage() == 1 && count($news) < self::PROMO_NEWS_COUNT ) {
             $newsOption->setActual(false);
 
