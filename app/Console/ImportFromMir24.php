@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Library\Services\Cache\CountriesCaching;
+use App\Library\Services\Cache\NewsCaching;
 use App\Library\Services\Import\Mir24Importer;
 use Illuminate\Console\Command;
 
@@ -81,23 +82,9 @@ class ImportFromMir24 extends Command
         $this->importer->saveNewsCountryLinks($links);
 
         # TODO Setting to cache:
-//        $this->info("Setting last news to cache.");
-//        $getter = new InfoGetter();
-//        NewsOptions options = new NewsOptions();
-//        options.setLastNews(Boolean.TRUE);
-//        options.setLimit(10);
-//        options.setPage(1);
-//        ArrayList<NewsItem> lastNews = getter.getLastNews(options);
-//        context.setAttribute("lastNews", lastNews);
-//        $this->info("Setting last news with gallery to cache.");
-//        options.setOnlyWithGallery(Boolean.TRUE);
-//        ArrayList<NewsItem> newsWithGallery = getter.getLastNews(options);
-//        context.setAttribute("newsWithGallery", newsWithGallery);
-//        $this->info("Setting last news with videos to cache.");
-//        options.setOnlyVideo(Boolean.TRUE);
-//        options.setOnlyWithGallery(Boolean.FALSE);
-//        ArrayList<NewsItem> newsWithVideo = getter.getLastNews(options);
-//        context.setAttribute("newsWithVideo", newsWithVideo);
+        $this->info("Setting last news, last news with gallery and last news with videos to cache.");
+        NewsCaching::warmup();
+
         $this->info("Setting countries to cache.");
         CountriesCaching::warmup();
 //        $this->info("Setting search table to cache.");
