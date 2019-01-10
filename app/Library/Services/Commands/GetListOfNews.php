@@ -3,7 +3,9 @@
 namespace App\Library\Services\Commands;
 
 
+use App\ActualNews;
 use App\Library\Components\EloquentOptions\NewsOption;
+use App\Library\Services\Cache\NewsCaching;
 use App\Library\Services\ResultOfCommand;
 use App\News;
 
@@ -12,19 +14,50 @@ class GetListOfNews implements CommandInterface
 {
     private const OPERATION = "newslist";
 
-    const PROMO_NEWS_COUNT=5;
-
     public function handle(array $options): ResultOfCommand
     {
-
         $newsOption = (new NewsOption())->initFromArray($options);
 
-        // TODO if (options.getLastNews() == true) ...
+        $news = $this->selectFromCache($newsOption);
+        if (count($news) == 0) {
+            $news = $this->selectFromDb($newsOption);
+        }
 
+        return (new ResultOfCommand())
+            ->setOperation($this::OPERATION)
+            ->setContent($news)
+            ->setMessage(sprintf("Total of %d news parsed.", count($news)))
+            ->setStatus(200);
+    }
 
+    private function selectFromCache(NewsOption $options)
+    {
+        $news = [];
 
+        if (!$options->isLastNews()) {
+            return $news;
+        }
+
+        if ($options->getPage() == 1 && $options->getLimit() == $options::LIMIT_DEFAULT && $options->getCountryID() == null) {
+            if ($options->isOnlyVideo()) {
+                $news = NewsCaching::getLastNewsWithVideo();
+            } elseif ($options->isOnlyWithGallery()) {
+                $news = NewsCaching::getLastNewsWithGallery();
+            } else {
+                $news = NewsCaching::getLastNews();
+            }
+        }
+
+//        if (news == null || news.isEmpty() && !options.getOnlyVideo() && !options.getOnlyWithGallery() && options.getCountryID() != null)
+//            TODO searchTable;
+//        }
+
+        return $news;
+    }
+
+    private function selectFromDb(NewsOption $newsOption)
+    {
         $news = News::GetList($newsOption)->get()->all();
-
 
         //TODO если в запросе ищут tags???
         //Например:
@@ -39,7 +72,7 @@ class GetListOfNews implements CommandInterface
         };
 
         // Если в актуальных новостях не хватает новостей, то дополнить результат из обычных новостей
-        if ($newsOption->isActual() && $newsOption->getPage() == 1 && count($news) < self::PROMO_NEWS_COUNT ) {
+        if ($newsOption->isActual() && $newsOption->getPage() == 1 && count($news) < ActualNews::PROMO_NEWS_COUNT) {
             $newsOption->setActual(false);
 
             $ignoreId=[];
@@ -47,15 +80,11 @@ class GetListOfNews implements CommandInterface
                 $ignoreId[]=$newsItem->id;
             }
             $newsOption->setIgnoreId($ignoreId);
-            $newsOption->setLimit(self::PROMO_NEWS_COUNT-count($news));
-            $news=array_merge($news,$this->getContextArray($newsOption));
+            $newsOption->setLimit(ActualNews::PROMO_NEWS_COUNT - count($news));
+            $news = array_merge($news, $this->getContextArray($newsOption));
         }
 
-        return (new ResultOfCommand())
-            ->setOperation($this::OPERATION)
-            ->setContent($news)
-            ->setMessage(sprintf("Total of %d news parsed.", count($news)))
-            ->setStatus(200);
+        return $news;
     }
 
 

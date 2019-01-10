@@ -25,8 +25,49 @@ class NewsCaching
         Cache::forever("lastNewsWithVideo", self::getNews($option));
     }
 
-    public static function get() # TODO
+    public static function getLastNews()
     {
+        $key = "lastNews";
+
+        if (Cache::has($key)) {
+            $news = Cache::get($key);
+        } else {
+            $option = self::getOption();
+            $news = self::getNews($option);
+            Cache::forever($key, $news);
+        }
+
+        return $news;
+    }
+
+    public static function getLastNewsWithVideo()
+    {
+        $key = "lastNewsWithVideo";
+
+        if (Cache::has($key)) {
+            $news = Cache::get($key);
+        } else {
+            $option = self::getOption()->setOnlyVideo(true);
+            $news = self::getNews($option);
+            Cache::forever($key, $news);
+        }
+
+        return $news;
+    }
+
+    public static function getLastNewsWithGallery()
+    {
+        $key = "lastNewsWithGallery";
+
+        if (Cache::has($key)) {
+            $news = Cache::get($key);
+        } else {
+            $option = self::getOption()->setOnlyWithGallery(true);
+            $news = self::getNews($option);
+            Cache::forever($key, $news);
+        }
+
+        return $news;
     }
 
     private static function getOption(): NewsOption

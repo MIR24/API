@@ -5,8 +5,10 @@ namespace App\Library\Components\EloquentOptions;
 
 class NewsOption
 {
+    public const LIMIT_DEFAULT = 10;
+
     private $page = 1;
-    private $limit = 20;
+    private $limit = self::LIMIT_DEFAULT;
     private $category = null;
     private $newsID = null;
     private $actual = false;
