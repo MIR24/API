@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Library\Services\Cache\CountriesCaching;
 use App\Library\Services\Import\Mir24Importer;
 use Illuminate\Console\Command;
 
@@ -97,8 +98,8 @@ class ImportFromMir24 extends Command
 //        options.setOnlyWithGallery(Boolean.FALSE);
 //        ArrayList<NewsItem> newsWithVideo = getter.getLastNews(options);
 //        context.setAttribute("newsWithVideo", newsWithVideo);
-//        $this->info("Setting countries to cache.");
-//        context.setAttribute("countries", getter.getCountries());
+        $this->info("Setting countries to cache.");
+        CountriesCaching::warmup();
 //        $this->info("Setting search table to cache.");
 //        context.setAttribute("searchTable", getter.getSearchTable());
         $this->info("Done.");
