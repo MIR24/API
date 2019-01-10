@@ -94,25 +94,20 @@ class News extends Model
         }
 
         if ($options->getTags() !== null && count($options->getTags()) && !$options->isLastNews()) {
-            $tagsAsArray = preg_split("/,/", $options->getTags());
-            $query->rightJoinWhere("news_tags as nt", "news.id", "=", "nt.news_id")
-                ->where("nt.tag_id", "IN", $tagsAsArray);
+
+            $query->rightJoin("news_tags as nt", "news.id", "=", "nt.news_id")
+                ->whereIn("nt.tag_id",  $options->getTags());
+        }
+        if ($options->getCountryID() !== null ) {
+
+            $query->rightJoin("news_country as nc", "news.id", "=", "nc.news_id")
+                ->whereIn("nc.country_id",  $options->getCountryID());
+        }
+        if ($options->getIgnoreId() !== null && count($options->getIgnoreId())>0 ) {
+
+            $query->whereIn('news.id',$options->getIgnoreId(),'and',true );
         }
 
-//            if (options.getCountryID() != null) {
-//                String index = "country_id";
-//                if (options.getCountryID().equals(4453)) {
-//                    index = "news_country";
-//                }
-//                query = query.concat("RIGHT JOIN news_country nc "
-//                        + "USE INDEX (" + index + ") "
-//                        + "ON n.id = nc.news_id "
-//                        + "AND nc.country_id = " + options.getCountryID() + " ");
-//            }
-//            if (options.getIgnoreId() != null && options.getIgnoreId().length > 0) {
-//                query = query.concat("n.id NOT IN ("
-//                        + ArrayUtils.Join(options.getIgnoreId(), ",")) + ") AND ";
-//            }
     }
 
     public static function postprocessingOfGetList(News $newsItem)
