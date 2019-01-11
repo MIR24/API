@@ -8,7 +8,7 @@ use App\Exceptions\OldException;
 use App\Exceptions\ServerOldException;
 use App\Library\Services\Commands\GetComment;
 use App\Library\Services\Commands\GetListOfEntityTypesForComment;
-use App\Library\Services\Commands\GetListOfCatagories;
+use App\Library\Services\Commands\GetListOfCategories;
 use App\Library\Services\Commands\GetListOfConfig;
 use App\Library\Services\Commands\GetListOfCountries;
 use App\Library\Services\Commands\GetListOfNews;
@@ -79,7 +79,7 @@ class ApiController extends BaseController
         Request $request,
         GetComment $getComment,
         GetListOfEntityTypesForComment $getListOfEntityTypesForComment,
-        GetListOfCatagories $getListOfCatagories,
+        GetListOfCategories $getListOfCategories,
         GetListOfCountries $getListOfCountries,
         GetListOfNews $getListOfNews,
         GetNewsById $getNewsById,
@@ -114,7 +114,7 @@ class ApiController extends BaseController
                     break;
                 case "categorylist":
                     # Категории новостей
-                    $resultOfCommand = $getListOfCatagories->handle($options);
+                    $resultOfCommand = $getListOfCategories->handle($options);
                     break;
                 case "newslist":
                     # Список новостей
@@ -128,10 +128,8 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListConfig->handle($options);
                     break;
                 case "text":
-                    # TODO Получает полный текст новости по ID в двух вариантах – без тегов и с разметкой?
-                    # TODO В Java возвращаются одни поля, а в вики другие
-                    # TODO В Java: ["title", "hasGallery", "url", "newsText" => ["textWithTags", "textSource", "link"]]
-                    # TODO В wiki: ["textWithTags", "textSource"]
+                    # Получает полный текст новости по ID
+                    # ["title", "hasGallery", "url", "newsText" => ["textWithTags", "textSource", "link"]]
                     $resultOfCommand = $getNewsTextById->handle($options);
                     break;
                 case "tags":

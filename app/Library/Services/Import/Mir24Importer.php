@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class Mir24Importer
 {
-    # TODO INSERT IGNORE - везде ли нужен IGNORE? Может exception выкидывать?
     private const DEFAULT_UPDATE_PERIOD_IN_MINUTES = 60; // период обновления новостей в минутах
 
     public function getUpdatePeriod(?int $default): int

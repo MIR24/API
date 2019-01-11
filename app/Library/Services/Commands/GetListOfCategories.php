@@ -6,7 +6,7 @@ namespace App\Library\Services\Commands;
 use App\Category;
 use App\Library\Services\ResultOfCommand;
 
-class GetListOfCatagories implements CommandInterface
+class GetListOfCategories implements CommandInterface
 {
     public function handle(array $options): ResultOfCommand
     {

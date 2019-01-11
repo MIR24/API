@@ -21,7 +21,7 @@ class InitialImportFromMir24 extends Command
      *
      * @var string
      */
-    protected $description = 'Import catagories and countries from mir24';
+    protected $description = 'Import categories and countries from mir24';
 
 
     private $categoryImporter;
