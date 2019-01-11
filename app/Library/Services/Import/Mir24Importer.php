@@ -60,48 +60,8 @@ class Mir24Importer
         return $news;
     }
 
-    private function parseItemsFromResultSet($news)
-    {
 
-        foreach ($news as $item) {
-            $text = $item->text;
-
-            if($text) {
-                // StringEscapeUtils.unescapeHtml4(text)
-                $text = htmlspecialchars_decode($text);
-                // text = text.replaceAll("\\{(.*)\\}", "");
-                $pattern = '/{(.*?)}/i';
-                $text = preg_replace($pattern, "", $text);
-
-                $dom = new Document();
-                $dom->loadHtml($text);
-//                for (Element el : doc.getAllElements()) {
-//                    if (el.tagName().equals("img")) {
-//                        el.attr("width", "90%");
-//                        el.attr("style", "padding:5px;");
-//                        el.removeAttr("height");
-//                    } else if (el.tagName().equals("iframe")) {
-//                        el.remove();
-//                    }
-//                }
-                $images = $dom->find('img', Query::TYPE_CSS);
-
-                $iframs = $dom->find('iframe', Query::TYPE_CSS);
-
-                foreach ($images as $image) {
-                    $image->attr("width", "90%")
-                        ->attr("style", "padding:5px;")
-                        ->removeAttribute("height");
-                }
-
-                foreach ($iframs as $ifram) {
-                    $ifram->remove();
-                }
-
-                $item->text = $dom->first('body')->innerHtml();
-            }
-
-// TODO                $text = $rs.getString("text");
+    // TODO                $text = $rs.getString("text");
 //                text = text.replaceAll("\\{(.*)\\}", "");
 //                Document doc = Jsoup.parse(StringEscapeUtils.unescapeHtml4(text));
 //                for (Element el : doc.getAllElements()) {
@@ -117,6 +77,42 @@ class Mir24Importer
 //                            Whitelist.basicWithImages().addAttributes("img", "style"));
 //                item.setText(safe);
 //                item.setTextSrc(safe);
+    private function textForMobile($text)
+    {
+        if (!$text) { return $text; }
+
+        $text = htmlspecialchars_decode($text);
+
+        $pattern = '/{(.*?)}/i';
+        $text = preg_replace($pattern, "", $text);
+
+        $dom = new Document();
+        $dom->loadHtml($text);
+
+        $images = $dom->find('img', Query::TYPE_CSS);
+
+        $iframs = $dom->find('iframe', Query::TYPE_CSS);
+
+        foreach ($images as $image) {
+            $image->attr("width", "90%")
+                  ->attr("style", "padding:5px;")
+                  ->removeAttribute("height");
+        }
+
+        foreach ($iframs as $ifram) {
+            $ifram->remove();
+        }
+
+        return $dom->first('body')->innerHtml();
+    }
+
+    private function parseItemsFromResultSet($news)
+    {
+
+        foreach ($news as $item) {
+
+            $text = $item->text=$this->textForMobile($item->text);
+
             if ($item->origin == null) {
                 $item->origin = "";
             }
