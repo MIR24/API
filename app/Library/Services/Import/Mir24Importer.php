@@ -79,7 +79,7 @@ class Mir24Importer
 //                item.setTextSrc(safe);
     private function textForMobile($text)
     {
-        if (!$text) { return $text; }
+        if (!$text||$text=="") { return $text; }
 
         $text = htmlspecialchars_decode($text);
 
@@ -111,7 +111,7 @@ class Mir24Importer
 
         foreach ($news as $item) {
 
-            $text = $item->text=$this->textForMobile($item->text);
+            $item->text=$this->textForMobile($item->text);
 
             if ($item->origin == null) {
                 $item->origin = "";
