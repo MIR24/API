@@ -101,7 +101,7 @@ class News extends Model
         if ($options->getCountryID() !== null ) {
 
             $query->rightJoin("news_country as nc", "news.id", "=", "nc.news_id")
-                ->whereIn("nc.country_id",  $options->getCountryID());
+                ->where("nc.country_id", $options->getCountryID());
         }
         if ($options->getIgnoreId() !== null && count($options->getIgnoreId())>0 ) {
 
@@ -156,5 +156,14 @@ class News extends Model
         unset($newsItem->textSrc);
 
         return $newsItem;
+    }
+
+    public function scopeGetIdsWithCountryAndCategery(Builder $query): Builder
+    {
+        return $query->select(["id", "country_id as countryId", "categoryID as categoryId"])
+            ->leftJoin("news_country", "news_country.news_id", '=', "news.id")
+            ->where("news.published", true)
+            ->orderBy("news.id", "DESC")
+            ->limit(100000);
     }
 }
