@@ -3,6 +3,8 @@
 namespace App\Library\Services\Import;
 
 use App\ActualNews;
+use DiDom\Document;
+use DiDom\Query;
 use Illuminate\Support\Facades\DB;
 
 class Mir24Importer
@@ -57,10 +59,8 @@ class Mir24Importer
         return $news;
     }
 
-    private function parseItemsFromResultSet($news)
-    {
-        foreach ($news as $item) {
-// TODO                $text = $rs.getString("text");
+
+    // TODO                $text = $rs.getString("text");
 //                text = text.replaceAll("\\{(.*)\\}", "");
 //                Document doc = Jsoup.parse(StringEscapeUtils.unescapeHtml4(text));
 //                for (Element el : doc.getAllElements()) {
@@ -76,7 +76,42 @@ class Mir24Importer
 //                            Whitelist.basicWithImages().addAttributes("img", "style"));
 //                item.setText(safe);
 //                item.setTextSrc(safe);
-//
+    private function textForMobile($text)
+    {
+        if (!$text||$text=="") { return $text; }
+
+        $text = htmlspecialchars_decode($text);
+
+        $pattern = '/{(.*?)}/i';
+        $text = preg_replace($pattern, "", $text);
+
+        $dom = new Document();
+        $dom->loadHtml($text);
+
+        $images = $dom->find('img', Query::TYPE_CSS);
+
+        $iframs = $dom->find('iframe', Query::TYPE_CSS);
+
+        foreach ($images as $image) {
+            $image->attr("width", "90%")
+                  ->attr("style", "padding:5px;")
+                  ->removeAttribute("height");
+        }
+
+        foreach ($iframs as $ifram) {
+            $ifram->remove();
+        }
+
+        return $dom->first('body')->innerHtml();
+    }
+
+    private function parseItemsFromResultSet($news)
+    {
+
+        foreach ($news as $item) {
+
+            $item->text=$this->textForMobile($item->text);
+
             if ($item->origin == null) {
                 $item->origin = "";
             }

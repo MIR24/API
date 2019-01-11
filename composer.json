@@ -12,7 +12,8 @@
         "ext-intl": "^1.1",
         "ext-memcached": "^3.0",
         "darkaonline/l5-swagger": "^5.7",
-        "fideloper/proxy": "^4.0",
+        "fideloper/proxy": "^4.1",
+        "imangazaliev/didom": "^1.14",
         "laravel/framework": "5.7.*",
         "laravel/passport": "^7.0",
         "laravel/tinker": "^1.0"
