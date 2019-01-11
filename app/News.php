@@ -34,22 +34,13 @@ class News extends Model
 
         $query->select(DB::raw($fieldsForSelect));
 
-//        TODO кеширование при options.getPreSearch?
-//        if (options.getPreSearch() != null) {
-//            ArrayList<Integer> preSearch = options.getPreSearch();
-//            if (options.getPreSearch().isEmpty()) {
-//                return news;
-//            } else {
-//                query = query.concat("WHERE n.id IN (");
-//
-//                for (Integer id : preSearch) {
-//                    query = query.concat(id + ",");
-//                }
-//                query = query.substring(0, query.length() - 1).concat(") ORDER BY categoryID, id DESC");
-//            }
-//        } else {
-        $this->optionToWhere($query, $options);
-//        }
+        $preSearch = $options->getPreSearch();
+        if ($preSearch != null && count($preSearch)) {
+            $query->whereIn("news.id", $preSearch)
+                ->orderByRaw("news.categoryID, news.id DESC");
+        } else {
+            $this->optionToWhere($query, $options);
+        }
 
         return $query;
     }

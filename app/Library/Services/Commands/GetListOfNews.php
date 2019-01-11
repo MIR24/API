@@ -6,6 +6,7 @@ namespace App\Library\Services\Commands;
 use App\ActualNews;
 use App\Library\Components\EloquentOptions\NewsOption;
 use App\Library\Services\Cache\NewsCaching;
+use App\Library\Services\Cache\NewsIdCaching;
 use App\Library\Services\ResultOfCommand;
 use App\News;
 
@@ -38,7 +39,11 @@ class GetListOfNews implements CommandInterface
             return $news;
         }
 
-        if ($options->getPage() == 1 && $options->getLimit() == $options::LIMIT_DEFAULT && $options->getCountryID() == null) {
+        if ($options->getPage() == 1
+            && $options->getLimit() == $options::LIMIT_DEFAULT
+            && $options->getCountryID() === null
+            && $options->getCategory() === null
+        ) {
             if ($options->isOnlyVideo()) {
                 $news = NewsCaching::getLastNewsWithVideo();
             } elseif ($options->isOnlyWithGallery()) {
@@ -48,9 +53,20 @@ class GetListOfNews implements CommandInterface
             }
         }
 
-//        if (news == null || news.isEmpty() && !options.getOnlyVideo() && !options.getOnlyWithGallery() && options.getCountryID() != null)
-//            TODO searchTable;
-//        }
+        if (count($news) === 0
+            && $options->getCountryID() !== null
+            && $options->getCategory() !== null
+            && !$options->isOnlyVideo()
+            && !$options->isOnlyWithGallery()
+        ) {
+            $newsIds = NewsIdCaching::get($options->getCountryID(), $options->getCategory());
+
+            $preSearch = array_slice($newsIds, $options->getCalculatedOffset(), $options->getLimit());
+            if (count($preSearch)) {
+                $options->setPreSearch($preSearch);
+                $news = $this->selectFromDb($options);
+            }
+        }
 
         return $news;
     }
@@ -98,55 +114,3 @@ class GetListOfNews implements CommandInterface
     }
 
 }
-//    if (options.getLastNews() == true) {
-//        if ((options.getPage() == null
-//                || options.getPage() == 1)
-//                && options.getLimit() == 10
-//                && options.getCountryID() == null) {
-//            if (options.getOnlyVideo() == true) {
-//                news = (ArrayList<NewsItem>) getServletContext().getAttribute("newsWithVideo");
-//            } else if (options.getOnlyWithGallery() == true) {
-//                news = (ArrayList<NewsItem>) getServletContext().getAttribute("newsWithGallery");
-//            } else {
-//                news = (ArrayList<NewsItem>) getServletContext().getAttribute("lastNews");
-//            }
-//        }
-//        if (news == null || news.isEmpty()) {
-//            if (!options.getOnlyVideo()
-//                    && !options.getOnlyWithGallery()
-//                    && options.getCountryID() != null) {
-//                MultiKeyMap searchTable
-//                        = (MultiKeyMap) getServletContext().getAttribute("searchTable");
-//                if (searchTable == null) {
-//                    searchTable = getter.getSearchTable();
-//                }
-//                ArrayList<Integer> preSearch = new ArrayList<Integer>();
-//                for (Category category : categories) {
-//                    ArrayList<Integer> arr = (ArrayList<Integer>) searchTable.get(options.getCountryID(),
-//                          category.getId());
-//                  if (arr != null) {
-//                      for (int i = ((options.getPage() - 1) * options.getLimit());
-//                              i < options.getLimit() * options.getPage();
-//                              i++) {
-//                          try {
-//                              preSearch.add(arr.get(i));
-//                          } catch (IndexOutOfBoundsException iob) {
-//                              break;
-//                          }
-//                       }
-//                    }
-//                }
-//                if (!preSearch.isEmpty()) {
-//                    options.setPreSearch(preSearch);
-//                    news = getter.getNewsList(options);
-//                } else {
-//                    news = new ArrayList<>();
-//                }
-//            } else {
-//                news = getter.getLastNews(options);
-//            }
-//        }
-//    } else {
-//        news = getter.getNewsList(options);
-//        serverResponse.setNewsCount(getter.getNewsCount(options.getCategory()));
-//    }

@@ -16,16 +16,19 @@ class NewsIdCaching
         Cache::forever("getNewsIdsWithCountryAndCategery", self::getIdFromDatabase());
     }
 
-    public static function get()
+    public static function get($countryId, $categoryId)
     {
-        $key = "getNewsIdsWithCountryAndCategery";
-        if (Cache::has($key)) {
-            $countries = Cache::get($key);
+        $keyCache = "getNewsIdsWithCountryAndCategery";
+
+        if (Cache::has($keyCache)) {
+            $news = Cache::get($keyCache);
         } else {
-            Cache::forever($key, self::getIdFromDatabase());
+            $news = self::getIdFromDatabase();
+            Cache::forever($keyCache, $news);
         }
 
-        return $countries;
+        $keyArray = $countryId . '_' . $categoryId;
+        return array_key_exists($keyArray, $news) ? $news[$keyArray] : [];
     }
 
     /**
@@ -39,6 +42,10 @@ class NewsIdCaching
         $news = News::GetIdsWithCountryAndCategery()->get();
 
         foreach ($news as $item) {
+            if ($item->countryId === null) {
+                $item->countryId = env('DEFAULT_COUNTRY');
+            }
+
             $key = $item->countryId . '_' . $item->categoryId;
 
             if (!isset($newsId[$key])) {
