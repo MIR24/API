@@ -56,8 +56,6 @@ class InitialImportFromMir24 extends Command
         $this->info("Got " . count($categories) . " categories. Saving...");
         $this->categoryImporter->updateCategories($categories);
 
-        # TODO Category: show:=true
-
         $this->info("Getting countries.");
         $countries = $this->countryImporter->getCountries();
         $this->info("Got " . count($countries) . " countries. Saving...");

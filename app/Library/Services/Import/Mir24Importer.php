@@ -59,23 +59,6 @@ class Mir24Importer
         return $news;
     }
 
-
-    // TODO                $text = $rs.getString("text");
-//                text = text.replaceAll("\\{(.*)\\}", "");
-//                Document doc = Jsoup.parse(StringEscapeUtils.unescapeHtml4(text));
-//                for (Element el : doc.getAllElements()) {
-//                    if (el.tagName().equals("img")) {
-//                        el.attr("width", "90%");
-//                        el.attr("style", "padding:5px;");
-//                        el.removeAttr("height");
-//                    } else if (el.tagName().equals("iframe")) {
-//                        el.remove();
-//                    }
-//                }
-//                String safe = Jsoup.clean(doc.toString(), "https://mir24.tv/",
-//                            Whitelist.basicWithImages().addAttributes("img", "style"));
-//                item.setText(safe);
-//                item.setTextSrc(safe);
     private function textForMobile($text)
     {
         if (!$text||$text=="") { return $text; }
@@ -101,6 +84,9 @@ class Mir24Importer
         foreach ($iframs as $ifram) {
             $ifram->remove();
         }
+
+        // чистит текст оставляя только "базовые теги" + для img разрешён атрибут style
+        // String safe = Jsoup.clean(doc.toString(), "https://mir24.tv/", Whitelist.basicWithImages().addAttributes("img", "style"));
 
         return $dom->first('body')->innerHtml();
     }
@@ -202,8 +188,8 @@ class Mir24Importer
                 $newsItem->title,
                 $newsItem->shortText,
                 $newsItem->shortText,
-                $newsItem->text, # TODO != mir24
-                $newsItem->text, # TODO
+                $newsItem->text,
+                $newsItem->text,
                 $newsItem->imageId,
                 $newsItem->categoryId,
                 null, # serieID,

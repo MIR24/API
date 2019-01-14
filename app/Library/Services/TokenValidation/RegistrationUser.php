@@ -61,7 +61,6 @@ class RegistrationUser implements CommandInterface
     }
 
     /**
-     * TODO may be need more
      * @param array $options
      * @return mixed
      * @throws RestrictedOldException

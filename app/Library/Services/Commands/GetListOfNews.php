@@ -75,14 +75,6 @@ class GetListOfNews implements CommandInterface
     {
         $news = News::GetList($newsOption)->get()->all();
 
-        //TODO если в запросе ищут tags???
-        //Например:
-        //{"request":"newslist",
-        //"options":
-        //{"limit":"10",
-        // "page":"1",
-        // "tags":[10089538]},
-        //"token":"token_id"}
         foreach ($news as $newsItem) {
             News::postprocessingOfGetList($newsItem);
         };
