@@ -16,6 +16,7 @@ use App\Library\Services\Commands\GetListOfPhotos;
 use App\Library\Services\Commands\GetListOfTags;
 use App\Library\Services\Commands\GetNewsById;
 use App\Library\Services\Commands\GetNewsTextById;
+use App\Library\Services\Commands\Push;
 use App\Library\Services\Commands\SendComment;
 use App\Library\Services\TokenValidation\RegistrationUser;
 use Illuminate\Http\Request;
@@ -88,7 +89,8 @@ class ApiController extends BaseController
         SendComment $sendComment,
         GetListOfConfig $getListConfig,
         GetListOfPhotos $getListOfPhotos,
-        GetListOfTags $getListOfTags
+        GetListOfTags $getListOfTags,
+        Push $push
     )
     {
 
@@ -138,8 +140,8 @@ class ApiController extends BaseController
                 case "gallery":
                     $resultOfCommand = $getListOfPhotos->handle($options);
                     break;
-                    # case "push":
-                    # TODO from Java: "Used to register tokens of app client to send push notifications. Not used in current apps."
+                case "push":
+                    $resultOfCommand = $push->handle($options);
                     break;
                 case "comment":
                     if (!isset($options["action"])) {
