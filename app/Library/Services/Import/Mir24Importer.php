@@ -241,8 +241,6 @@ class Mir24Importer
         if (count($news) < ActualNews::PROMO_NEWS_COUNT) {
             $limitAdditional = ActualNews::PROMO_NEWS_COUNT - count($news);
 
-            # TODO первый подселект был с ошибками. Запрос никогда не вызывался?
-            # TODO ??? AND id IN (15348025, 15348024, 15348023, 15348067, 15348062) "
             $queryAdditional = "SELECT news.id FROM news "
                 . "WHERE EXISTS (SELECT * FROM images INNER JOIN image_news"
                 . "              ON images.id = image_news.image_id "
@@ -273,10 +271,8 @@ class Mir24Importer
             . "ON DUPLICATE KEY "
             . "UPDATE id = VALUES(id), news_id = VALUES(news_id)";
 
-        # TODO транзакция? заменить на update + "delete where i>x"?
         DB::delete($queryDelete);
         foreach ($actualNews as $i => $newsId) {
-            # TODO из-за INSERT IGNORE в id пропуски могут быть
             DB::insert($queryInsert, [$i, $newsId]);
         }
     }
@@ -349,13 +345,11 @@ class Mir24Importer
 
     public function saveNewsTags($newsTags): void
     {
-        # TODO даже если не изменялось, то удаляет и создаёт заново
         $queryDelete = "DELETE FROM news_tags WHERE news_id = ?";
         $queryInsert = "INSERT IGNORE INTO news_tags(news_id, tag_id) VALUES (?, ?)";
 
         foreach ($newsTags as $newsId => $tags) {
             DB::delete($queryDelete, [$newsId]);
-            # TODO Не вставляет из-за foreign('news_id', 'news_tags_ibfk_1'), но и не показывает ошибку
             foreach ($tags as $tag) {
                 DB::insert($queryInsert, [$tag->newsId, $tag->tagId]);
             }
@@ -390,8 +384,6 @@ class Mir24Importer
 
         $galleries = [];
         foreach ($rs as $row) {
-            // TODO сейчас автор почему то всегда NULL, если профильтровано с $newsItem->hasGallery
-            // if($row->author) { dump($row); }
             $galleries[$row->newsId][] = $row;
         }
 
@@ -485,145 +477,3 @@ class Mir24Importer
         return $countries;
     }
 }
-
-///*  Класс содержащий методы для парсинга информации из базы данных bd-mir основного
-// *  сайта и сохранения их в локальную базу на bd-proj. Используется для снижения нагрузки
-// *  на основную базу и снижения количества запросов к ней.
-// */
-///**
-// * Class used to parse news from main site database and save them to local api
-// * database.
-// *
-// * @author babikov_pv
-// */
-//public class NewsParser extends Thread {
-//
-//private final String DEFAULT_VIDEO_URL;
-//
-//    private ArrayList<NewsItem> parseItemsFromResultSet(ResultSet resultSet) {
-//
-//                ArrayList<NewsItem> news = new ArrayList<>();
-//
-//        try {
-//            while (resultSet.next()) {
-//                NewsItem item = new NewsItem();
-//                item.setId(resultSet.getInt("id"));
-//                item.setDate(resultSet.getTimestamp("created_at"));
-//                item.setTitle(resultSet.getString("title"));
-//                item.setShortText(resultSet.getString("advert"));
-//                item.setShortTextSrc(resultSet.getString("advert"));
-//                String text = resultSet.getString("text");
-//                text = text.replaceAll("\\{(.*)\\}", "");
-//                Document doc = Jsoup.parse(StringEscapeUtils.unescapeHtml4(text));
-//                for (Element el : doc.getAllElements()) {
-//                    if (el.tagName().equals("img")) {
-//                        el.attr("width", "90%");
-//                        el.attr("style", "padding:5px;");
-//                        el.removeAttr("height");
-//                    } else if (el.tagName().equals("iframe")) {
-//                        el.remove();
-//                    }
-//                }
-//                String safe = Jsoup.clean(doc.toString(), "https://mir24.tv/",
-//                            Whitelist.basicWithImages().addAttributes("img", "style"));
-//                item.setText(safe);
-//                item.setTextSrc(safe);
-//                item.setImageID(resultSet.getInt("image_id"));
-//                item.setCategoryID(resultSet.getInt("rubric_id"));
-//                item.setCategoryName(resultSet.getString("category_name"));
-//                item.setSerieID(null);
-//                item.setVideoID(resultSet.getInt("video_id"));
-//                item.setVideoURL(resultSet.getString("video_url"));
-//                item.setEpisodeID(null);
-//                String origin = resultSet.getString("origin");
-//                String link = resultSet.getString("link");
-//                String author = resultSet.getString("author");
-//                if (origin == null) {
-//                    origin = "";
-//                }
-//                if (link == null) {
-//                    link = "";
-//                }
-//                if (author == null || author.equals("Автор не указан") || author.equals("не указан")) {
-//                    author = "";
-//                } else {
-//                    author = "Фото: " + author + " ";
-//                }
-//                item.setCopyright(author + "<a href='" + link + "'>" + origin + "</a>");
-//                item.setCopyrightSrc(author + origin);
-//                item.setRushHourNews(resultSet.getBoolean("lightning"));
-//                item.setTopListNews(resultSet.getBoolean("main_top"));
-//                item.setHasGallery(resultSet.getBoolean("with_gallery"));
-//                item.setPublished(resultSet.getBoolean("published"));
-//                item.setOnMainPagePosition(resultSet.getInt("main_center"));
-//                news.add(item);
-//            }
-//        } catch (SQLException sqlex) {
-//                    logger.error("Can't parse items from result set: " + sqlex);
-//                }
-//
-//        return news;
-//    }
-//
-//
-//    /**
-//     * Get duration of file using system script and ffmpeg library.
-//     */
-//    private String getDuration(String videoURL) {
-//                String duration = "";
-//        String command = "/bin/bash /etc/scripts/get_video_duration.sh ";
-//
-//        ArrayList output;
-//        try {
-//            if(!videoURL.contains(DEFAULT_VIDEO_URL)){
-//                videoURL = DEFAULT_VIDEO_URL.concat(videoURL);
-//            }
-//            String protocol = "http";
-//            String domain = videoURL.substring(0, videoURL.indexOf("/"));
-//            String file = videoURL.substring(videoURL.indexOf("/"), videoURL.length());
-//            URI uri = new URI(protocol, domain, file, null);
-//            output = ShellExecutor.executeCommand(command + uri.toASCIIString());
-//            for (Object line : output) {
-//                duration = duration.concat((String) line);
-//            }
-//            duration = duration.substring(0, duration.length() - 1);
-//        } catch (IOException | URISyntaxException | IndexOutOfBoundsException ex) {
-//                    duration = "00:00:00.00";
-//                    logger.error("Can't get duration of file with url " + videoURL + ": " + ex);
-//                }
-//        return duration;
-//    }
-//
-//    /**
-//     * Get single news by id.
-//     *
-//     * @param newsID
-//     * @return NewsItem instance with specified id.
-//     */
-//    public ArrayList<NewsItem> getNewsById(Integer newsID) {
-//
-//                ArrayList<NewsItem> newsItem;
-//
-//        query = "SELECT    n.id, n.created_at, n.published_at, n.advert, n.text, "
-//            + "          n.title, in.image_id, t.id AS rubric_id, nv.video_id, "
-//            + "          c.origin, c.link, n.lightning, n.main_top, (n.status = 'active') AS published, "
-//            + "          n.main_center "
-//            + "FROM      news n "
-//            + "LEFT JOIN image_news `in` ON in.news_id = n.id "
-//            + "LEFT JOIN news_tag nt ON nt.news_id = n.id "
-//            + "LEFT JOIN tags t ON t.id = nt.tag_id "
-//            + "LEFT JOIN news_video nv ON nv.news_id = n.id "
-//            + "LEFT JOIN copyright_news cn ON cn.news_id = n.id "
-//            + "LEFT JOIN copyrights c ON cn.copyright_id = c.id "
-//            + "WHERE     n.id = " + newsID + " AND t.type = 3";
-//
-//        DBMessanger messanger = new DBMessanger("mir24");
-//        ResultSet resultSet = messanger.doQuery(query);
-//
-//        newsItem = parseItemsFromResultSet(resultSet);
-//
-//        messanger.closeConnection();
-//
-//        return newsItem;
-//    }
-//}

@@ -19,19 +19,7 @@ class NewsOption
     private $countryID = null;
     private $preSearch = null;
     private $ignoreId;
-//    private $buffer = null;
 
-//    public Boolean checkBufferForID(Integer id) {
-//        Boolean exists = false;
-//        if (buffer.contains(id)) {
-//            exists = Boolean.TRUE;
-//        }
-//        return exists;
-//    }
-//
-//    public void saveToBuffer(Integer id) {
-//        buffer.add(id);
-//    }
 
     public function initFromArray(array $options): NewsOption
     {

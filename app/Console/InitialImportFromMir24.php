@@ -49,8 +49,6 @@ class InitialImportFromMir24 extends Command
         $this->info("Init UPDATE_COMPLETE parameter");
         DB::insert("INSERT IGNORE INTO `status` VALUES (1,'UPDATE_COMPLETE',1,NULL,NULL);");
 
-        # TODO $this->importer->setUpdateComplete(false);
-
         $this->info("Starting update.");
 
         $this->info("Getting categories.");
@@ -69,7 +67,5 @@ class InitialImportFromMir24 extends Command
         DB::insert("INSERT IGNORE INTO `types` VALUES (0,'news'),(1,'photo'),(2,'video');");
 
         $this->info("Done.");
-
-        # TODO $this->importer->setUpdateComplete(true);
     }
 }
