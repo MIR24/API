@@ -47,7 +47,6 @@ class ImportFromMir24 extends Command
     {
         $period = $this->option("period");
 
-        # TODO Не запускать, если обновление уже запущено
         $this->importer->setUpdateComplete(false);
 
         $this->info("Starting update.");
