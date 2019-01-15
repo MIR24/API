@@ -7,7 +7,7 @@ use App\Library\Services\TimeReplacer\TimeReplacer;
 
 /**
  * @OA\Get(
- *   path="/smart/v1/archives",
+ *   path="/smart/v2/archives",
  *   summary="Получение списка передач в записи",
  *   tags={"SmartTV"},
  *   externalDocs="https://mir24tv.atlassian.net/browse/SSAPI-5",

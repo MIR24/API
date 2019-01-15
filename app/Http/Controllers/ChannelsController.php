@@ -10,14 +10,14 @@ class ChannelsController extends Controller
 {
     /**
      * @OA\Get(
-     *   path="/smart/v1/channels",
+     *   path="/smart/v2/channels",
      *   summary="Получение каналов и передач на неделю",
      *   tags={"SmartTV"},
      *   externalDocs="https://mir24tv.atlassian.net/browse/SSAPI-3",
      *   @OA\Response(
      *      response=200,
      *      description="Каналы со списком передач на неделю",
-     *      @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Channel")),
+     *      @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/ChannelV2")),
      *   ),
      * )
      */

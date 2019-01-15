@@ -8,7 +8,7 @@ class CategoryController extends Controller
 {
     /**
      * @OA\Get(
-     *   path="/smart/v1/categories",
+     *   path="/smart/v2/categories",
      *   summary="Получение списка категорий передач",
      *   tags={"SmartTV"},
      *   externalDocs="https://mir24tv.atlassian.net/browse/SSAPI-4",
