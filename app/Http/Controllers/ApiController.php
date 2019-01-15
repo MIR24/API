@@ -31,9 +31,6 @@ class ApiController extends BaseController
      *     name="Mobile Api",
      *     description="http://wiki.mir24.tv/index.php/Api.mir24.tv",
      * )
-     * @OA\Tag(
-     *     name="SmartTV",
-     * )
      *
      * @OA\Schema(
      *   schema="apiRequest",

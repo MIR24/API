@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  *   )
  *
  * @OA\Schema(
- *   schema="ChannelV1",
+ *   schema="ChannelDetailV1",
  *   type="object",
  *     @OA\Property(property="id", type="integer"),
  *     @OA\Property(property="name", type="string"),
@@ -25,7 +25,16 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="links", type="object",
  *         description="Массив ссылок на сам ресурc, список секций (пунктов меню) для телеканала и телепрограмму на сегодняшний день.",
  *     ),
- *   )
+ * )
+ *
+ * @OA\Schema(
+ *   schema="ChannelCollectionV1",
+ *   type="object",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="streamURL", type="string", format="uri", description="Ссылка на онлайн-вещание канала"),
+ *     @OA\Property(property="logoURL", type="string", format="uri", description="Ссылка на логотип канала в формате PNG"),
+ * )
  *
  * @OA\Schema(
  *   schema="ChannelV2",

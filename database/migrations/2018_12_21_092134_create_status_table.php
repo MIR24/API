@@ -19,6 +19,7 @@ class CreateStatusTable extends Migration {
 			$table->integer('int_value')->nullable()->default(0);
 			$table->string('str_value')->nullable();
 			$table->dateTime('time_value')->nullable();
+			# TODO updated_at?
 		});
 	}
 
