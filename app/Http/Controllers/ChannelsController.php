@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Http\Resources\ChannelResource;
 use App\Library\Services\TimeReplacer\StreamUrlReplacer;
 use App\Library\Services\TimeReplacer\TimeReplacer;
 
@@ -32,6 +33,13 @@ class ChannelsController extends Controller
      *   summary="Получить описание канала",
      *   tags={"SmartTV. Channels"},
      *   externalDocs="https://mirtvsmartapi.docs.apiary.io/",
+     *   @OA\Parameter(
+     *       name="channelId",
+     *       in="path",
+     *       required=true,
+     *       description="Id канала",
+     *       @OA\Schema(type="number"),
+     *   ),
      *   @OA\Response(
      *      response=200,
      *      description="Описание канала",
@@ -39,9 +47,11 @@ class ChannelsController extends Controller
      *   ),
      * )
      */
-    public function getAction($channelId)
+    public function show($channelId)
     {
-        # TODO
+        $channel = Channel::find($channelId);
+        ChannelResource::withoutWrapping();
+        return new ChannelResource($channel);
     }
 
     /**
@@ -88,7 +98,7 @@ class ChannelsController extends Controller
      *   ),
      * )
      */
-    public function show(TimeReplacer $timeReplacer, StreamUrlReplacer $streamUrlReplacer)
+    public function indexVersion2(TimeReplacer $timeReplacer, StreamUrlReplacer $streamUrlReplacer) # TODO remove?
     {
         # TODO массив каналов или какой-то конкретный?
         return response()->json(

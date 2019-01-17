@@ -11,6 +11,7 @@ namespace App\Library\Services\TimeReplacer;
 
 use Illuminate\Support\Collection;
 
+# TODO Remove it and use App\Http\Resources\ChannelResource
 class StreamUrlReplacer
 {
     public function replace(Collection $data, $keyFirst = "stream_shift", $keySecond = "stream_live"): Collection
