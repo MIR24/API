@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Broadcasts extends Model
 {
+    # TODO rename in table: age to ageRestriction?
     protected $table='broadcasts';
 
     protected $hidden=[

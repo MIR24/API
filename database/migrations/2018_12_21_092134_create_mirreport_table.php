@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
+# TODO Use this table? If use, then move data in cache and remove table?
 class CreateMirreportTable extends Migration {
 
 	/**
