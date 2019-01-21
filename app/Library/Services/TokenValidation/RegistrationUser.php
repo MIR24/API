@@ -43,10 +43,10 @@ class RegistrationUser implements CommandInterface
         }
 
 
-        return (new ResultTokenOfCommand)
+        return (new ResultOfCommand())
             ->setOperation($this::OPERATION)
             ->setMessage("Authentication successful.")
-            ->setToken($this->getTokenIdByUserData($options))
+            ->setContent(['token'=>$this->getTokenIdByUserData($options)])
             ->setStatus(200);
     }
 
