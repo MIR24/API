@@ -107,6 +107,7 @@ class ApiController extends BaseController
 
         $operation = $request->get('request');
         $options = $request->get('options');
+        $options= is_array($options)?$options:[];
         $resultOfCommand = [];
         try {
             switch ($operation) {
