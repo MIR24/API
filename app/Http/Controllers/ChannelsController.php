@@ -23,7 +23,6 @@ class ChannelsController extends Controller
      */
     public function show(TimeReplacer $timeReplacer, StreamUrlReplacer $streamUrlReplacer)
     {
-        # TODO массив каналов или какой-то конкретный?
         return response()->json(
             $streamUrlReplacer->replace(
                 $timeReplacer->replaceForChannel(

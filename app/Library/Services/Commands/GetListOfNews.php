@@ -73,36 +73,21 @@ class GetListOfNews implements CommandInterface
 
     private function selectFromDb(NewsOption $newsOption)
     {
-        $news = News::GetList($newsOption)->get()->all();
-
-        foreach ($news as $newsItem) {
-            News::postprocessingOfGetList($newsItem);
-        };
+        $news = News::getPostprocessedList($newsOption);
 
         // Если в актуальных новостях не хватает новостей, то дополнить результат из обычных новостей
         if ($newsOption->isActual() && $newsOption->getPage() == 1 && count($news) < ActualNews::PROMO_NEWS_COUNT) {
             $newsOption->setActual(false);
 
-            $ignoreId=[];
+            $ignoreId = [];
             foreach ($news as $newsItem) {
-                $ignoreId[]=$newsItem->id;
+                $ignoreId[] = $newsItem->id;
             }
             $newsOption->setIgnoreId($ignoreId);
             $newsOption->setLimit(ActualNews::PROMO_NEWS_COUNT - count($news));
-            $news = array_merge($news, $this->getContextArray($newsOption));
+            $news = array_merge($news->toArray(), News::getPostprocessedList($newsOption)->toArray());
         }
 
         return $news;
     }
-
-
-    private function getContextArray(NewsOption $option){
-        $news = News::GetList($option)->get();
-        foreach ($news as $newsItem) {
-            News::postprocessingOfGetList($newsItem);
-        };
-        return $news->toArray();
-
-    }
-
 }

@@ -101,6 +101,17 @@ class News extends Model
 
     }
 
+    public static function getPostprocessedList(NewsOption $option)
+    {
+        $news = self::GetList($option)->get();
+
+        foreach ($news as $newsItem) {
+            self::postprocessingOfGetList($newsItem);
+        };
+
+        return $news;
+    }
+
     public static function postprocessingOfGetList(News $newsItem)
     {
         if ($newsItem->tags !== null) {

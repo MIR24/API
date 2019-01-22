@@ -15,14 +15,14 @@ class NewsCaching
     {
         $option = self::getOption();
 
-        Cache::forever("lastNews", self::getNews($option));
+        Cache::forever("lastNews", News::getPostprocessedList($option));
 
         $option->setOnlyWithGallery(true);
-        Cache::forever("lastNewsWithGallery", self::getNews($option));
+        Cache::forever("lastNewsWithGallery", News::getPostprocessedList($option));
         $option->setOnlyWithGallery(false);
 
         $option->setOnlyVideo(true);
-        Cache::forever("lastNewsWithVideo", self::getNews($option));
+        Cache::forever("lastNewsWithVideo", News::getPostprocessedList($option));
     }
 
     public static function getLastNews()
@@ -33,7 +33,7 @@ class NewsCaching
             $news = Cache::get($key);
         } else {
             $option = self::getOption();
-            $news = self::getNews($option);
+            $news = News::getPostprocessedList($option);
             Cache::forever($key, $news);
         }
 
@@ -48,7 +48,7 @@ class NewsCaching
             $news = Cache::get($key);
         } else {
             $option = self::getOption()->setOnlyVideo(true);
-            $news = self::getNews($option);
+            $news = News::getPostprocessedList($option);
             Cache::forever($key, $news);
         }
 
@@ -63,7 +63,7 @@ class NewsCaching
             $news = Cache::get($key);
         } else {
             $option = self::getOption()->setOnlyWithGallery(true);
-            $news = self::getNews($option);
+            $news = News::getPostprocessedList($option);
             Cache::forever($key, $news);
         }
 
@@ -74,16 +74,5 @@ class NewsCaching
     {
         return (new NewsOption())
             ->setLastNews(true);
-    }
-
-    private static function getNews(NewsOption $option)
-    {
-        $news = News::GetList($option)->get();
-
-        foreach ($news as $newsItem) {
-            News::postprocessingOfGetList($newsItem);
-        };
-
-        return $news;
     }
 }
