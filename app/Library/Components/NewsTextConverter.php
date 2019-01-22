@@ -43,6 +43,9 @@ class NewsTextConverter
             $aStartPos = null;
             $aEndPos = null;
         }
+        if ($textOut === "") {
+            $textOut = $textIn;
+        }
 
         return $this->setText(str_replace("<p></p>", "", $textOut));
     }
