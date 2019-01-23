@@ -62,7 +62,7 @@ class ApiController extends BaseController
      * )
      *
      * @OA\Post(
-     *   path="/",
+     *   path="/mobile/v1/",
      *   tags={"Mobile Api"},
      *   summary="Унифицированная форма API. Доступно: auth, categorylist, comment, config, countries, gallery, newsById, newslist, tags, text, types",
      *   @OA\RequestBody(
