@@ -6,7 +6,7 @@ $factory->define(App\Broadcasts::class, function (Faker $faker) {
     return [
         'title'=>$faker->title,
         'subtitle'=>$faker->title,
-        'age'=>$faker->numberBetween(0,18),
+        'age_restriction'=>$faker->numberBetween(0,18),
         'day_of_week'=>$faker->dayOfWeek,
         'time_begin'=>$faker->dateTimeBetween(),
         'time_end'=>$faker->dateTimeBetween(),

@@ -17,7 +17,7 @@ class CreateBroadcastsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('subtitle');
-            $table->integer('age');
+            $table->integer('age_restriction');
             $table->string('day_of_week');
             $table->dateTime('time_begin');
             $table->dateTime('time_end');

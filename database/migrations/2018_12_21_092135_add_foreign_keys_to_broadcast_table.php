@@ -15,7 +15,7 @@ class AddForeignKeysToBroadcastTable extends Migration {
 		Schema::table('broadcasts', function(Blueprint $table)
 		{
             $table->foreign('category_id', 'fk_broadcasts_category_id')->references('id')->on('categories');
-            $table->foreign('channel_id', 'fk_broadcasts_channel_id')->references('id')->on('channel');
+            $table->foreign('channel_id', 'fk_broadcasts_channel_id')->references('id')->on('channels');
 		});
 	}
 

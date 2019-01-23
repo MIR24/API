@@ -126,7 +126,7 @@ class Mir24Importer
                 case "ШОУ-БИЗНЕC":
                     $item->categoryName = "ШОУ-БИЗНЕС";
                     break;
-                case "НАУКА И ТЕХНОЛОГИИ":
+                case "НАУКА И ТЕХНОЛОГИИ":  # TODO if ! array_key_exists($item->categoryName, ...)
                     $item->categoryName = $item->id % 2 == 0 ? "НАУКА" : "HI-TECH";
                     break;
             }

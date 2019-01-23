@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  *   type="object",
  *     @OA\Property(property="title", type="string"),
  *     @OA\Property(property="subtitle", type="string"),
- *     @OA\Property(property="age", type="integer", description="Возрастное ограничение передачи (0 - без ограничений)."),
+ *     @OA\Property(property="ageRestriction", type="integer", description="Возрастное ограничение передачи (0 - без ограничений)."),
  *     @OA\Property(property="dayOfWeek", type="string", description="День недели"),
  *     @OA\Property(property="time", type="object", ref="#/components/schemas/time"),
  *     @OA\Property(property="categoryId", type="integer"),

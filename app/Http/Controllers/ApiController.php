@@ -100,7 +100,7 @@ class ApiController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            throw new InvalidClientOldException($request->get('request') ?? "");
+            throw new AnswerOldException($request->get('request') ?? "");
         }
 
         $responseData = null;
