@@ -96,6 +96,25 @@ class ApiController extends BaseController
      *     @OA\Property(property="order", type="integer", example="2"),
      *   ))
      * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestCountries",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="countries"),
+     *   @OA\Property(property="options", type="object"),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseCountries",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="countries", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="id", type="integer", example="4453"),
+     *     @OA\Property(property="name", type="string", example="Россия"),
+     *   ))
+     * )
      */
 
     /**
@@ -219,7 +238,21 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListOfEntityTypesForComment->handle($options);
                     break;
                 case "countries":
-                    # Запрос списка стран
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/countries",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Запрос списка стран",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestCountries"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Список стран",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseCountries")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfCountries->handle($options);
                     break;
                 default:
