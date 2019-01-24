@@ -12,7 +12,7 @@ class NewsItemResource extends AppJsonResource
     {
         $result = [
             "id" => $this->id,
-            "date" => $this->date,
+            "date" => (new \DateTime($this->date))->format("M d, Y h:m:s A"),
             "shortText" => $this->shortText,
             "shortTextSrc" => $this->shortTextSrc,
             "title" => $this->title,

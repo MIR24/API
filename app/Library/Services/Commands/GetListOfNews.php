@@ -4,6 +4,7 @@ namespace App\Library\Services\Commands;
 
 
 use App\ActualNews;
+use App\Http\Resources\NewsItemResource;
 use App\Library\Components\EloquentOptions\NewsOption;
 use App\Library\Services\Cache\NewsCaching;
 use App\Library\Services\Cache\NewsIdCaching;
@@ -26,7 +27,7 @@ class GetListOfNews implements CommandInterface
 
         return (new ResultOfCommand())
             ->setOperation($this::OPERATION)
-            ->setContent($news)
+            ->setContent(NewsItemResource::collection($news))
             ->setMessage(sprintf("Total of %d news parsed.", count($news)))
             ->setStatus(200);
     }
