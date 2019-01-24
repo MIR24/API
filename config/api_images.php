@@ -34,7 +34,8 @@ return [
 
     ],
 //TODO add actual config into database
-    "streamURLAndroid"=>"http://api.mir24.tv/v2/media/images/uploaded/"
+    "streamURLAndroid"=>"https://hls-mirtv.cdnvideo.ru/mirtv-parampublish/smil:mir24.smil/playlist.m3u8",
 
+    "streamURLIOS"=>"https://hls-mirtv.cdnvideo.ru/mirtv-parampublish/smil:mir24.smil/playlist.m3u8",
 
 ];

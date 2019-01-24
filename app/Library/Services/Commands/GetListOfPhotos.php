@@ -34,6 +34,7 @@ class GetListOfPhotos implements CommandInterface
                 ->setContent($photos);
         } else {
             return $result->setMessage('No photos found by this id.')
+                ->setContent([])
                 ->setStatus(200);
         }
     }
