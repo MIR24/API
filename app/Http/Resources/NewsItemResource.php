@@ -29,11 +29,11 @@ class NewsItemResource extends AppJsonResource
             "videoDuration" => $this->videoDuration,
             "tags" => $this->tags,
             "country" => $this->country,
-            "newsText" => $this->newsText
+     //       "newsText" => $this->newsText,
 //            "newsText" => [
-//                "textWithTags" => $this->newsText->textWithTags,
-//                "textSource" => $this->newsText->textSource,
-//                "link" => $this->newsText->link
+                "textWithTags" => $this->newsText['textWithTags'],
+                "textSource" => $this->newsText['textSource'],
+                "link" => $this->newsText['link']
 //            ]
         ];
 

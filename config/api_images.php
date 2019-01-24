@@ -33,4 +33,8 @@ return [
         ]
 
     ],
+//TODO add actual config into database
+    "streamURLAndroid"=>"http://api.mir24.tv/v2/media/images/uploaded/"
+
+
 ];

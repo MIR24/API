@@ -25,7 +25,7 @@ class Push implements CommandInterface
     {
         $validator = Validator::make($options, [
             'token' => 'required',
-            'type' =>['required',Rule::in(['GCM', 'APN'])]
+            'type' =>['required',Rule::in(['GCM', 'APN','gcm','apn'])]
 
         ]);
         if ($validator->fails()) {
@@ -36,6 +36,9 @@ class Push implements CommandInterface
                 throw new InvalidClientOldException(self::OPERATION, 'Type must be GCM or APN.');
             }
         }
+
+
+      $options['type']= strtoupper($options['type']);
 
         try {
             DB::table('push_tokens')->insert($options);
@@ -50,4 +53,6 @@ class Push implements CommandInterface
 
 
     }
+
+
 }
