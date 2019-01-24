@@ -19,6 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('mobile/v1/','ApiController@index')->middleware('token','mobile');
 
+foreach(\App\Http\Controllers\ApiController::$OPERATIONS as $operation ) {
+    Route::post('mobile/v1/'.$operation,'ApiController@index')->middleware('token','mobile');
+}
+
 Route::get('smart/v1/categories','CategoryController@show');
 
 Route::get('smart/v1/channels','ChannelsController@show');
