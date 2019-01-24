@@ -86,7 +86,7 @@ class GetListOfNews implements CommandInterface
             }
             $newsOption->setIgnoreId($ignoreId);
             $newsOption->setLimit(ActualNews::PROMO_NEWS_COUNT - count($news));
-            $news = array_merge($news->toArray(), News::getPostprocessedList($newsOption)->toArray());
+            $news->merge(News::getPostprocessedList($newsOption));
         }
 
         return $news;
