@@ -161,6 +161,27 @@ class ApiController extends BaseController
      *     @OA\Property(property="name", type="string", example="КРАСИВЫЙ ГОЛ"),
      *   ))
      * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestTypesForComment",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="types"),
+     *   @OA\Property(property="options", type="object"),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseTypesForComment",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="tags", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array",
+     *     description="cписок типов с id: 0 – новости, 1 – фото, 2 – видео",
+     *     @OA\Items( type="object",
+     *       @OA\Property(property="id", type="integer", example="0"),
+     *       @OA\Property(property="name", type="string", example="news"),
+     *   ))
+     * )
      */
 
     /**
@@ -310,7 +331,21 @@ class ApiController extends BaseController
 
                     break;
                 case "types":
-                    # Список типов контента, который комментируется
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/types",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Запрос типов контента, который комментируется",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestTypesForComment"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Список типов контента, который комментируется",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseTypesForComment")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfEntityTypesForComment->handle($options);
                     break;
                 case "countries":
