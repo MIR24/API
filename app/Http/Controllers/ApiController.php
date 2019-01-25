@@ -117,6 +117,26 @@ class ApiController extends BaseController
      * )
      *
      * @OA\Schema(
+     *   schema="apiRequestGallery",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="gallery"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="newsID", type="integer", example="16318155"),
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseGallery",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="gallery", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="id", type="integer", example="16306523"),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
      *   schema="apiRequestPush",
      *   type="object",
      *   @OA\Property(property="request", type="string", example="push"),
@@ -294,6 +314,21 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListOfTags->handle($options);
                     break;
                 case "gallery":
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/gallery",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Получение фотографий из галереи для новости",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestGallery"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Фотографии для новости",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseGallery")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfPhotos->handle($options);
                     break;
                 case "push":
