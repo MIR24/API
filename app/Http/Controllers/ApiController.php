@@ -115,6 +115,33 @@ class ApiController extends BaseController
      *     @OA\Property(property="name", type="string", example="Россия"),
      *   ))
      * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestTags",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="tags"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="sortType", type="string", example="top",
+     *       description="селектор для выбора типа тегов – последние или популярные (actual или top)"),
+     *     @OA\Property(property="page", type="integer", example="1",
+     *       description="page – выборка страницы тегов (1 = первые 100 тегов, 2  = вторые 100 тегов и т.д.)"),
+     *     @OA\Property(property="tagsID", type="array", @OA\Items( type="integer", example="15363718"),
+     *       description="получить соответствие id:tag по заданным id тегов. Параметр исключает остальные options"
+     *     ),
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseTags",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="tags", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="id", type="integer", example="15364446"),
+     *     @OA\Property(property="name", type="string", example="КРАСИВЫЙ ГОЛ"),
+     *   ))
+     * )
      */
 
     /**
@@ -209,6 +236,21 @@ class ApiController extends BaseController
                     $resultOfCommand = $getNewsTextById->handle($options);
                     break;
                 case "tags":
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/tags",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Запрос списка тегов",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestTags"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Список тегов",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseTags")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfTags->handle($options);
                     break;
                 case "gallery":
