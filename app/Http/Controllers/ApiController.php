@@ -118,6 +118,30 @@ class ApiController extends BaseController
      * )
      *
      * @OA\Schema(
+     *   schema="apiRequestConfig",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="config"),
+     *   @OA\Property(property="options", type="object"),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseConfig",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="config", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="imageBaseURL", type="string", example="http://mir24.tv/media/images/uploaded/"),
+     *     @OA\Property(property="videoBaseURL", type="string", example="http://stc01.mir24.tv/video/content/"),
+     *     @OA\Property(property="streamURLAndroid", type="string", example="http://api.mir24.tv/v2/media/images/uploaded/"),
+     *     @OA\Property(property="imegeTypes", type="array", @OA\Items( type="object",
+     *       @OA\Property(property="alias", type="string", example="gallery"),
+     *       @OA\Property(property="size", type="string", example="110x68"),
+     *     )),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
      *   schema="apiRequestCountries",
      *   type="object",
      *   @OA\Property(property="request", type="string", example="countries"),
@@ -324,6 +348,22 @@ class ApiController extends BaseController
                     $resultOfCommand = $getNewsById->handle($options);
                     break;
                 case "config":
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/config",
+                     *   tags={"Mobile Api"},
+                     *   description="Содержит список базовых ссылок до изображений, а также алиасы изображений и их размеры.",
+                     *   @OA\RequestBody(
+                     *       description="",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestConfig"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseConfig")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListConfig->handle($options);
                     break;
                 case "text":
