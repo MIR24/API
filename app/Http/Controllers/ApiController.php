@@ -26,6 +26,21 @@ use Illuminate\Validation\Rule;
 
 class ApiController extends BaseController
 {
+    public static $OPERATIONS = [
+        'auth',
+        'categorylist',
+        'newslist',
+        'newsById',
+        'config',
+        'text',
+        'tags',
+        'gallery',
+        'push',
+        'comment',
+        'types',
+        'countries'
+    ];
+
     /**
      * @OA\Tag(
      *     name="Mobile Api",
@@ -61,6 +76,135 @@ class ApiController extends BaseController
      *     description="массив запрошенных элементов"),
      * )
      *
+     * @OA\Schema(
+     *   schema="apiRequestCategorylist",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="categorylist"),
+     *   @OA\Property(property="options", type="object"),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseCategorylist",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="categorylist", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", example="Total of N categories parsed.", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="id", type="integer", example="95"),
+     *     @OA\Property(property="name", type="string", example="ОБЩЕСТВО"),
+     *     @OA\Property(property="url", type="string", example="society"),
+     *     @OA\Property(property="order", type="integer", example="2"),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestCountries",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="countries"),
+     *   @OA\Property(property="options", type="object"),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseCountries",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="countries", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="id", type="integer", example="4453"),
+     *     @OA\Property(property="name", type="string", example="Россия"),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestGallery",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="gallery"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="newsID", type="integer", example="16318155"),
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseGallery",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="gallery", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="id", type="integer", example="16306523"),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestPush",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="push"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="token", type="string", description="токен PUSH-уведомлений."),
+     *     @OA\Property(property="type", type="integer", example="apn", description="тип должен быть GCM или APN"),
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponsePush",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="push", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="object")
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestTags",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="tags"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="sortType", type="string", example="top",
+     *       description="селектор для выбора типа тегов – последние или популярные (actual или top)"),
+     *     @OA\Property(property="page", type="integer", example="1",
+     *       description="page – выборка страницы тегов (1 = первые 100 тегов, 2  = вторые 100 тегов и т.д.)"),
+     *     @OA\Property(property="tagsID", type="array", @OA\Items( type="integer", example="15363718"),
+     *       description="получить соответствие id:tag по заданным id тегов. Параметр исключает остальные options"
+     *     ),
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseTags",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="tags", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="id", type="integer", example="15364446"),
+     *     @OA\Property(property="name", type="string", example="КРАСИВЫЙ ГОЛ"),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestTypesForComment",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="types"),
+     *   @OA\Property(property="options", type="object"),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseTypesForComment",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="tags", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array",
+     *     description="cписок типов с id: 0 – новости, 1 – фото, 2 – видео",
+     *     @OA\Items( type="object",
+     *       @OA\Property(property="id", type="integer", example="0"),
+     *       @OA\Property(property="name", type="string", example="news"),
+     *   ))
+     * )
+     */
+
+    /**
      * @OA\Post(
      *   path="/mobile/v1/",
      *   tags={"Mobile Api"},
@@ -91,11 +235,13 @@ class ApiController extends BaseController
         GetListOfPhotos $getListOfPhotos,
         GetListOfTags $getListOfTags,
         Push $push
-    )
-    {
+    ) {
 
         $validator = Validator::make($request->all(), [
-            'request' => ["required", Rule::in(['auth', 'categorylist', 'newslist', 'newsById', 'config', 'text', 'tags', 'gallery', 'push', 'comment', 'types', 'countries'])],
+            'request' => [
+                "required",
+                Rule::in(self::$OPERATIONS)
+            ],
             'options' => 'array',
         ]);
 
@@ -105,9 +251,9 @@ class ApiController extends BaseController
 
         $responseData = null;
 
-        $operation = $request->get('request');
+        $operation = $request->get('request'); # TODO if difference with path?
         $options = $request->get('options');
-        $options= is_array($options)?$options:[];
+        $options = is_array($options) ? $options : [];
         $resultOfCommand = [];
         try {
             switch ($operation) {
@@ -116,7 +262,21 @@ class ApiController extends BaseController
                     $resultOfCommand = $getRegistrationUser->handle($options);
                     break;
                 case "categorylist":
-                    # Категории новостей
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/categorylist",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Категории новостей",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestCategorylist"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Категории новостей",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseCategorylist")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfCategories->handle($options);
                     break;
                 case "newslist":
@@ -136,12 +296,57 @@ class ApiController extends BaseController
                     $resultOfCommand = $getNewsTextById->handle($options);
                     break;
                 case "tags":
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/tags",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Запрос списка тегов",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestTags"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Список тегов",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseTags")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfTags->handle($options);
                     break;
                 case "gallery":
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/gallery",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Получение фотографий из галереи для новости",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestGallery"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Фотографии для новости",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseGallery")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfPhotos->handle($options);
                     break;
                 case "push":
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/push",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Регистрация токена PUSH-уведомлений",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestPush"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Токен PUSH-уведомлений зарегистрирован",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponsePush")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $push->handle($options);
                     break;
                 case "comment":
@@ -161,11 +366,39 @@ class ApiController extends BaseController
 
                     break;
                 case "types":
-                    # Список типов контента, который комментируется
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/types",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Запрос типов контента, который комментируется",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestTypesForComment"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Список типов контента, который комментируется",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseTypesForComment")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfEntityTypesForComment->handle($options);
                     break;
                 case "countries":
-                    # Запрос списка стран
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/countries",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Запрос списка стран",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestCountries"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Список стран",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseCountries")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfCountries->handle($options);
                     break;
                 default:

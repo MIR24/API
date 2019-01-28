@@ -12,6 +12,7 @@ namespace App\Library\Services\Commands;
 use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\ServerOldException;
 use App\Library\Services\ResultOfCommand;
+use App\PushToken;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -37,11 +38,10 @@ class Push implements CommandInterface
             }
         }
 
-
-      $options['type']= strtoupper($options['type']);
+       $options['type']= strtoupper($options['type']);
 
         try {
-            DB::table('push_tokens')->insert($options);
+            PushToken::firstOrCreate($options);
         } catch (\Exception $exception) {
             throw new ServerOldException(self::OPERATION,env("APP_DEBUG")?$exception->getMessage():"SERVER ERROR");
         }
