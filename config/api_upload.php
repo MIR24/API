@@ -4,6 +4,18 @@
  */
 
 return [
-    'uploadFolder'=>env('UPLOAD_FOLDER',storage_path()),
-    'temp'=>'/tmp'
+
+    'maxFileSize'=>150 *1024 * 1024,
+
+    'temp' => '/tmp',
+
+    'types' => [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'video/3gp',
+        'video/mpeg',
+        'video/mp4'
+    ],
+
 ];

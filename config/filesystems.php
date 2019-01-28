@@ -64,6 +64,11 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'api'=>[
+            'driver' => 'local',
+            'root' => env('UPLOAD_FOLDER', storage_path()),
+        ]
+
     ],
 
 ];
