@@ -77,6 +77,26 @@ class ApiController extends BaseController
      * )
      *
      * @OA\Schema(
+     *   schema="apiRequestAuth",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="auth"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="login", type="string"),
+     *     @OA\Property(property="pass", type="string"),
+     *   ),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseAuth",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="auth", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="token", type="string"),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
      *   schema="apiRequestCategorylist",
      *   type="object",
      *   @OA\Property(property="request", type="string", example="categorylist"),
@@ -258,7 +278,23 @@ class ApiController extends BaseController
         try {
             switch ($operation) {
                 case "auth":
-                    # Авторизация
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/auth",
+                     *   tags={"Mobile Api"},
+                     *   summary="Возвращает токен",
+                     *   description="При успешной авторизации возвращается токен, который затем должен передаваться в других запросах.",
+                     *   @OA\RequestBody(
+                     *       description="Авторизация",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestAuth"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Токен после успешной авторизации",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseAuth")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getRegistrationUser->handle($options);
                     break;
                 case "categorylist":
