@@ -181,6 +181,27 @@ class ApiController extends BaseController
      * )
      *
      * @OA\Schema(
+     *   schema="apiRequestNewsText",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="text"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="newsID", type="integer", example="16318155"),
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseNewsText",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="text", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="object",
+     *     @OA\Property(property="textWithTags", type="string"),
+     *     @OA\Property(property="textSource", type="string"),
+     *   )
+     * )
+     *
+     * @OA\Schema(
      *   schema="apiRequestPush",
      *   type="object",
      *   @OA\Property(property="request", type="string", example="push"),
@@ -367,8 +388,22 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListConfig->handle($options);
                     break;
                 case "text":
-                    # Получает полный текст новости по ID
-                    # ["title", "hasGallery", "url", "newsText" => ["textWithTags", "textSource", "link"]]
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/text",
+                     *   tags={"Mobile Api"},
+                     *   description="Получает полный текст новости по ID в двух вариантах – без тегов и с разметкой.",
+                     *   @OA\RequestBody(
+                     *       description="Получить полный текст новости по ID",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestNewsText"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Полный текст новости",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseNewsText")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getNewsTextById->handle($options);
                     break;
                 case "tags":

@@ -5,7 +5,7 @@ namespace App\Library\Services\Commands;
 
 use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\NotFoundOldException;
-use App\Http\Resources\NewsItemResource;
+use App\Http\Resources\NewsTextItemResource;
 use App\Library\Services\ResultOfCommand;
 use App\News;
 
@@ -37,7 +37,7 @@ class GetNewsTextById implements CommandInterface
 
         return (new ResultOfCommand())
             ->setOperation($this::OPERATION)
-            ->setContent(new NewsItemResource($newsItem))
+            ->setContent(new NewsTextItemResource($newsItem))
             ->setMessage(sprintf("Text for news with id %d.", $newsId))
             ->setStatus(200);
     }
