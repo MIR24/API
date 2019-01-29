@@ -50,6 +50,11 @@ class Handler extends ExceptionHandler
 
             return response()->json($exception->getResponseData());
         }
+        if($exception instanceof UploadException){
+
+            return response()->json($exception->getMessage(),$exception->getCode());
+        }
+
         return parent::render($request, $exception);
     }
 }

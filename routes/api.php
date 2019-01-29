@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+//TODO add headers add token and logger
+Route::post('mobile/v1/upload','UploadController@upload')->middleware('token:upload','mobile');
 
 Route::post('mobile/v1/','ApiController@index')->middleware('token','mobile');
 
