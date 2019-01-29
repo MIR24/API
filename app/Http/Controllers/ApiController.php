@@ -77,6 +77,26 @@ class ApiController extends BaseController
      * )
      *
      * @OA\Schema(
+     *   schema="apiRequestAuth",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="auth"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="login", type="string"),
+     *     @OA\Property(property="pass", type="string"),
+     *   ),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseAuth",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="auth", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="token", type="string"),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
      *   schema="apiRequestCategorylist",
      *   type="object",
      *   @OA\Property(property="request", type="string", example="categorylist"),
@@ -94,6 +114,30 @@ class ApiController extends BaseController
      *     @OA\Property(property="name", type="string", example="ОБЩЕСТВО"),
      *     @OA\Property(property="url", type="string", example="society"),
      *     @OA\Property(property="order", type="integer", example="2"),
+     *   ))
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestConfig",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="config"),
+     *   @OA\Property(property="options", type="object"),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseConfig",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="config", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="array", @OA\Items( type="object",
+     *     @OA\Property(property="imageBaseURL", type="string", example="http://mir24.tv/media/images/uploaded/"),
+     *     @OA\Property(property="videoBaseURL", type="string", example="http://stc01.mir24.tv/video/content/"),
+     *     @OA\Property(property="streamURLAndroid", type="string", example="http://api.mir24.tv/v2/media/images/uploaded/"),
+     *     @OA\Property(property="imegeTypes", type="array", @OA\Items( type="object",
+     *       @OA\Property(property="alias", type="string", example="gallery"),
+     *       @OA\Property(property="size", type="string", example="110x68"),
+     *     )),
      *   ))
      * )
      *
@@ -134,6 +178,127 @@ class ApiController extends BaseController
      *   @OA\Property(property="content", type="array", @OA\Items( type="object",
      *     @OA\Property(property="id", type="integer", example="16306523"),
      *   ))
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestNewsById",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="newsById"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="newsID", type="integer", example="16318155"),
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseNewsById",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="newsById", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="object",
+     *     @OA\Property(property="id", type="integer", example=11130270),
+     *     @OA\Property(property="date", type="date", example="Aug 28, 2014 3:18:39 PM"),
+     *     @OA\Property(property="title", type="string", example="Постпред РФ при ОБСЕ: российских военных на Украине нет"),
+     *     @OA\Property(property="shortText", type="string", example="Андрей Келин опровергает заявления Киева о введении российских войск на украинскую территорию.",
+     *       description="краткое описание с тегами",
+     *     ),
+     *     @OA\Property(property="shortTextSrc", type="string", example="Андрей Келин опровергает заявления Киева о введении российских войск на украинскую территорию.",
+     *       description="краткое описание без тегов",
+     *     ),
+     *     @OA\Property(property="imageID", type="integer", example=11130295,
+     *       description="id изображения на сайте (0 – его отсутствие)",
+     *     ),
+     *     @OA\Property(property="categoryID", type="integer", example=246),
+     *     @OA\Property(property="serieID", type="integer", example=10014593,
+     *       description="id сюжета (на главной странице под рубриками – «Дело Ходорковского», «Евромайдан» и т.п.)",
+     *     ),
+     *     @OA\Property(property="videoID", type="integer", example=11130591),
+     *     @OA\Property(property="episodeID", type="integer", example=0, description="id передачи с сайта mirtv.ru" ),
+     *     @OA\Property(property="copyright", type="string", description="копирайт фото новости" ),
+     *     @OA\Property(property="copyrightSrc", type="string"),
+     *     @OA\Property(property="rushHourNews", type="boolean", example=true, description="является ли «новостью часа»" ),
+     *     @OA\Property(property="topListNews", type="boolean", example=false, description="главная в рубрике новость" ),
+     *     @OA\Property(property="hasGallery", type="boolean", example=false, description="есть ли галерея изображений в новости" ),
+     *     @OA\Property(property="textWithTags", type="string", example="text"),
+     *     @OA\Property(property="textSource", type="string", example="text"),
+     *     @OA\Property(property="videoDuration", type="string", example="00:03:21.00"),
+     *   )
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestNewsList",
+     *   type="object",
+     *   description="Параметры onlyVideo, onlyWithGallery, lastNews (limit новостей из каждой категории) – являются необязательными (при false – можно не указывать) и взаимоисключающими.
+     *      actual – прислать последние limit новостей из раздела актуальное (lastNews должно быть отключено).",
+     *   @OA\Property(property="request", type="string", example="newslist"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="limit", type="integer", example=20),
+     *     @OA\Property(property="page", type="integer", example=1),
+     *     @OA\Property(property="category", type="integer"),
+     *     @OA\Property(property="onlyVideo", type="boolean", example=false),
+     *     @OA\Property(property="onlyWithGallery", type="boolean", example=false),
+     *     @OA\Property(property="actual", type="boolean", example=false),
+     *     @OA\Property(property="lastNews", type="boolean", example=false),
+     *     @OA\Property(property="countryID", type="boolean", example=4053)
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseNewsList",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="newslist", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="object",
+     *     @OA\Property(property="id", type="integer", example=11130270),
+     *     @OA\Property(property="date", type="date", example="Aug 28, 2014 3:18:39 PM"),
+     *     @OA\Property(property="title", type="string", example="Постпред РФ при ОБСЕ: российских военных на Украине нет"),
+     *     @OA\Property(property="shortText", type="string", example="Андрей Келин опровергает заявления Киева о введении российских войск на украинскую территорию.",
+     *       description="краткое описание с тегами",
+     *     ),
+     *     @OA\Property(property="shortTextSrc", type="string", example="Андрей Келин опровергает заявления Киева о введении российских войск на украинскую территорию.",
+     *       description="краткое описание без тегов",
+     *     ),
+     *     @OA\Property(property="imageID", type="integer", example=11130295,
+     *       description="id изображения на сайте (0 – его отсутствие)",
+     *     ),
+     *     @OA\Property(property="categoryID", type="integer", example=246),
+     *     @OA\Property(property="serieID", type="integer", example=10014593,
+     *       description="id сюжета (на главной странице под рубриками – «Дело Ходорковского», «Евромайдан» и т.п.)",
+     *     ),
+     *     @OA\Property(property="videoID", type="integer", example=11130591),
+     *     @OA\Property(property="episodeID", type="integer", example=0, description="id передачи с сайта mirtv.ru"),
+     *     @OA\Property(property="copyright", type="string", description="копирайт фото новости"),
+     *     @OA\Property(property="copyrightSrc", type="string"),
+     *     @OA\Property(property="rushHourNews", type="boolean", example=true, description="является ли «новостью часа»"),
+     *     @OA\Property(property="topListNews", type="boolean", example=false, description="главная в рубрике новость"),
+     *     @OA\Property(property="hasGallery", type="boolean", example=false, description="есть ли галерея изображений в новости"),
+     *     @OA\Property(property="videoDuration", type="string", example="00:03:21.00"),
+     *     @OA\Property(property="newsCount", type="integer", example=10,
+     *       description="кол-во новостей всего в данной категории (при categories = 0 – новостей вообще)",
+     *     ),
+     *   )
+     * )
+     *
+     * @OA\Schema(
+     *   schema="apiRequestNewsText",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="text"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="newsID", type="integer", example="16318155"),
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseNewsText",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="text", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="object",
+     *     @OA\Property(property="textWithTags", type="string"),
+     *     @OA\Property(property="textSource", type="string"),
+     *   )
      * )
      *
      * @OA\Schema(
@@ -258,7 +423,23 @@ class ApiController extends BaseController
         try {
             switch ($operation) {
                 case "auth":
-                    # Авторизация
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/auth",
+                     *   tags={"Mobile Api"},
+                     *   summary="Возвращает токен",
+                     *   description="При успешной авторизации возвращается токен, который затем должен передаваться в других запросах.",
+                     *   @OA\RequestBody(
+                     *       description="Авторизация",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestAuth"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Токен после успешной авторизации",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseAuth")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getRegistrationUser->handle($options);
                     break;
                 case "categorylist":
@@ -280,19 +461,78 @@ class ApiController extends BaseController
                     $resultOfCommand = $getListOfCategories->handle($options);
                     break;
                 case "newslist":
-                    # Список новостей
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/newslist",
+                     *   tags={"Mobile Api"},
+                     *   description="TODO Параметры onlyVideo, onlyWithGallery, lastNews (limit новостей из каждой категории) – являются необязательными (при false – можно не указывать) и взаимоисключающими. Параметр actual - прислать последние limit новостей из раздела актуальное (lastNews должно быть отключено).",
+                     *   @OA\RequestBody(
+                     *       description="Запрос списка новостей",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestNewsList"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Список новостей",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseNewsList")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListOfNews->handle($options);
                     break;
                 case "newsById":
-                    # Получение новости по её ID
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/newsById",
+                     *   tags={"Mobile Api"},
+                     *   @OA\RequestBody(
+                     *       description="Получение новости по её ID",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestNewsById"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Новость",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseNewsById")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getNewsById->handle($options);
                     break;
                 case "config":
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/config",
+                     *   tags={"Mobile Api"},
+                     *   description="Содержит список базовых ссылок до изображений, а также алиасы изображений и их размеры.",
+                     *   @OA\RequestBody(
+                     *       description="",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestConfig"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseConfig")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getListConfig->handle($options);
                     break;
                 case "text":
-                    # Получает полный текст новости по ID
-                    # ["title", "hasGallery", "url", "newsText" => ["textWithTags", "textSource", "link"]]
+                    /**
+                     * @OA\Post(
+                     *   path="/mobile/v1/text",
+                     *   tags={"Mobile Api"},
+                     *   description="Получает полный текст новости по ID в двух вариантах – без тегов и с разметкой.",
+                     *   @OA\RequestBody(
+                     *       description="Получить полный текст новости по ID",
+                     *       @OA\JsonContent(ref="#/components/schemas/apiRequestNewsText"),
+                     *   ),
+                     *   @OA\Response(
+                     *      response=200,
+                     *      description="Полный текст новости",
+                     *      @OA\JsonContent(ref="#/components/schemas/apiResponseNewsText")
+                     *   ),
+                     * )
+                     */
                     $resultOfCommand = $getNewsTextById->handle($options);
                     break;
                 case "tags":

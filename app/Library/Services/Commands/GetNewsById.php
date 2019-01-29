@@ -5,7 +5,7 @@ namespace App\Library\Services\Commands;
 
 use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\NotFoundOldException;
-use App\Http\Resources\NewsItemResource;
+use App\Http\Resources\NewsDetailItemResource;
 use App\Library\Components\EloquentOptions\NewsOption;
 use App\Library\Services\ResultOfCommand;
 use App\News;
@@ -47,7 +47,7 @@ class GetNewsById implements CommandInterface
 
         return (new ResultOfCommand())
             ->setOperation($this::OPERATION)
-            ->setContent(new NewsItemResource($newsItem))
+            ->setContent(new NewsDetailItemResource($newsItem))
             ->setMessage("News by id parsed correct.")
             ->setStatus(200);
     }
