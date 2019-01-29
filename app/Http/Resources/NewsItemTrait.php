@@ -26,6 +26,10 @@ trait NewsItemTrait
             "videoDuration" => $this->videoDuration,
         ];
 
+        if ($result["videoDuration"] == "00:00:00.00") {
+            $result["videoDuration"] = null;
+        }
+
         return $result;
     }
 }

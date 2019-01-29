@@ -84,7 +84,7 @@ class News extends Model
             $query->where("hasGallery", 1);
         }
 
-        if ($options->getTags() !== null && count($options->getTags()) && !$options->isLastNews()) {
+        if ($options->getTags() !== null && count($options->getTags())) {
 
             $query->rightJoin("news_tags as nt", "news.id", "=", "nt.news_id")
                 ->whereIn("nt.tag_id",  $options->getTags());

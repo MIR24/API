@@ -232,14 +232,16 @@ class ApiController extends BaseController
      *      actual – прислать последние limit новостей из раздела актуальное (lastNews должно быть отключено).",
      *   @OA\Property(property="request", type="string", example="newslist"),
      *   @OA\Property(property="options", type="object",
-     *     @OA\Property(property="limit", type="integer", example=20),
      *     @OA\Property(property="page", type="integer", example=1),
-     *     @OA\Property(property="category", type="integer"),
-     *     @OA\Property(property="onlyVideo", type="boolean", example=false),
-     *     @OA\Property(property="onlyWithGallery", type="boolean", example=false),
+     *     @OA\Property(property="limit", type="integer", example=20),
      *     @OA\Property(property="actual", type="boolean", example=false),
      *     @OA\Property(property="lastNews", type="boolean", example=false),
-     *     @OA\Property(property="countryID", type="boolean", example=4053)
+     *     @OA\Property(property="newsID", type="integer"),
+     *     @OA\Property(property="category", type="integer"),
+     *     @OA\Property(property="countryID", type="boolean", example=4053),
+     *     @OA\Property(property="tags", type="TODO"),
+     *     @OA\Property(property="onlyVideo", type="boolean", example=false),
+     *     @OA\Property(property="onlyWithGallery", type="boolean", example=false)
      *   ),
      *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
      * )
@@ -274,11 +276,11 @@ class ApiController extends BaseController
      *     @OA\Property(property="topListNews", type="boolean", example=false, description="главная в рубрике новость"),
      *     @OA\Property(property="hasGallery", type="boolean", example=false, description="есть ли галерея изображений в новости"),
      *     @OA\Property(property="videoDuration", type="string", example="00:03:21.00"),
-     *     @OA\Property(property="newsCount", type="integer", example=10,
-     *       description="кол-во новостей всего в данной категории (при categories = 0 – новостей вообще)",
-     *     ),
      *   )
      * )
+     *     TODO OA\Property(property="newsCount", type="integer", example=10,
+     *       description="кол-во новостей всего в данной категории (при categories = 0 – новостей вообще)",
+     *     ),
      *
      * @OA\Schema(
      *   schema="apiRequestNewsText",
@@ -465,7 +467,24 @@ class ApiController extends BaseController
                      * @OA\Post(
                      *   path="/mobile/v1/newslist",
                      *   tags={"Mobile Api"},
-                     *   description="TODO Параметры onlyVideo, onlyWithGallery, lastNews (limit новостей из каждой категории) – являются необязательными (при false – можно не указывать) и взаимоисключающими. Параметр actual - прислать последние limit новостей из раздела актуальное (lastNews должно быть отключено).",
+                     *   description="<p>Все параметры необязательны.</p>
+                    <p>Если <strong>lastNews</strong> == true, то пытаемся возвратить новости из кеша,
+                    учитывая параметры <em>page, limit, category, countryID, onlyVideo и onlyWithGallery</em>,
+                    но <strong>игнорируя параметры newsID, tags, actual</strong>:
+                    </p>
+                    <ol>
+                    <li>если это первая страница и не указаны страна и категория
+                    - новости берутся из кеша с учётом флагов onlyVideo, onlyWithGallery
+                    (если установлены оба, то используется onlyVideo).
+                    </li>
+                    <li>если указаны страна и категория, не указаны ни onlyVideo, ни onlyWithGallery -
+                    новости берутся из кеша с учётом page и limit.</li>
+                    </ol>
+                    <p>Новости ищутся в БД с учётом <strong>page, limit, newsID, category, countryID, onlyVideo, onlyWithGallery</strong> и <strong>tags</strong>.
+                    Если при этом <strong>actual</strong> == true,
+                    то в БД ищем только те новости, которые зарегистрированы в таблице actual_news(promo).
+                    </p>
+                    ",
                      *   @OA\RequestBody(
                      *       description="Запрос списка новостей",
                      *       @OA\JsonContent(ref="#/components/schemas/apiRequestNewsList"),
