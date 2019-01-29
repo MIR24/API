@@ -118,6 +118,34 @@ class ApiController extends BaseController
      * )
      *
      * @OA\Schema(
+     *   schema="apiRequestCommentAdd",
+     *   type="object",
+     *   @OA\Property(property="request", type="string", example="comment"),
+     *   @OA\Property(property="options", type="object",
+     *     @OA\Property(property="action", type="string", example="add"),
+     *     @OA\Property(property="name", type="string", example="Виталий Кличко"),
+     *     @OA\Property(property="profile", type="string", example="http://vk.com/kli4ko"),
+     *     @OA\Property(property="email", type="email", example="kli4ko@gmail.ua"),
+     *     @OA\Property(property="entityID", type="string", example="10124295",
+     *       description="ID новости, фотографии или видео (в зависимости от параметра type)"
+     *     ),
+     *     @OA\Property(property="type", type="integer", example=0,
+     *       description="тип контента, который комментируется (список типов с id получается методом types 0 – новости, 1 –фото, 2 – видео)."
+     *     ),
+     *     @OA\Property(property="text", type="string", example="Я не боюсь заходит в дверь. Я буду заходить туда, куда готов.")
+     *   ),
+     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * )
+     * @OA\Schema(
+     *   schema="apiResponseCommentAdd",
+     *   type="object",
+     *   @OA\Property(property="answer", type="string", example="countries", description="операция"),
+     *   @OA\Property(property="status", type="string", example="200", description="числовой результат выполнения операции, по аналогии с кодами состояния HTTP (200 – OK, 400 – CLIENT ERROR, 403 – RESTRICTED, 500 –SERVER ERROR)"),
+     *   @OA\Property(property="message", type="string", description="комментарий к выполнению операции или сообщение об ошибке"),
+     *   @OA\Property(property="content", type="object")
+     * )
+     *
+     * @OA\Schema(
      *   schema="apiRequestConfig",
      *   type="object",
      *   @OA\Property(property="request", type="string", example="config"),
@@ -615,6 +643,21 @@ class ApiController extends BaseController
                     }
 
                     if ($options["action"] == "add") {
+                        /**
+                         * @OA\Post(
+                         *   path="/mobile/v1/comment_add",
+                         *   tags={"Mobile Api"},
+                         *   @OA\RequestBody(
+                         *       description="Отправка комментария",
+                         *       @OA\JsonContent(ref="#/components/schemas/apiRequestCommentAdd"),
+                         *   ),
+                         *   @OA\Response(
+                         *      response=200,
+                         *      description="Комментарий добавлен",
+                         *      @OA\JsonContent(ref="#/components/schemas/apiResponseCommentAdd")
+                         *   ),
+                         * )
+                         */
                         $resultOfCommand = $sendComment->handle($options);
                     } elseif ($options["action"] == "get") {
                         $resultOfCommand = $getComment->handle($options);

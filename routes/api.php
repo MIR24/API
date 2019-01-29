@@ -20,7 +20,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('mobile/v1/','ApiController@index')->middleware('token','mobile');
 
 foreach(\App\Http\Controllers\ApiController::$OPERATIONS as $operation ) {
-    Route::post('mobile/v1/'.$operation,'ApiController@index')->middleware('token','mobile');
+    if ($operation == "comment") {
+        Route::post('mobile/v1/' . $operation . '_add', 'ApiController@index')->middleware('token', 'mobile');
+        Route::post('mobile/v1/' . $operation . '_get', 'ApiController@index')->middleware('token', 'mobile');
+    } else {
+        Route::post('mobile/v1/' . $operation, 'ApiController@index')->middleware('token', 'mobile');
+    }
 }
 
 Route::get('smart/v1/categories','CategoryController@show');
