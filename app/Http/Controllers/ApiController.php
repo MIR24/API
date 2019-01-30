@@ -26,6 +26,8 @@ use Illuminate\Validation\Rule;
 
 class ApiController extends BaseController
 {
+    private const PATH_BEGIN = "api/mobile/v1";
+
     public static $OPERATIONS = [
         'auth',
         'categorylist',
@@ -299,7 +301,7 @@ class ApiController extends BaseController
      *     @OA\Property(property="newsID", type="integer"),
      *     @OA\Property(property="category", type="integer"),
      *     @OA\Property(property="countryID", type="boolean", example=4053),
-     *     @OA\Property(property="tags", type="TODO"),
+     *     @OA\Property(property="tags", type="array", @OA\Items(type="integer", example=6480068)),
      *     @OA\Property(property="onlyVideo", type="boolean", example=false),
      *     @OA\Property(property="onlyWithGallery", type="boolean", example=false)
      *   ),
@@ -478,11 +480,13 @@ class ApiController extends BaseController
 
         $responseData = null;
 
-        $operation = $request->get('request'); # TODO if difference with path?
+        $operation = $request->get('request');
         $options = $request->get('options');
         $options = is_array($options) ? $options : [];
         $resultOfCommand = [];
         try {
+            $this->validateOperation($request, $operation);
+
             switch ($operation) {
                 case "auth":
                     /**
@@ -771,5 +775,21 @@ class ApiController extends BaseController
 
         return response()->json($responseData);
 
+    }
+
+    private function validateOperation(Request $request, $operation)
+    {
+        $path = $request->path();
+
+        if (str_contains($path, $operation)) {
+            return;
+        }
+
+        if ($path == self::PATH_BEGIN) {
+            return;
+        }
+
+        throw new AnswerOldException($operation,
+            sprintf("Operation \"%s\" not contains in path \"%s\"", $operation, $path));
     }
 }
