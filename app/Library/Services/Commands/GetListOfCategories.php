@@ -10,7 +10,7 @@ class GetListOfCategories implements CommandInterface
 {
     public function handle(array $options): ResultOfCommand
     {
-        $categories = Category::GetForOldApi()->get();
+        $categories = Category::GetForMobileApi()->get();
 
         return (new ResultOfCommand())
             ->setOperation('categorylist')

@@ -15,12 +15,12 @@ class CategoryController extends Controller
      *   @OA\Response(
      *      response=200,
      *      description="Список категорий передач",
-     *      @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CategoryMin"))
+     *      @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/CategoryForTv"))
      *   ),
      * )
      */
     public function show()
     {
-        return response()->json(Category::GetForApi()->get());
+        return response()->json(Category::GetForTvApi()->get());
     }
 }
