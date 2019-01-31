@@ -30,8 +30,8 @@ foreach(\App\Http\Controllers\ApiController::$OPERATIONS as $operation ) {
     }
 }
 
-Route::get('smart/v1/categories','CategoryController@show');
+Route::get('smart/v1/categories','CategoryController@show')->middleware('cors');
 
-Route::get('smart/v1/channels','ChannelsController@show');
+Route::get('smart/v1/channels','ChannelsController@show')->middleware('cors');
 
-Route::get('smart/v1/archives','ArchiveController@show');
+Route::get('smart/v1/archives','ArchiveController@show')->middleware('cors');
