@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\ImportFromMir24::class,
+        Commands\ImportForSmartTv::class,
         Commands\InitialImportFromMir24::class,
         Commands\CreateUserPassport::class,
     ];
