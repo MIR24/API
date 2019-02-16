@@ -33,6 +33,8 @@ class Channel extends Model
 
     public $timestamps = false;
 
+    protected $fillable=['name','stream_shift','stream_live','logo'];
+
     public function broadcasts()
     {
         return $this->hasMany(Broadcasts::class);

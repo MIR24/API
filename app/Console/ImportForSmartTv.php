@@ -56,7 +56,7 @@ class ImportForSmartTv extends Command
         $this->info("Getting broadcasts.");
         $broadcasts = $this->importer->getBroadcasts();
         $this->info("Got " . count($broadcasts) . " broadcasts. Saving...");
-        $this->importer->saveBroadcasts($broadcasts);
+        $this->importer->saveBroadcasts($broadcasts,15363867,1);
 
         $this->info("Done.");
     }
