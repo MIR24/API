@@ -72,6 +72,22 @@ return [
             'engine' => null,
         ],
 
+        'mirhd' => [
+            'driver' => 'mysql',
+            'host' => env('DB_MIRHD_HOST', '127.0.0.1'),
+            'port' => env('DB_MIRHD_PORT', '3306'),
+            'database' => env('DB_MIRHD_DATABASE', ''),
+            'username' => env('DB_MIRHD_USERNAME', ''),
+            'password' => env('DB_MIRHD_PASSWORD', ''),
+            'unix_socket' => env('DB_MIRHD_SOCKET', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),
