@@ -45,8 +45,8 @@ class ImportForSmartTv extends Command
     {
         $this->info("Starting update.");
 
-        $categories = Category::GetForTvApi();
-        $this->info("Has " . count($categories) . " categories for Smart TV.");
+//        $categories = Category::GetForTvApi();
+//        $this->info("Has " . count($categories) . " categories for Smart TV.");
 
         $this->info("Getting channels.");
         $channels = $this->importer->getChannels();
