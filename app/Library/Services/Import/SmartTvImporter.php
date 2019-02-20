@@ -60,11 +60,8 @@ class SmartTvImporter
         return DB::connection(self::MIRHD)->select($query, [$start_time]);
     }
 
-    public function saveBroadcasts($broadcasts, $category_id = null, $channel_id = null): self
+    public function saveBroadcasts($broadcasts, $category_id, $channel_id): self
     {
-        $category_id = $category_id ?? $this->params['categories'][0];
-        $channel_id = $channel_id ?? $this->params['streams'][0]['id_in_api'];
-
         $end = null;
         $buff = null;
 
