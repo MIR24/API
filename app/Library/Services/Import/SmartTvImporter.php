@@ -28,26 +28,22 @@ class SmartTvImporter
 
     public function getChannels(): array
     {
-        # TODO статический массив возвращать и всё. Или вообще из БД убрать, только в конфиге хранить
-        $query = "select id, title as name from tags where type = ?";
-
-        return DB::connection(self::MIR24)->select($query, $this->params['mir24_tags']);
+        return $this->params['streams'];
     }
 
 
     public function saveChannels($channels): self
     {
         foreach ($channels as $channel) {
-            if (isset($this->params['streams'][$channel->id])) {
-                Channel::updateOrCreate(
-                    ['name' => $channel->name], // Unique field is name...Oh, a lot of trouble will bring us a name change
-                    [
-                        'stream_shift' => $this->params['streams'][$channel->id]['stream'],
-                        'stream_live' => $this->params['streams'][$channel->id]['live'],
-                        'logo' => $this->params['streams'][$channel->id]['logo'],
-                    ]
-                );
-            }
+            Channel::updateOrCreate(
+                ['id' => $channel['id_in_api']],
+                [
+                    'name' => $channel['name'],
+                    'stream_shift' => $channel['stream_shift'],
+                    'stream_live' => $channel['stream_live'],
+                    'logo' => $channel['logo'],
+                ]
+            );
         }
 
         return $this;
@@ -64,8 +60,11 @@ class SmartTvImporter
         return DB::connection(self::MIRHD)->select($query, [$start_time]);
     }
 
-    public function saveBroadcasts($broadcasts, $category_id, $channel_id): self
+    public function saveBroadcasts($broadcasts, $category_id = null, $channel_id = null): self
     {
+        $category_id = $category_id ?? $this->params['categories'][0];
+        $channel_id = $channel_id ?? $this->params['streams'][0]['id_in_api'];
+
         $end = null;
         $buff = null;
 
@@ -88,10 +87,11 @@ class SmartTvImporter
 
             $res = Broadcasts::find($broadcast->teleprogramm_id);
 
-            if ($res)
+            if ($res) {
                 $res->update($atributes);
-            else
-                $res=new Broadcasts(array_merge(['id' => $broadcast->teleprogramm_id],$atributes));
+            } else {
+                $res = new Broadcasts(array_merge(['id' => $broadcast->teleprogramm_id], $atributes));
+            }
 
             $res->save();
         }

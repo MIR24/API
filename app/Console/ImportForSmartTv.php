@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Category;
 use App\Library\Services\Import\SmartTvImporter;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 
 class ImportForSmartTv extends Command
 {
@@ -45,8 +46,9 @@ class ImportForSmartTv extends Command
     {
         $this->info("Starting update.");
 
-//        $categories = Category::GetForTvApi();
-//        $this->info("Has " . count($categories) . " categories for Smart TV.");
+        /** @var Builder $categories */
+        $categories = Category::GetForTvApi();
+        $this->info("Has " . $categories->count() . " categories for Smart TV.");
 
         $this->info("Getting channels.");
         $channels = $this->importer->getChannels();
@@ -56,7 +58,7 @@ class ImportForSmartTv extends Command
         $this->info("Getting broadcasts.");
         $broadcasts = $this->importer->getBroadcasts();
         $this->info("Got " . count($broadcasts) . " broadcasts. Saving...");
-        $this->importer->saveBroadcasts($broadcasts,15363867,1);
+        $this->importer->saveBroadcasts($broadcasts);
 
         $this->info("Done.");
     }

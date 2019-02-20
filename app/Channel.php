@@ -33,7 +33,7 @@ class Channel extends Model
 
     public $timestamps = false;
 
-    protected $fillable=['name','stream_shift','stream_live','logo'];
+    protected $fillable=['id','name','stream_shift','stream_live','logo'];
 
     public function broadcasts()
     {
