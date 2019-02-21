@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Channel;
-use App\Library\Services\TimeReplacer\StreamUrlReplacer;
-use App\Library\Services\TimeReplacer\TimeReplacer;
+
+use App\Library\Services\Cache\ChannelsCaching;
+
 
 class ChannelsController extends Controller
 {
@@ -21,14 +21,8 @@ class ChannelsController extends Controller
      *   ),
      * )
      */
-    public function show(TimeReplacer $timeReplacer, StreamUrlReplacer $streamUrlReplacer)
+    public function show()
     {
-        return response()->json(
-            $streamUrlReplacer->replace(
-                $timeReplacer->replaceForChannel(
-                    Channel::GetForApi()->get()
-                )
-            )
-        );
+        return response()->json(ChannelsCaching::getWithBroadcasts());
     }
 }
