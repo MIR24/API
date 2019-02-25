@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Library\Services\Import\SmartTvImporter;
+use App\Library\Services\Import\SmartTvVideo;
 use App\Library\Services\TimeReplacer\TimeReplacer;
 use App\Library\Services\TokenValidation\RegistrationUser;
 use App\Library\Services\TokenValidation\TokenValidation;
@@ -37,8 +38,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('App\Library\Services\RegistrationUser', function ($app) {
             return new RegistrationUser();
         });
-        $this->app->bind('App\Library\Services\Import\SmartTvImporter',function ($app){
-           return new SmartTvImporter(config('channels'));
+        $this->app->bind('App\Library\Services\Import\SmartTvImporter', function ($app) {
+            return new SmartTvImporter(config('channels'));
+        });
+        $this->app->bind('App\Library\Services\Import\SmartTvVideo', function ($app) {
+            return new SmartTvVideo(config('channels.archive'));
         });
 
     }
