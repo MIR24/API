@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Category;
+use App\Episode;
 use App\Library\Services\Import\SmartTvImporter;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,7 +24,9 @@ class ImportForSmartTv extends Command
      */
     protected $description = 'Import data for SmartTV';
 
-
+    /**
+     * @var SmartTvImporter
+     */
     private $importer;
 
     /**
@@ -65,5 +68,11 @@ class ImportForSmartTv extends Command
         } else {
             $this->error("No found category and channel for adding broadcasts.");
         }
+
+        $this->info("Getting archives.");
+        $archives = $this->importer->getArchive();
+        $this->info("Has " . count($archives) . " episodes in archive for Smart TV.");
+        $this->importer->saveArchive($archives, $categories->first()->id);
+        $this->info("Got " . Episode::count() . " channels. Saving...");
     }
 }
