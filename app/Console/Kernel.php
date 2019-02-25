@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\ImportForSmartTv::class,
         Commands\InitialImportFromMir24::class,
         Commands\CreateUserPassport::class,
+        Commands\VideoInfoSmartTv::class
     ];
 
     /**

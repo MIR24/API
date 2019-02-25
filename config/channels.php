@@ -22,5 +22,14 @@ return [
     ],
 
     'tv_program_end_period' => 10080, // одна неделя в минутах (начинаем с программы недельной давности )
+
+    'archive' => [
+        'start_date' => '2018-01-01 00:00:00', // формат для mysql
+        'video_pattern_1' => 'http://mirtv.ru/files/video/%s/%s', // для sprintf()
+        'video_pattern_2' => 'http://mir24.tv/video/content/%s',
+        'image_pattern_broadcast' => 'http://mirtv.ru/files/broadcast/%s/%s',
+        'image_pattern_episode' => 'http://mirtv.ru/files/video/%s/%s',
+
+    ]
 ];
 
