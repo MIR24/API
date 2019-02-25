@@ -3,13 +3,15 @@
 namespace App\Library\Services\Import;
 
 
+use App\Archive;
 use App\Broadcasts;
 use App\Channel;
+use App\Episode;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SmartTvImporter
 {
-
     private $params;
 
     const MIR24 = 'mir24';
@@ -97,7 +99,6 @@ class SmartTvImporter
 
     private function addTimeEnd(&$broadcasts)
     {
-
         $past = null;
 
         foreach ($broadcasts as $broadcast) {
@@ -118,4 +119,98 @@ class SmartTvImporter
         array_pop($broadcasts);
     }
 
+    public function getArchive()
+    {
+        $query = "SELECT ar.article_id id, ar.title ,ar.description  , ar.image , " .
+            "ep.episode_id   ep_id, ep.episode ep_name ,ep.title  ep_title, ep.image  ep_img, ep.`start`  ep_str " .
+            "FROM episode ep " .
+            "join article ar on ar.article_id = ep.article_id " .
+            "where ep.`start` > ? " .
+            "order by ar.article_id";
+
+        return DB::connection(self::MIRHD)->select($query, [$this->params['archive']['start_date']]);
+    }
+
+    public function saveArchive($archives, $category_id = 1)
+    {
+        foreach ($archives as $archive) {
+
+            $year = (new \DateTime($archive->ep_str))->format('Y');
+
+            $atrebute_archive = [
+                'title' => $archive->title,
+                'category_id' => $category_id,
+                'poster' => $this->getUrlImageArchive($archive->id, $archive->image),
+            ];
+
+            $atrebute_episode = [
+                'title' => $this->getTitle($archive->ep_title),
+                'poster' => $this->getUrlImageEpisode($archive->ep_id, $archive->ep_img),
+                'season' => $this->getSeason($year, $archive->id),
+                'year' => $year,
+                'time_begin' => $archive->ep_str,
+                'url' => $this->getUrlVideo($archive->ep_id, $archive->ep_name),
+                'archive_id' => $archive->id,
+            ];
+
+            /**
+             * @var $ar Archive
+             */
+            if ($ar = Archive::find($archive->id)) {
+                $ar->update($atrebute_archive);
+            } else {
+                $ar = new Archive(array_merge(['id' => $archive->id], $atrebute_archive));
+            }
+            $ar->save();
+
+            /**
+             * @var $ep Episode
+             */
+            if ($ep = Episode::find($archive->ep_id)) {
+                $ep->update($atrebute_episode);
+            } else {
+                $ep = new Episode(array_merge(['id' => $archive->ep_id], $atrebute_episode, ['time_end' => $archive->ep_str]));
+            }
+            $ep->save();
+        }
+    }
+
+    private function getSeason($year, $id, $border_date = '2019-01-01 00:00:00')
+    {
+        $query = "SELECT true FROM  episode WHERE article_id = ? AND `start` < ? limit 1";
+
+        switch ($year) {
+            case '2018':
+                return 1;
+            case '2019':
+                return DB::connection(self::MIRHD)->select($query, [$id, $border_date]) ? 2 : 1;
+            default:
+                Log::error('Not found year into episodes');
+                return 1;
+        }
+    }
+
+    //TODO may be need more actual parser...
+    private function getUrlVideo($id, $url)
+    {
+        if ($url == 'video.mp4')
+            return sprintf($this->params['archive']['video_pattern_1'], $id, $url);
+        else
+            return sprintf($this->params['archive']['video_pattern_2'], $url);
+    }
+
+    private function getUrlImageArchive($id, $url)
+    {
+        return sprintf($this->params['archive']['image_pattern_broadcast'], $id, $url);
+    }
+
+    private function getUrlImageEpisode($id, $url)
+    {
+        return sprintf($this->params['archive']['image_pattern_episode'], $id, $url);
+    }
+
+    private function getTitle($title)
+    {
+        return str_replace("\n", "", strip_tags($title));
+    }
 }
