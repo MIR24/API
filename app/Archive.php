@@ -31,15 +31,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Archive extends Model
 {
-    protected $table='archives';
+    protected $table = 'archives';
 
-    public $timestamps=false;
+    protected $fillable = ['id', 'title', 'category_id', 'poster', 'url', 'time_begin', 'time_end'];
 
-    public function category(){
+    public $timestamps = false;
+
+    public function category()
+    {
         return $this->belongsTo('categories');
     }
 
-    public function episodes(){
+    public function episodes()
+    {
         return $this->hasMany(Episode::class);
     }
 

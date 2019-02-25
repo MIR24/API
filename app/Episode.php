@@ -30,6 +30,8 @@ class Episode extends Model
 {
     protected $table = 'episodes';
 
+    protected $fillable = ['id', 'title', 'poster', 'season', 'year', 'time_begin', 'time_end', 'url', 'archive_id'];
+
     public $timestamps = false;
 
     protected $hidden = [
