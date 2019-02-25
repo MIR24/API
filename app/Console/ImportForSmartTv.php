@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Category;
+use App\Library\Services\Cache\ChannelsCaching;
 use App\Episode;
 use App\Library\Services\Import\SmartTvImporter;
 use Illuminate\Console\Command;
@@ -63,11 +64,14 @@ class ImportForSmartTv extends Command
             $broadcasts = $this->importer->getBroadcasts();
             $this->info("Got " . count($broadcasts) . " broadcasts. Saving...");
             $this->importer->saveBroadcasts($broadcasts, $categories->first()->id, $channels[0]['id_in_api']);
-
-            $this->info("Done.");
         } else {
             $this->error("No found category and channel for adding broadcasts.");
         }
+
+        $this->info("Setting channels with broadcasts to cache.");
+        ChannelsCaching::warmup();
+
+        $this->info("Done.");
 
         $this->info("Getting archives.");
         $archives = $this->importer->getArchive();
