@@ -18,15 +18,16 @@ class ChannelsCaching
         Cache::forever("channelsWithBroadcasts", $channels);
     }
 
+    //TODO create new cache logic for 1 week???
     public static function getWithBroadcasts()
     {
-        if (Cache::has("channelsWithBroadcasts")) {
-            $channels = Cache::get("channelsWithBroadcasts");
-        } else {
+//        if (Cache::has("channelsWithBroadcasts")) {
+//            $channels = Cache::get("channelsWithBroadcasts");
+//        } else {
             $channels = self::getWithBroadcastsFromDatabase();
-            Cache::forever("channelsWithBroadcasts", $channels);
-        }
-
+//            Cache::forever("channelsWithBroadcasts", $channels);
+//        }
+//
         return $channels;
     }
 

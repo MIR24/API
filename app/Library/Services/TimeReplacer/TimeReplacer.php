@@ -27,7 +27,7 @@ class TimeReplacer
     public function replaceForChannel(Collection $data): Collection
     {
         $data->each(function ($item) {
-            $item['broadcasts'] = $this->replace($item['broadcasts']);
+            $item['week_broadcasts'] = $this->replace($item['week_broadcasts']);
         });
 
         return $data;

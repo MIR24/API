@@ -16,6 +16,12 @@ class StreamUrlReplacer
     public function replace(Collection $data, $keyFirst = "stream_shift", $keySecond = "stream_live"): Collection
     {
         $data->map(function ($item) use ($keyFirst, $keySecond) {
+
+            if(isset($item['week_broadcasts'])){
+                $item['broadcasts']=$item['week_broadcasts'];
+                unset($item['week_broadcasts']);
+            }
+
             $item['stream'] = [
                 'shift' => $item[$keyFirst],
                 'live' => $item[$keySecond],
