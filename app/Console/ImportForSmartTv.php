@@ -71,12 +71,12 @@ class ImportForSmartTv extends Command
         $this->info("Setting channels with broadcasts to cache.");
         ChannelsCaching::warmup();
 
-        $this->info("Done.");
-
         $this->info("Getting archives.");
         $archives = $this->importer->getArchive();
         $this->info("Has " . count($archives) . " episodes in archive for Smart TV.");
         $this->importer->saveArchive($archives, $categories->first()->id);
         $this->info("Got " . Episode::count() . " channels. Saving...");
+
+        $this->info("Done.");
     }
 }

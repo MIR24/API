@@ -54,7 +54,7 @@ class Channel extends Model
      * @param Builder $query
      * @return Builder
      */
-    public function scopeGetForApi($query)
+    public function scopeGetForApiWithWeekBroadcasts($query)
     {
         return $query->select(
             [

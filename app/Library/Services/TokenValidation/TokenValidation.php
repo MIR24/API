@@ -19,7 +19,6 @@ class TokenValidation
 {
 
     /**
-     * TODO may be need chang if-else to switch-case
      * @param Request $request
      * @param mixed $typeError if true use instanceof  @see RestrictedOldException if false @see UploadException
      * @return bool

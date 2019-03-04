@@ -14,20 +14,21 @@ class ChannelsCaching
 {
     public static function warmup(): void
     {
-        $channels = self::getWithBroadcastsFromDatabase();
-        Cache::forever("channelsWithBroadcasts", $channels);
+        self::getWithWeekBroadcasts(true);
     }
 
-    //TODO create new cache logic for 1 week???
-    public static function getWithBroadcasts()
+    public static function getWithWeekBroadcasts($forceCache = false)
     {
-//        if (Cache::has("channelsWithBroadcasts")) {
-//            $channels = Cache::get("channelsWithBroadcasts");
-//        } else {
+        $date = date('Ymd', strtotime('monday this week'));
+        $key = "channelsWithWeekBroadcasts" . $date;
+
+        if (Cache::has($key) && !$forceCache) {
+            $channels = Cache::get($key);
+        } else {
             $channels = self::getWithBroadcastsFromDatabase();
-//            Cache::forever("channelsWithBroadcasts", $channels);
-//        }
-//
+            Cache::put($key, $channels, new \DateTime('1 week'));
+        }
+
         return $channels;
     }
 
@@ -38,7 +39,7 @@ class ChannelsCaching
 
         $channels = $streamUrlReplacer->replace(
             $timeReplacer->replaceForChannel(
-                Channel::GetForApi()->get()
+                Channel::GetForApiWithWeekBroadcasts()->get()
             )
         );
 

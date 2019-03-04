@@ -23,6 +23,6 @@ class ChannelsController extends Controller
      */
     public function show()
     {
-        return response()->json(ChannelsCaching::getWithBroadcasts());
+        return response()->json(ChannelsCaching::getWithWeekBroadcasts());
     }
 }
