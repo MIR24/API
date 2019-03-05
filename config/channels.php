@@ -15,8 +15,8 @@ return [
             'name' => 'МИР ПРЕМИУМ',
             'id_in_mir24' => 15363866,
             'id_in_api' => 1,
-            'stream_shift' => 'http://hls.mirtv.cdnvideo.ru/mirtv-parampublish/hd/playlist.m3u8',
-            'stream_live' => '',
+            'stream_shift' => '',
+            'stream_live' => 'http://hls.mirtv.cdnvideo.ru/mirtv-parampublish/hd/playlist.m3u8',
             'logo' => 'http://onair.mir24.tv/images/custom/logo2.png',
         ]
     ],
