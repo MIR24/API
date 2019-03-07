@@ -137,13 +137,13 @@ class SmartTvImporter
 
             $year = (new \DateTime($archive->ep_str))->format('Y');
 
-            $atrebute_archive = [
+            $attribute_archive = [
                 'title' => $archive->title,
                 'category_id' => $category_id,
                 'poster' => $this->getUrlImageArchive($archive->id, $archive->image),
             ];
 
-            $atrebute_episode = [
+            $attribute_episode = [
                 'title' => $this->getTitle($archive->ep_title),
                 'poster' => $this->getUrlImageEpisode($archive->ep_id, $archive->ep_img),
                 'season' => $this->getSeason($year, $archive->id),
@@ -157,9 +157,9 @@ class SmartTvImporter
              * @var $ar Archive
              */
             if ($ar = Archive::find($archive->id)) {
-                $ar->update($atrebute_archive);
+                $ar->update($attribute_archive);
             } else {
-                $ar = new Archive(array_merge(['id' => $archive->id], $atrebute_archive));
+                $ar = new Archive(array_merge(['id' => $archive->id], $attribute_archive));
             }
             $ar->save();
 
@@ -167,9 +167,10 @@ class SmartTvImporter
              * @var $ep Episode
              */
             if ($ep = Episode::find($archive->ep_id)) {
-                $ep->update($atrebute_episode);
+                $ep->update($attribute_episode);
             } else {
-                $ep = new Episode(array_merge(['id' => $archive->ep_id], $atrebute_episode, ['time_end' => $archive->ep_str]));
+                $ep = new Episode(array_merge(['id' => $archive->ep_id], $attribute_episode,
+                    ['time_end' => $archive->ep_str]));
             }
             $ep->save();
         }

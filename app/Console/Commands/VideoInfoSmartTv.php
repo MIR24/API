@@ -56,6 +56,7 @@ class VideoInfoSmartTv extends Command
         $this->info('Start set duration for video');
         foreach (Episode::all() as $item) {
             if ($item->time_begin == $item->time_end) {
+                $this->line("Fixing duration in episode {$item->id}");
                 $this->video->fixVideoEpisode($item);
                 $count++;
             }

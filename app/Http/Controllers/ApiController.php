@@ -340,9 +340,6 @@ class ApiController extends BaseController
      *     @OA\Property(property="videoDuration", type="string", example="00:03:21.00"),
      *   )
      * )
-     *     TODO OA\Property(property="newsCount", type="integer", example=10,
-     *       description="кол-во новостей всего в данной категории (при categories = 0 – новостей вообще)",
-     *     ),
      *
      * @OA\Schema(
      *   schema="apiRequestNewsText",
