@@ -194,15 +194,20 @@ class SmartTvImporter
     //TODO may be need more actual parser...
     private function getUrlVideo($id, $url)
     {
-        if ($url == 'video.mp4')
+        if ($url == 'video.mp4') {
             return sprintf($this->params['archive']['video_pattern_1'], $id, $url);
-        else
+        } else {
             return sprintf($this->params['archive']['video_pattern_2'], $url);
+        }
     }
 
     private function getUrlImageArchive($id, $url)
     {
-        return sprintf($this->params['archive']['image_pattern_broadcast'], $id, $url);
+        if (!empty($url)) {
+            return sprintf($this->params['archive']['image_pattern_broadcast'], $id, $url);
+        } else {
+            return sprintf($this->params['archive']['image_pattern_broadcast_default'], $id);
+        }
     }
 
     private function getUrlImageEpisode($id, $url)

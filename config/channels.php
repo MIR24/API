@@ -17,7 +17,7 @@ return [
             'id_in_api' => 1,
             'stream_shift' => '',
             'stream_live' => 'http://hls.mirtv.cdnvideo.ru/mirtv-parampublish/hd/playlist.m3u8',
-            'logo' => 'http://onair.mir24.tv/images/custom/logo2.png',
+            'logo' => 'http://onair.mir24.tv/images/custom/logo.png',
         ]
     ],
 
@@ -28,6 +28,7 @@ return [
         'video_pattern_1' => 'http://mirtv.ru/files/video/%s/%s', // для sprintf()
         'video_pattern_2' => 'http://mir24.tv/video/content/%s',
         'image_pattern_broadcast' => 'http://mirtv.ru/files/broadcast/%s/%s',
+        'image_pattern_broadcast_default' => 'http://mirtv.ru/files/broadcast/%s/main.jpg',
         'image_pattern_episode' => 'http://mirtv.ru/files/video/%s/%s',
 
     ]
