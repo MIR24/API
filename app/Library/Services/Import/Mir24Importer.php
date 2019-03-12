@@ -27,7 +27,7 @@ class Mir24Importer
         $query = "SELECT    n.id, n.created_at as date, n.published_at, n.advert as shortText, n.text, "
             . "          n.title, imn.image_id as imageId, t.id AS rubric_id, UPPER(t.title) AS categoryName, "
             . "          nv.video_id as videoId, v.url AS videoUrl, v.duration AS videoDuration, a.name AS author, "
-            . "          c.origin, c.link, n.lightning as rushHourNews, n.main_top as topListNews, "
+            . "          c.origin, c.link, n.main_top as topListNews, "
             . "          (n.status = 'active') AS published, "
             . "          (nt1.tag_id IS NOT NULL) AS hasGallery "
             . "FROM      news n "
@@ -164,16 +164,16 @@ class Mir24Importer
     {
         $query = "INSERT INTO news (id, date, title, shortText, shortTextSrc, text, textSrc, "
             . "                  imageID, categoryID, videoID, "
-            . "                  copyright, copyrightSrc, rushHourNews, topListNews, "
+            . "                  copyright, copyrightSrc, topListNews, "
             . "                  hasGallery, published, videoDuration) "
-            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
             . "ON DUPLICATE KEY UPDATE "
             . "       id = VALUES(id), date = VALUES(date), title = VALUES(title), "
             . "       shortText = VALUES(shortText), shortTextSrc = VALUES(shortTextSrc), "
             . "       text = VALUES(text), textSrc = VALUES(textSrc), imageID = "
             . "       VALUES(imageID), categoryID = VALUES(categoryID), videoID = VALUES(videoID), "
             . "       copyright = VALUES(copyright), copyrightSrc = VALUES(copyrightSrc), "
-            . "       rushHourNews = VALUES(rushHourNews), topListNews = VALUES(topListNews), "
+            . "       topListNews = VALUES(topListNews), "
             . "       hasGallery = VALUES(hasGallery), published = VALUES(published), "
             . "       videoDuration = VALUES(videoDuration)";
 
@@ -191,7 +191,6 @@ class Mir24Importer
                 $newsItem->videoId,
                 $newsItem->copyright,
                 $newsItem->copyrightSrc,
-                $newsItem->rushHourNews ?? 0,
                 $newsItem->topListNews ?? 0,
                 $newsItem->hasGallery,
                 $newsItem->published,

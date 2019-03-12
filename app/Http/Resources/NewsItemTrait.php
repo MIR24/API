@@ -18,7 +18,6 @@ trait NewsItemTrait
             "videoID" => $this->videoID,
             "copyright" => $this->copyright,
             "copyrightSrc" => $this->copyrightSrc,
-            "rushHourNews" => boolval($this->rushHourNews),
             "topListNews" => boolval($this->topListNews),
             "hasGallery" => boolval($this->hasGallery),
             "videoDuration" => $this->videoDuration,

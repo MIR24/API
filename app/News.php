@@ -27,7 +27,7 @@ class News extends Model
     {
         $fieldsForSelect = "news.id, date, shortText, shortTextSrc, text, textSrc, title, imageID, "
             . "       categoryID, videoID, copyright, copyrightSrc, "
-            . "       rushHourNews, topListNews, hasGallery, videoDuration, (SELECT GROUP_CONCAT("
+            . "       topListNews, hasGallery, videoDuration, (SELECT GROUP_CONCAT("
             . "       tag_id SEPARATOR ',') FROM news_tags WHERE news_id = news.id) AS tags, "
             . "       (SELECT GROUP_CONCAT(country_id SEPARATOR ',') FROM news_country "
             . "       WHERE news_id = news.id) AS country ";
