@@ -15,7 +15,6 @@ trait NewsItemTrait
             "title" => $this->title,
             "imageID" => $this->imageID,
             "categoryID" => $this->categoryID,
-            "serieID" => $this->serieID,
             "videoID" => $this->videoID,
             "copyright" => $this->copyright,
             "copyrightSrc" => $this->copyrightSrc,
