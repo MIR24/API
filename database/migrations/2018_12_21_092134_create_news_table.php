@@ -32,7 +32,7 @@ class CreateNewsTable extends Migration {
 			$table->boolean('topListNews')->default(0);
 			$table->boolean('hasGallery')->default(0)->index('gallery');
 			$table->boolean('published')->default(0);
-			$table->smallInteger('onMainPagePosition')->default(-1)->index('actual');
+			$table->smallInteger('onMainPagePosition')->default(-1)->index('actual'); // TODO delete
 			$table->string('videoDuration', 12)->nullable()->default('00:00:00.00');
 		});
 	}

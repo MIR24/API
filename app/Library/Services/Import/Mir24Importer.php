@@ -29,7 +29,7 @@ class Mir24Importer
             . "          nv.video_id as videoId, v.url AS videoUrl, v.duration AS videoDuration, a.name AS author, "
             . "          c.origin, c.link, n.lightning as rushHourNews, n.main_top as topListNews, "
             . "          (n.status = 'active') AS published, "
-            . "          n.main_center as onMainPagePosition, (nt1.tag_id IS NOT NULL) AS hasGallery "
+            . "          (nt1.tag_id IS NOT NULL) AS hasGallery "
             . "FROM      news n "
             . "LEFT JOIN news_tag nt ON nt.news_id = n.id "
             . "LEFT JOIN tags t ON t.id = nt.tag_id AND t.type = 3 "
@@ -165,8 +165,8 @@ class Mir24Importer
         $query = "INSERT INTO news (id, date, title, shortText, shortTextSrc, text, textSrc, "
             . "                  imageID, categoryID, serieID, videoID, episodeID, "
             . "                  copyright, copyrightSrc, rushHourNews, topListNews, "
-            . "                  hasGallery, published, onMainPagePosition, videoDuration) "
-            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            . "                  hasGallery, published, videoDuration) "
+            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
             . "ON DUPLICATE KEY UPDATE "
             . "       id = VALUES(id), date = VALUES(date), title = VALUES(title), "
             . "       shortText = VALUES(shortText), shortTextSrc = VALUES(shortTextSrc), "
@@ -176,8 +176,7 @@ class Mir24Importer
             . "       copyright = VALUES(copyright), copyrightSrc = VALUES(copyrightSrc), "
             . "       rushHourNews = VALUES(rushHourNews), topListNews = VALUES(topListNews), "
             . "       hasGallery = VALUES(hasGallery), published = VALUES(published), "
-            . "       onMainPagePosition = VALUES(onMainPagePosition), videoDuration = "
-            . "       VALUES(videoDuration)";
+            . "       videoDuration = VALUES(videoDuration)";
 
         foreach ($news as $newsItem) {
             DB::insert($query, [
@@ -199,7 +198,6 @@ class Mir24Importer
                 $newsItem->topListNews ?? 0,
                 $newsItem->hasGallery,
                 $newsItem->published,
-                $newsItem->onMainPagePosition ?? 0,
                 gmdate("H:i:s", $newsItem->videoDuration ?? 0)
             ]);
         }
