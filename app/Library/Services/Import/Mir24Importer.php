@@ -26,7 +26,7 @@ class Mir24Importer
     {
         $query = "SELECT    n.id, n.created_at as date, n.published_at, n.advert as shortText, n.text, "
             . "          n.title, imn.image_id as imageId, t.id AS rubric_id, UPPER(t.title) AS categoryName, "
-            . "          nv.video_id as videoId, v.url AS videoUrl, a.name AS author, "
+            . "          nv.video_id as videoId, v.url AS videoUrl, v.duration AS videoDuration, a.name AS author, "
             . "          c.origin, c.link, n.lightning as rushHourNews, n.main_top as topListNews, "
             . "          (n.status = 'active') AS published, "
             . "          n.main_center as onMainPagePosition, (nt1.tag_id IS NOT NULL) AS hasGallery "
@@ -61,7 +61,9 @@ class Mir24Importer
 
     private function textForMobile($text)
     {
-        if (!$text||$text=="") { return $text; }
+        if (!$text || $text == "") {
+            return $text;
+        }
 
         $text = htmlspecialchars_decode($text);
 
@@ -77,8 +79,8 @@ class Mir24Importer
 
         foreach ($images as $image) {
             $image->attr("width", "90%")
-                  ->attr("style", "padding:5px;")
-                  ->removeAttribute("height");
+                ->attr("style", "padding:5px;")
+                ->removeAttribute("height");
         }
 
         foreach ($iframs as $ifram) {
@@ -96,7 +98,7 @@ class Mir24Importer
 
         foreach ($news as $item) {
 
-            $item->text=$this->textForMobile($item->text);
+            $item->text = $this->textForMobile($item->text);
 
             if ($item->origin == null) {
                 $item->origin = "";
@@ -126,11 +128,12 @@ class Mir24Importer
                 case "ШОУ-БИЗНЕC":
                     $item->categoryName = "ШОУ-БИЗНЕС";
                     break;
-                case "НАУКА И ТЕХНОЛОГИИ":  # TODO if ! array_key_exists($item->categoryName, ...)
+                case "НАУКА И ТЕХНОЛОГИИ":
                     $item->categoryName = $item->id % 2 == 0 ? "НАУКА" : "HI-TECH";
                     break;
             }
 
+            # TODO categoryName может не оказаться в $availableCategories из-за замены в switch/case
             if (array_key_exists($item->categoryName, $availableCategories)) {
                 $categoryId = $availableCategories[$item->categoryName];
 
@@ -177,11 +180,6 @@ class Mir24Importer
             . "       VALUES(videoDuration)";
 
         foreach ($news as $newsItem) {
-            $duration = "00:00:00.00";
-            if ($newsItem->videoId) {
-// TODO                $duration = $this->getDuration($newsItem->videoUrl);
-            }
-
             DB::insert($query, [
                 $newsItem->id,
                 $newsItem->date,
@@ -202,7 +200,7 @@ class Mir24Importer
                 $newsItem->hasGallery,
                 $newsItem->published,
                 $newsItem->onMainPagePosition ?? 0,
-                $duration
+                gmdate("H:i:s", $newsItem->videoDuration ?? 0)
             ]);
         }
     }
