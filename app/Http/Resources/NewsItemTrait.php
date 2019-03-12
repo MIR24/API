@@ -17,7 +17,6 @@ trait NewsItemTrait
             "categoryID" => $this->categoryID,
             "serieID" => $this->serieID,
             "videoID" => $this->videoID,
-            "episodeID" => $this->episodeID,
             "copyright" => $this->copyright,
             "copyrightSrc" => $this->copyrightSrc,
             "rushHourNews" => boolval($this->rushHourNews),

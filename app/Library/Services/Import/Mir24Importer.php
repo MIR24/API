@@ -163,16 +163,16 @@ class Mir24Importer
     public function saveLastNews($news): void
     {
         $query = "INSERT INTO news (id, date, title, shortText, shortTextSrc, text, textSrc, "
-            . "                  imageID, categoryID, serieID, videoID, episodeID, "
+            . "                  imageID, categoryID, serieID, videoID, "
             . "                  copyright, copyrightSrc, rushHourNews, topListNews, "
             . "                  hasGallery, published, videoDuration) "
-            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
             . "ON DUPLICATE KEY UPDATE "
             . "       id = VALUES(id), date = VALUES(date), title = VALUES(title), "
             . "       shortText = VALUES(shortText), shortTextSrc = VALUES(shortTextSrc), "
             . "       text = VALUES(text), textSrc = VALUES(textSrc), imageID = "
             . "       VALUES(imageID), categoryID = VALUES(categoryID), serieID = VALUES("
-            . "       serieID), videoID = VALUES(videoID), episodeID = VALUES(episodeID), "
+            . "       serieID), videoID = VALUES(videoID), "
             . "       copyright = VALUES(copyright), copyrightSrc = VALUES(copyrightSrc), "
             . "       rushHourNews = VALUES(rushHourNews), topListNews = VALUES(topListNews), "
             . "       hasGallery = VALUES(hasGallery), published = VALUES(published), "
@@ -191,7 +191,6 @@ class Mir24Importer
                 $newsItem->categoryId,
                 null, # serieID,
                 $newsItem->videoId,
-                null, # episodeID,
                 $newsItem->copyright,
                 $newsItem->copyrightSrc,
                 $newsItem->rushHourNews ?? 0,

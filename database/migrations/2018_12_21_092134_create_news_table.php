@@ -25,7 +25,7 @@ class CreateNewsTable extends Migration {
 			$table->integer('categoryID')->index('category');
 			$table->integer('serieID')->nullable();
 			$table->integer('videoID')->nullable()->index('video');
-			$table->integer('episodeID')->nullable();
+			$table->integer('episodeID')->nullable(); // TODO Delete
 			$table->text('copyright')->nullable();
 			$table->text('copyrightSrc')->nullable();
 			$table->boolean('rushHourNews')->default(0);
