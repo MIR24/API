@@ -25,14 +25,14 @@ class CreateNewsTable extends Migration {
 			$table->integer('categoryID')->index('category');
 			$table->integer('serieID')->nullable();
 			$table->integer('videoID')->nullable()->index('video');
-			$table->integer('episodeID')->nullable(); // TODO Delete
+			$table->integer('episodeID')->nullable();
 			$table->text('copyright')->nullable();
 			$table->text('copyrightSrc')->nullable();
 			$table->boolean('rushHourNews')->default(0);
 			$table->boolean('topListNews')->default(0);
 			$table->boolean('hasGallery')->default(0)->index('gallery');
 			$table->boolean('published')->default(0);
-			$table->smallInteger('onMainPagePosition')->default(-1)->index('actual'); // TODO delete
+			$table->smallInteger('onMainPagePosition')->default(-1)->index('actual');
 			$table->string('videoDuration', 12)->nullable()->default('00:00:00.00');
 		});
 	}
