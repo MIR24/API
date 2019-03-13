@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
+use App\CategoryTv;
 
 class CategoryController extends Controller
 {
@@ -21,6 +21,6 @@ class CategoryController extends Controller
      */
     public function show()
     {
-        return response()->json(Category::GetForTvApi()->get());
+        return response()->json(CategoryTv::GetForTvApi()->get());
     }
 }
