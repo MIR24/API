@@ -74,25 +74,30 @@ class SmartTvImporter
     public function getBroadcasts(): array
     {
 
-        $query = "SELECT teleprogramm_id, title, description, min_age, start FROM teleprogramm_mirhd " .
-            "where `start` > ?  order by `start` asc";
+        $query = "SELECT t.teleprogramm_id, t.title, t.description, t.min_age, t.start, a.title as article_title"
+            . " FROM teleprogramm_mirhd t LEFT JOIN article a ON t.article_broadcast_id = a.article_id"
+            . " where t.start > ?  order by t.start asc";
 
         $start_time = (new \DateTime("now - {$this->params['tv_program_end_period']} minute"))->format(DATE_W3C);
 
         return DB::connection(self::MIRHD)->select($query, [$start_time]);
     }
 
-    public function saveBroadcasts($broadcasts, $category_id, $channel_id): self
+    public function saveBroadcasts($broadcasts, $channel_id): self
     {
         $end = null;
         $buff = null;
+        $categories = $this->getCategoryNames();
 
         $this->addTimeEnd($broadcasts);
 
         foreach ($broadcasts as $broadcast) {
-            /**
-             * @var $res Broadcasts
-             */
+            $category_id = array_key_exists($broadcast->article_title, $categories)
+                ? $categories[$broadcast->article_title]
+                : array_key_exists($broadcast->title, $categories)
+                    ? $categories[$broadcast->title]
+                    : null;
+
             $atributes = [
                 'title' => $broadcast->title,
                 'subtitle' => $broadcast->description,
@@ -104,6 +109,9 @@ class SmartTvImporter
                 'channel_id' => $channel_id,
             ];
 
+            /**
+             * @var $res Broadcasts
+             */
             $res = Broadcasts::find($broadcast->teleprogramm_id);
 
             if ($res) {
@@ -153,16 +161,7 @@ class SmartTvImporter
 
     public function saveArchive($archives)
     {
-        $categories = [];
-        foreach ($this->params['archives'] as $itemArch) {
-            $filteredCategoriesTv = array_values(array_filter($this->params['categories_tv'],
-                function ($itemCat) use ($itemArch) {
-                    return $itemCat['name'] === $itemArch['category'];
-                }));
-            if (count($filteredCategoriesTv)) {
-                $categories[$itemArch['name']] = $filteredCategoriesTv[0]['id'];
-            }
-        }
+        $categories = $this->getCategoryNames();
 
         foreach ($archives as $archive) {
             $year = (new \DateTime($archive->ep_str))->format('Y');
@@ -248,5 +247,21 @@ class SmartTvImporter
     private function getTitle($title)
     {
         return str_replace("\n", "", strip_tags($title));
+    }
+
+    private function getCategoryNames()
+    {
+        $categories = [];
+        foreach ($this->params['archives'] as $itemArch) {
+            $filteredCategoriesTv = array_values(array_filter($this->params['categories_tv'],
+                function ($itemCat) use ($itemArch) {
+                    return $itemCat['name'] === $itemArch['category'];
+                }));
+            if (count($filteredCategoriesTv)) {
+                $categories[$itemArch['name']] = $filteredCategoriesTv[0]['id'];
+            }
+        }
+
+        return $categories;
     }
 }

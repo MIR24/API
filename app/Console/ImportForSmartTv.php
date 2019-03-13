@@ -62,7 +62,7 @@ class ImportForSmartTv extends Command
             $this->info("Getting broadcasts.");
             $broadcasts = $this->importer->getBroadcasts();
             $this->info("Got " . count($broadcasts) . " broadcasts. Saving...");
-            $this->importer->saveBroadcasts($broadcasts, $categories[0]['id'], $channels[0]['id_in_api']);
+            $this->importer->saveBroadcasts($broadcasts, $channels[0]['id_in_api']);
         } else {
             $this->error("No found category and channel for adding broadcasts.");
         }
