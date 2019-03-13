@@ -151,15 +151,25 @@ class SmartTvImporter
         return DB::connection(self::MIRHD)->select($query, [$this->params['archive']['start_date']]);
     }
 
-    public function saveArchive($archives, $category_id = 1)
+    public function saveArchive($archives)
     {
-        foreach ($archives as $archive) {
+        $categories = [];
+        foreach ($this->params['archives'] as $itemArch) {
+            $filteredCategoriesTv = array_values(array_filter($this->params['categories_tv'],
+                function ($itemCat) use ($itemArch) {
+                    return $itemCat['name'] === $itemArch['category'];
+                }));
+            if (count($filteredCategoriesTv)) {
+                $categories[$itemArch['name']] = $filteredCategoriesTv[0]['id'];
+            }
+        }
 
+        foreach ($archives as $archive) {
             $year = (new \DateTime($archive->ep_str))->format('Y');
 
             $attribute_archive = [
                 'title' => $archive->title,
-                'category_id' => $category_id,
+                'category_id' => array_key_exists($archive->title, $categories) ? $categories[$archive->title] : null,
                 'poster' => $this->getUrlImageArchive($archive->id, $archive->image),
             ];
 

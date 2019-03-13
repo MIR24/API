@@ -58,11 +58,11 @@ class ImportForSmartTv extends Command
         $this->info("Got " . count($channels) . " channels. Saving...");
         $this->importer->saveChannels($channels);
 
-        if ($categories->count() and count($channels)) {
+        if (count($categories) and count($channels)) {
             $this->info("Getting broadcasts.");
             $broadcasts = $this->importer->getBroadcasts();
             $this->info("Got " . count($broadcasts) . " broadcasts. Saving...");
-            $this->importer->saveBroadcasts($broadcasts, $categories->first()->id, $channels[0]['id_in_api']);
+            $this->importer->saveBroadcasts($broadcasts, $categories[0]['id'], $channels[0]['id_in_api']);
         } else {
             $this->error("No found category and channel for adding broadcasts.");
         }
@@ -73,7 +73,7 @@ class ImportForSmartTv extends Command
         $this->info("Getting archives.");
         $archives = $this->importer->getArchive();
         $this->info("Has " . count($archives) . " episodes in archive for Smart TV.");
-        $this->importer->saveArchive($archives, $categories->first()->id);
+        $this->importer->saveArchive($archives);
         $this->info("Got " . Episode::count() . " channels. Saving...");
 
         $this->info("Done.");

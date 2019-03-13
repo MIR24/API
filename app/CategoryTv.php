@@ -24,7 +24,6 @@ class CategoryTv extends Model
     public function scopeGetForTvApi(Builder $query)
     {
         return $query
-            ->where("show_smarttv", true)
             ->select([
                 'id',
                 'name',
