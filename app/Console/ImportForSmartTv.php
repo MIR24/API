@@ -2,12 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Category;
-use App\Library\Services\Cache\ChannelsCaching;
 use App\Episode;
+use App\Library\Services\Cache\ChannelsCaching;
 use App\Library\Services\Import\SmartTvImporter;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
 
 class ImportForSmartTv extends Command
 {
@@ -50,9 +48,10 @@ class ImportForSmartTv extends Command
     {
         $this->info("Starting update.");
 
-        /** @var Builder $categories */
-        $categories = Category::GetForTvApi();
-        $this->info("Has " . $categories->count() . " categories for Smart TV.");
+        $this->info("Getting categories for Smart TV.");
+        $categories = $this->importer->getCategories();
+        $this->info("Got " . count($categories) . " categories for Smart TV. Saving...");
+        $this->importer->saveCategories($categories);
 
         $this->info("Getting channels.");
         $channels = $this->importer->getChannels();

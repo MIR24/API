@@ -19,6 +19,8 @@ class CategoryTv extends Model
 
     public $timestamps = false;
 
+    protected $fillable = ['id', 'name'];
+
     public function scopeGetForTvApi(Builder $query)
     {
         return $query

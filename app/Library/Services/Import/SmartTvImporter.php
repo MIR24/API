@@ -5,6 +5,7 @@ namespace App\Library\Services\Import;
 
 use App\Archive;
 use App\Broadcasts;
+use App\CategoryTv;
 use App\Channel;
 use App\Episode;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +28,25 @@ class SmartTvImporter
         $this->params = $params;
     }
 
+    public function getCategories(): array
+    {
+        return $this->params['categories_tv'];
+    }
+
+
+    public function saveCategories($categories): self
+    {
+        foreach ($categories as $category) {
+            CategoryTv::updateOrCreate(
+                ['id' => $category['id']],
+                [
+                    'name' => $category['name'],
+                ]
+            );
+        }
+
+        return $this;
+    }
 
     public function getChannels(): array
     {
