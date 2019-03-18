@@ -44,6 +44,7 @@ class Channel extends Model
     public function week_broadcasts()
     {
         return $this->hasMany(Broadcasts::class)
+            ->orderBy('time_begin')
             ->whereBetween('time_begin',[
                date('Y-m-d 00:00:00',strtotime('monday this week')),
                date('Y-m-d 00:00:00',strtotime('monday next week')),
