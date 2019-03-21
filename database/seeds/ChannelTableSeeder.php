@@ -11,9 +11,13 @@ class ChannelTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Channel::class, 5)->create()->each(function ($chanel) {
-            $chanel->save();
-        });
+        $channels = config('channels.streams');
+        foreach ($channels as $channelData) {
+            $channelData['id'] = $channelData['id_in_api'];
+            unset($channelData['id_in_api']);
+            unset($channelData['id_in_mir24']);
 
+            (new \App\Channel($channelData))->save();
+        }
     }
 }
