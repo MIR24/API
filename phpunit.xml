@@ -9,8 +9,12 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Base">
-            <directory suffix="Test.php">./tests</directory>
+        <testsuite name="DatabaseMigration">
+            <directory suffix="MigrationTest.php">./tests/Database</directory>
+        </testsuite>
+
+        <testsuite name="DatabaseImport">
+            <directory suffix="ImportTest.php">./tests/Database</directory>
         </testsuite>
 
         <testsuite name="Unit">

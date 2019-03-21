@@ -5,13 +5,13 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class DatabaseTest extends TestCase
+class MigrationTest extends TestCase
 {
-//    use RefreshDatabase;
+    use RefreshDatabase;
 
     public function testDatabase()
     {
-//        $this->seed();
+        $this->seed();
         $this->assertDatabaseHas('users', [
             'name' => 'admin',
             'email' => 'test@test.com',
