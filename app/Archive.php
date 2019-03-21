@@ -63,7 +63,9 @@ class Archive extends Model
                 'time_begin',
                 'time_end'
             ]
-        )->with('episodes');
+        )
+            ->with('episodes')
+            ->orderBy('id','desc');
 
     }
 
