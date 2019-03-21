@@ -44,7 +44,7 @@ class Archive extends Model
 
     public function episodes()
     {
-        return $this->hasMany(Episode::class);
+        return $this->hasMany(Episode::class)->orderBy('time_begin','desc');
     }
 
     /**
