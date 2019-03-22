@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Archive;
+use App\Library\Services\Cache\ArchivesCaching;
 use App\Library\Services\TimeReplacer\TimeReplacer;
 
 /**
@@ -22,6 +22,6 @@ class ArchiveController extends Controller
 {
     public function show(TimeReplacer $replacer)
     {
-        return response()->json($replacer->replaceForArchive(Archive::GetForApi()->get()));
+        return response()->json(ArchivesCaching::get());
     }
 }
