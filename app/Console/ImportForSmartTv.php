@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Episode;
+use App\Library\Services\Cache\ArchivesCaching;
 use App\Library\Services\Cache\ChannelsCaching;
 use App\Library\Services\Import\SmartTvImporter;
 use Illuminate\Console\Command;
@@ -75,6 +76,9 @@ class ImportForSmartTv extends Command
         $this->info("Has " . count($archives) . " episodes in archive for Smart TV.");
         $this->importer->saveArchive($archives);
         $this->info("Got " . Episode::count() . " channels. Saving...");
+
+        $this->info("Setting archives to cache.");
+        ArchivesCaching::warmup();
 
         $this->info("Done.");
     }

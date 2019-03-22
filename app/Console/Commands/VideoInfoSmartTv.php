@@ -9,6 +9,8 @@
 namespace App\Console\Commands;
 
 use App\Episode;
+use App\Library\Services\Cache\ArchivesCaching;
+use App\Library\Services\Cache\ChannelsCaching;
 use App\Library\Services\Import\SmartTvVideo;
 use Illuminate\Console\Command;
 
@@ -51,7 +53,7 @@ class VideoInfoSmartTv extends Command
      */
     public function handle()
     {
-        $count=0;
+        $count = 0;
 
         $this->info('Start set duration for video');
         foreach (Episode::all() as $item) {
@@ -63,5 +65,10 @@ class VideoInfoSmartTv extends Command
 
         }
         $this->info("Changed {$count} videos");
+
+        $this->info("Setting channels with broadcasts to cache.");
+        ChannelsCaching::warmup();
+        $this->info("Setting archives to cache.");
+        ArchivesCaching::warmup();
     }
 }
