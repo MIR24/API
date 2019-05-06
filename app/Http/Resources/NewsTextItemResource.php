@@ -13,6 +13,7 @@ class NewsTextItemResource extends AppJsonResource
         $result = [
             "textWithTags" => $this->newsText['textWithTags'],
             "textSource" => $this->newsText['textSource'],
+            "link" => $this->newsText['link'],
         ];
 
         return $result;

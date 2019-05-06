@@ -349,6 +349,7 @@ class ApiController extends BaseController
      *   @OA\Property(property="content", type="object",
      *     @OA\Property(property="textWithTags", type="string"),
      *     @OA\Property(property="textSource", type="string"),
+     *     @OA\Property(property="link", type="string"),
      *   )
      * )
      *
