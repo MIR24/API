@@ -90,4 +90,8 @@ return [
 
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
 
+    'images_url_cache_time'=>1000,
+
+    'video_url_cache_time'=>1000,
+
 ];

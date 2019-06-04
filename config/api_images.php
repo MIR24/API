@@ -8,8 +8,11 @@
 
 
 return [
+
+    'image_root'=>'https://mir24.tv',
     // take from SiteConfig -> https://github.com/MIR24/mir24-mobile-api/blob/maven/src/main/java/ru/mirtv/m24api/objects/SiteConfig.java
-    "imageBaseURL" => "http://api.mir24.tv/v2/media/images/uploaded/",
+
+    "imageBaseURL" => env('APP_URL','http://api.mir24.tv')."/images/uploaded/",
     "videoBaseURL" => "http://api.mir24.tv/v2/video/content/",
 
     // take from https://github.com/MIR24/mir24-mobile-api/blob/maven/src/main/webapp/WEB-INF/images.properties
