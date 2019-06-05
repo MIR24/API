@@ -17,9 +17,10 @@ class News extends Model
 
     public $timestamps = false;
 
-    public function scopeGetVideoUrl(Builder $query,$videoID){
+    public function scopeGetVideoUrl(Builder $query, $videoID)
+    {
         return $query
-            ->where('videoID',$videoID);
+            ->where('videoID', $videoID);
     }
 
     public function scopeGetNewsText(Builder $query, $newsId): Builder
@@ -76,13 +77,6 @@ class News extends Model
             $query->orderBy("news.id", "DESC");
         }
 
-        if ($options->getCategory() === null) {
-            $query->leftJoin("categories as c", "c.id", "=", "news.categoryID")
-                ->where("c.show", true);
-        } else {
-            $query->where("categoryID", $options->getCategory());
-        }
-
         if ($options->isOnlyVideo()) {
             $query->where("videoID", "!=", 0);
         }
@@ -94,23 +88,42 @@ class News extends Model
         if ($options->getTags() !== null && count($options->getTags())) {
 
             $query->rightJoin("news_tags as nt", "news.id", "=", "nt.news_id")
-                ->whereIn("nt.tag_id",  $options->getTags());
+                ->whereIn("nt.tag_id", $options->getTags());
         }
-        if ($options->getCountryID() !== null ) {
+        if ($options->getCountryID() !== null) {
 
             $query->rightJoin("news_country as nc", "news.id", "=", "nc.news_id")
                 ->where("nc.country_id", $options->getCountryID());
         }
-        if ($options->getIgnoreId() !== null && count($options->getIgnoreId())>0 ) {
+        if ($options->getIgnoreId() !== null && count($options->getIgnoreId()) > 0) {
 
-            $query->whereIn('news.id',$options->getIgnoreId(),'and',true );
+            $query->whereIn('news.id', $options->getIgnoreId(), 'and', true);
         }
 
     }
 
+    private static function unionBuilder($option)
+    {
+        $qq = [];
+        foreach (Category::where("show", true)->get() as $category) {
+            $qq[] = self::GetList($option)->where("categoryID", $category->id);
+        }
+
+        for ($i = 1; $i < count($qq); $i++) {
+            $qq[0]->union($qq[$i]);
+        }
+        return $qq[0] ?? [];
+    }
+
     public static function getPostprocessedList(NewsOption $option)
     {
-        $news = self::GetList($option)->get();
+        if ($option->getCategory() === null) {
+            $news = self::unionBuilder($option)->get();
+        } else {
+            $news = self::GetList($option)
+                ->where("categoryID", $option->getCategory())
+                ->get();
+        }
 
         foreach ($news as $newsItem) {
             self::postprocessingOfGetList($newsItem);
