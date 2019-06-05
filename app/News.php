@@ -15,6 +15,13 @@ class News extends Model
 {
     protected $table = 'news';
 
+    public $timestamps = false;
+
+    public function scopeGetVideoUrl(Builder $query,$videoID){
+        return $query
+            ->where('videoID',$videoID);
+    }
+
     public function scopeGetNewsText(Builder $query, $newsId): Builder
     {
         return $query

@@ -10,10 +10,11 @@
 return [
 
     'image_root'=>'https://mir24.tv',
+    'video_root'=>'https://mirtvpc.cdnvideo.ru/mirtv',
     // take from SiteConfig -> https://github.com/MIR24/mir24-mobile-api/blob/maven/src/main/java/ru/mirtv/m24api/objects/SiteConfig.java
 
     "imageBaseURL" => env('APP_URL','http://api.mir24.tv')."/images/uploaded/",
-    "videoBaseURL" => "http://api.mir24.tv/v2/video/content/",
+    "videoBaseURL" => env('APP_URL','http://api.mir24.tv')."/video/content/",
 
     // take from https://github.com/MIR24/mir24-mobile-api/blob/maven/src/main/webapp/WEB-INF/images.properties
     // also see InfoGetter::getSiteConfig  https://github.com/MIR24/mir24-mobile-api/blob/maven/src/main/java/ru/mirtv/m24api/getters/InfoGetter.java

@@ -12,6 +12,7 @@
 */
 
 use App\Library\Services\Resources\ImageRouter;
+use App\Library\Services\Resources\VideoRouter;
 
 Route::get('/', function () {
     return redirect('/api/documentation');
@@ -20,3 +21,7 @@ Route::get('/', function () {
 Route::get('/images/uploaded/{type}{id}.jpg/', function ($type, $id, ImageRouter $router) {
     return redirect($router->getSrc($id, $type)) ;
 })->where(['id' => '[0-9]+', 'type' => '[a-z,_]+']);
+//TODO дабавить разогрев для файлов видео
+Route::get('/video/content/{videoID}', function ($videoID, VideoRouter $router) {
+    return redirect($router->getUrl($videoID));
+})->where(['videoID' => '[0-9]+']);
