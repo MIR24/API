@@ -112,7 +112,7 @@ class News extends Model
         for ($i = 1; $i < count($qq); $i++) {
             $qq[0]->union($qq[$i]);
         }
-        return $qq[0] ?? [];
+        return $qq[0] ?? self::GetList($option);
     }
 
     public static function getPostprocessedList(NewsOption $option)
