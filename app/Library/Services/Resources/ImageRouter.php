@@ -7,6 +7,7 @@ namespace App\Library\Services\Resources;
 use App\Crops;
 use App\News;
 
+use App\Photos;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -34,6 +35,10 @@ class ImageRouter
 
     public function getSrc($imageId, $type)
     {
+        if($ph=Photos::where('image_id',$imageId)->first()){
+            return config('api_images.image_root').$ph->link;
+        }
+
         $crop = $this->getImage($imageId, $type);
 
         if ($crop) {
