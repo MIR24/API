@@ -7,7 +7,6 @@ namespace App\Library\Services\Resources;
 use App\Crops;
 use App\News;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -35,14 +34,9 @@ class ImageRouter
 
     public function getSrc($imageId, $type)
     {
-        if (Cache::has($type . $imageId)) {
-            return Cache::get($type . $imageId);
-        }
-
         $crop = $this->getImage($imageId, $type);
 
         if ($crop) {
-            Cache::put($type . $imageId, config('api_images.image_root') . $crop->src, config('cache.images_url_cache_time'));
             return config('api_images.image_root') . $crop->src;
         }
 
@@ -67,7 +61,6 @@ class ImageRouter
         $crop = $this->getImage($imageId, $type);
 
         if ($crop) {
-            Cache::put($type . $imageId, config('api_images.image_root') . $crop->src, config('cache.images_url_cache_time'));
             return config('api_images.image_root') . $crop->src;
         }
 
