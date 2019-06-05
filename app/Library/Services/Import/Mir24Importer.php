@@ -423,10 +423,9 @@ class Mir24Importer
         $rs = DB::connection('mir24')->select($query, $ids);
 
         foreach ($rs as $row) {
-            $row->country = $countries[$row->country];
-            if ($row->country == null) {
-                $row->country = $countries["РОССИЯ"];
-            }
+            $row->country = key_exists($row->country, $countries)
+                ? $countries[$row->country]
+                : $countries["РОССИЯ"];
         }
 
         return $rs;
