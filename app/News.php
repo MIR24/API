@@ -105,7 +105,7 @@ class News extends Model
     private static function unionBuilder($option)
     {
         $qq = [];
-        foreach (Category::where("show", true)->get() as $category) {
+        foreach (Category::where("show", true)->orderBy('order')->get() as $category) {
             $qq[] = self::GetList($option)->where("categoryID", $category->id);
         }
 
