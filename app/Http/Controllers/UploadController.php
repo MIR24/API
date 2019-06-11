@@ -136,7 +136,7 @@ class UploadController extends Controller
         if (!$request->hasHeader('Content-Type')) {
             throw new UploadException("Not found headers", 418);
         }
-        //TODO may be laravel has more specific method
+
         if (stripos($request->header('Content-Type'), "multipart/form-data") === 0) {
             return $this->uploadFile($request);
 

@@ -143,7 +143,6 @@ class SmartTvImporter
         reset($broadcasts);
         //We can not single out the end of the last item in the program,
         //because we do not know when to start the next
-        //TODO find duration or end tim last elemetn into tv program
         array_pop($broadcasts);
     }
 
