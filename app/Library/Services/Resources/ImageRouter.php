@@ -11,7 +11,7 @@ use App\Photos;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class ImageRouter
+class ImageRouter implements InterfaceRouter
 {
     public function getFromMir($imageId)
     {
@@ -35,8 +35,8 @@ class ImageRouter
 
     public function getSrc($imageId, $type)
     {
-        if($ph=Photos::where('image_id',$imageId)->first()){
-            return config('api_images.image_root').$ph->link;
+        if ($ph = Photos::where('image_id', $imageId)->first()) {
+            return config('api_images.image_root') . $ph->link;
         }
 
         $crop = $this->getImage($imageId, $type);
@@ -75,4 +75,12 @@ class ImageRouter
     }
 
 
+    function getResult(array $params): string
+    {
+        if (!isset($params['id']) || !isset($params['type'])) {
+            Log::error('Need use image and type params');
+            abort(404);
+        }
+        return $this->getSrc($params['id'], $params['type']);
+    }
 }

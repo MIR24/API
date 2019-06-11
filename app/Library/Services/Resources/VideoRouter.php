@@ -8,7 +8,7 @@ use App\News;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class VideoRouter
+class VideoRouter implements InterfaceRouter
 {
     public function getVideo($videoID)
     {
@@ -32,7 +32,7 @@ class VideoRouter
     {
         $news = $this->getVideo($videoID);
 
-        if(!$news){
+        if (!$news) {
             Log::error("Not found news with video id {$videoID}");
             abort(404);
         }
@@ -44,12 +44,22 @@ class VideoRouter
         $url = $this->getFromMir($videoID);
 
         if ($url) {
-            $news->video_url = config('api_images.video_root').$url;
+            $news->video_url = config('api_images.video_root') . $url;
             $news->save();
 
-            return config('api_images.video_root').$url;
+            return config('api_images.video_root') . $url;
         }
 
         abort(404);
+    }
+
+    function getResult(array $params): string
+    {
+        if (!isset($params['videoID'])) {
+            Log::error('Need use videoID params');
+            abort(404);
+        }
+
+        return $this->getUrl($params['videoID']);
     }
 }

@@ -11,17 +11,30 @@
 |
 */
 
+use App\Library\Services\Cache\ResourcesCache;
 use App\Library\Services\Resources\ImageRouter;
 use App\Library\Services\Resources\VideoRouter;
 
 Route::get('/', function () {
     return redirect('/api/documentation');
 });
-//TODO дабавить разогрев для файлов изображений
-Route::get('/images/uploaded/{type}{id}.jpg/', function ($type, $id, ImageRouter $router) {
-    return redirect($router->getSrc($id, $type)) ;
+
+Route::get('/images/uploaded/{type}{id}.jpg', function ($type, $id, ImageRouter $router) {
+    return redirect(
+        (new ResourcesCache($router))->addCache(
+            "/images/uploaded/{$type}{$id}.jpg/",
+            ['type' => $type, 'id' => $id],
+            config('cache.images_url_cache_time')
+        )
+    );
 })->where(['id' => '[0-9]+', 'type' => '[a-z,_]+']);
-//TODO дабавить разогрев для файлов видео
+
 Route::get('/video/content/{videoID}', function ($videoID, VideoRouter $router) {
-    return redirect($router->getUrl($videoID));
+    return redirect(
+        (new ResourcesCache($router))->addCache(
+            "/video/content/{$videoID}",
+            ['videoID' => $videoID],
+            config('cache.video_url_cache_time')
+        )
+    );
 })->where(['videoID' => '[0-9]+']);
