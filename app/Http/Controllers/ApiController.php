@@ -26,7 +26,7 @@ use Illuminate\Validation\Rule;
 
 class ApiController extends BaseController
 {
-    private const PATH_BEGIN = "api/mobile/v1";
+    private const PATH_BEGIN = "/v2";
 
     public static $OPERATIONS = [
         'auth',
@@ -423,7 +423,7 @@ class ApiController extends BaseController
 
     /**
      * @OA\Post(
-     *   path="/mobile/v1/",
+     *   path="/v2/",
      *   tags={"Mobile Api"},
      *   summary="Унифицированная форма API. Доступно: auth, categorylist, comment, config, countries, gallery, newsById, newslist, tags, text, types",
      *   @OA\RequestBody(
@@ -479,7 +479,7 @@ class ApiController extends BaseController
                 case "auth":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/auth",
+                     *   path="/v2/auth",
                      *   tags={"Mobile Api"},
                      *   summary="Возвращает токен",
                      *   description="При успешной авторизации возвращается токен, который затем должен передаваться в других запросах.",
@@ -499,7 +499,7 @@ class ApiController extends BaseController
                 case "categorylist":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/categorylist",
+                     *   path="/v2/categorylist",
                      *   tags={"Mobile Api"},
                      *   @OA\RequestBody(
                      *       description="Категории новостей",
@@ -517,7 +517,7 @@ class ApiController extends BaseController
                 case "newslist":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/newslist",
+                     *   path="/v2/newslist",
                      *   tags={"Mobile Api"},
                      *   description="<p>Все параметры необязательны.</p>
                     <p>Если <strong>lastNews</strong> == true, то пытаемся возвратить новости из кеша,
@@ -553,7 +553,7 @@ class ApiController extends BaseController
                 case "newsById":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/newsById",
+                     *   path="/v2/newsById",
                      *   tags={"Mobile Api"},
                      *   @OA\RequestBody(
                      *       description="Получение новости по её ID",
@@ -571,7 +571,7 @@ class ApiController extends BaseController
                 case "config":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/config",
+                     *   path="/v2/config",
                      *   tags={"Mobile Api"},
                      *   description="Содержит список базовых ссылок до изображений, а также алиасы изображений и их размеры.",
                      *   @OA\RequestBody(
@@ -590,7 +590,7 @@ class ApiController extends BaseController
                 case "text":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/text",
+                     *   path="/v2/text",
                      *   tags={"Mobile Api"},
                      *   description="Получает полный текст новости по ID в двух вариантах – без тегов и с разметкой.",
                      *   @OA\RequestBody(
@@ -609,7 +609,7 @@ class ApiController extends BaseController
                 case "tags":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/tags",
+                     *   path="/v2/tags",
                      *   tags={"Mobile Api"},
                      *   @OA\RequestBody(
                      *       description="Запрос списка тегов",
@@ -627,7 +627,7 @@ class ApiController extends BaseController
                 case "gallery":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/gallery",
+                     *   path="/v2/gallery",
                      *   tags={"Mobile Api"},
                      *   @OA\RequestBody(
                      *       description="Получение фотографий из галереи для новости",
@@ -645,7 +645,7 @@ class ApiController extends BaseController
                 case "push":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/push",
+                     *   path="/v2/push",
                      *   tags={"Mobile Api"},
                      *   @OA\RequestBody(
                      *       description="Регистрация токена PUSH-уведомлений",
@@ -669,7 +669,7 @@ class ApiController extends BaseController
                     if ($options["action"] == "add") {
                         /**
                          * @OA\Post(
-                         *   path="/mobile/v1/comment_add",
+                         *   path="/v2/comment_add",
                          *   tags={"Mobile Api"},
                          *   @OA\RequestBody(
                          *       description="Отправка комментария",
@@ -686,7 +686,7 @@ class ApiController extends BaseController
                     } elseif ($options["action"] == "get") {
                         /**
                          * @OA\Post(
-                         *   path="/mobile/v1/comment_get",
+                         *   path="/v2/comment_get",
                          *   tags={"Mobile Api"},
                          *   @OA\RequestBody(
                          *       description="Получение комментариев",
@@ -709,7 +709,7 @@ class ApiController extends BaseController
                 case "types":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/types",
+                     *   path="/v2/types",
                      *   tags={"Mobile Api"},
                      *   @OA\RequestBody(
                      *       description="Запрос типов контента, который комментируется",
@@ -727,7 +727,7 @@ class ApiController extends BaseController
                 case "countries":
                     /**
                      * @OA\Post(
-                     *   path="/mobile/v1/countries",
+                     *   path="/v2/countries",
                      *   tags={"Mobile Api"},
                      *   @OA\RequestBody(
                      *       description="Запрос списка стран",
