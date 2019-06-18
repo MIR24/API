@@ -26,7 +26,7 @@ use Illuminate\Validation\Rule;
 
 class ApiController extends BaseController
 {
-    private const PATH_BEGIN = "/v2";
+    private const PATH_BEGIN = "v2";
 
     public static $OPERATIONS = [
         'auth',
