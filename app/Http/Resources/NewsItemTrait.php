@@ -9,7 +9,7 @@ trait NewsItemTrait
     {
         $result = [
             "id" => $this->id,
-            "date" => (new \DateTime($this->date))->format("M d, Y h:m:s A"),
+            "date" => (new \DateTime($this->date))->format("M d, Y h:i:s A"),
             "shortText" => $this->shortText,
             "shortTextSrc" => $this->shortTextSrc,
             "title" => $this->title,
