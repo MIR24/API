@@ -39,7 +39,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        $this->mapSmartTVRoutes();
     }
 
     /**
@@ -65,9 +65,17 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        Route::prefix('api')
+        Route::prefix('v2')
              ->middleware('api')
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapSmartTVRoutes()
+    {
+        Route::prefix('api')
+           // ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/smarttv.php'));
     }
 }

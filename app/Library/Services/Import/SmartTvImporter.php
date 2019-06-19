@@ -93,9 +93,9 @@ class SmartTvImporter
 
         foreach ($broadcasts as $broadcast) {
             $category_id = array_key_exists($broadcast->article_title, $categories)
-                ? $categories[$broadcast->article_title]
+                ? $categories[$broadcast->article_title]??null
                 : array_key_exists($broadcast->title, $categories)
-                    ? $categories[$broadcast->title]
+                    ? $categories[$broadcast->title]??null
                     : null;
 
             $atributes = [

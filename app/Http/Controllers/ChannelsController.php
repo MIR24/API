@@ -10,7 +10,7 @@ class ChannelsController extends Controller
 {
     /**
      * @OA\Get(
-     *   path="/smart/v1/channels",
+     *   path="/api/smart/v1/channels",
      *   summary="Получение каналов и передач на неделю",
      *   tags={"SmartTV"},
      *   externalDocs="https://mir24tv.atlassian.net/browse/SSAPI-3",
