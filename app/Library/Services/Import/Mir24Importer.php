@@ -24,7 +24,7 @@ class Mir24Importer
 
     public function getLastNews(?int $period): array
     {
-        $query = "SELECT    n.id, n.created_at as date, n.published_at, n.advert as shortText, n.text, "
+        $query = "SELECT    n.id, n.created_at, n.published_at as date, n.advert as shortText, n.text, "
             . "          n.title, imn.image_id as imageId, t.id AS rubric_id, UPPER(t.title) AS categoryName, "
             . "          nv.video_id as videoId, v.url AS videoUrl, v.duration AS videoDuration, a.name AS author, "
             . "          c.origin, c.link, n.main_top as topListNews, "
@@ -43,6 +43,7 @@ class Mir24Importer
             . "LEFT JOIN authors a ON a.id = i.author_id "
             . "LEFT JOIN videos v ON v.id = nv.video_id "
             . "WHERE     n.title IS NOT NULL "
+            . "AND       n.status = 'active' "
             . "AND       n.text  IS NOT NULL "
             . "AND       t.type = 3 "
             . "AND       ((n.created_at > (NOW() - INTERVAL " . ($this->getUpdatePeriod($period) + 1) . " MINUTE) "
