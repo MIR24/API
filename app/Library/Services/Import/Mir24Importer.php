@@ -124,15 +124,15 @@ class Mir24Importer
         $filtered = [];
 
         foreach ($news as $item) {
-            switch ($item->categoryName) {
-                //change last english C on full russian name
-                case "ШОУ-БИЗНЕC":
-                    $item->categoryName = "ШОУ-БИЗНЕС";
-                    break;
-                case "НАУКА И ТЕХНОЛОГИИ":
-                    $item->categoryName = $item->id % 2 == 0 ? "НАУКА" : "HI-TECH";
-                    break;
-            }
+//            switch ($item->categoryName) {
+//                //change last english C on full russian name
+//                case "ШОУ-БИЗНЕC":
+//                    $item->categoryName = "ШОУ-БИЗНЕС";
+//                    break;
+//                case "НАУКА И ТЕХНОЛОГИИ":
+//                    $item->categoryName = $item->id % 2 == 0 ? "НАУКА" : "HI-TECH";
+//                    break;
+//            }
 
             # TODO categoryName может не оказаться в $availableCategories из-за замены в switch/case
             if (array_key_exists($item->categoryName, $availableCategories)) {
