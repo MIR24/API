@@ -17,8 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('mobile/v1/upload','UploadController@upload')->middleware('token:upload','mobile');
-
 Route::post('/','ApiController@index')->middleware('token','mobile');
 
 foreach(\App\Http\Controllers\ApiController::$OPERATIONS as $operation ) {

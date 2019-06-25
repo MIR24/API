@@ -42,3 +42,5 @@ Route::get('/video/content/{videoID}', function ($videoID, VideoRouter $router) 
 Route::post('/v2/update',function (){
     return "Not implemented";
 });
+
+Route::post('mobile/v1/upload','UploadController@upload')->middleware('token:upload','mobile');
