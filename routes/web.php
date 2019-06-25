@@ -39,6 +39,6 @@ Route::get('/video/content/{videoID}', function ($videoID, VideoRouter $router) 
     );
 })->where(['videoID' => '[0-9]+']);
 
-Route::get('/v2/update',function (){
+Route::post('/v2/update',function (){
     return "Not implemented";
 });
