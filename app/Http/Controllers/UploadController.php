@@ -65,7 +65,7 @@ class UploadController extends Controller
      * ),
      *
      * @OA\Post(
-     *   path="/mobile/v1/upload",
+     *   path="/v2/upload",
      *   tags={"Mobile Api"},
      *   summary="Запрос для записи файдов",
      *

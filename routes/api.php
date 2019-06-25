@@ -27,3 +27,5 @@ foreach(\App\Http\Controllers\ApiController::$OPERATIONS as $operation ) {
         Route::post('/' . $operation, 'ApiController@index')->middleware('token', 'mobile');
     }
 }
+
+Route::post('/upload','UploadController@upload')->middleware('token:upload','mobile');
