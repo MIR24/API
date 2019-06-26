@@ -35,6 +35,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        $this->mapApiOldRoutes();
+
         $this->mapApiRoutes();
 
         $this->mapWebRoutes();
@@ -70,6 +72,15 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
     }
+
+    protected function mapApiOldRoutes()
+    {
+        Route::prefix('')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/old_api.php'));
+    }
+
 
     protected function mapSmartTVRoutes()
     {
