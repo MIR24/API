@@ -27,6 +27,7 @@ use Illuminate\Validation\Rule;
 class ApiController extends BaseController
 {
     private const PATH_BEGIN = "v2";
+    private const PATH_BEGIN_OLD = "/";
 
     public static $OPERATIONS = [
         'auth',
@@ -773,7 +774,7 @@ class ApiController extends BaseController
             return;
         }
 
-        if ($path == self::PATH_BEGIN) {
+        if ($path == self::PATH_BEGIN || $path == self::PATH_BEGIN_OLD) {
             return;
         }
 
