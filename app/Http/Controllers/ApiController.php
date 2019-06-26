@@ -781,4 +781,8 @@ class ApiController extends BaseController
         throw new AnswerOldException($operation,
             sprintf("Operation \"%s\" not contains in path \"%s\"", $operation, $path));
     }
+
+    public function channels(){
+       return response()->json(config('api_channels'));
+    }
 }
