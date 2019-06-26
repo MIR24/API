@@ -12,3 +12,7 @@ foreach(\App\Http\Controllers\ApiController::$OPERATIONS as $operation ) {
 }
 
 Route::post('/upload','UploadController@upload')->middleware('token:upload','mobile');
+
+Route::match(['get','post'],'/v2/update',function (){
+    return "Not implemented";
+});
