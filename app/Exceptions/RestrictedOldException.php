@@ -15,6 +15,6 @@ class RestrictedOldException extends OldException
     {
         parent::__construct($operation, $message);
 
-        $this->newStatus = 403;
+        $this->newStatus = 400;
     }
 }
