@@ -4,6 +4,7 @@
 namespace App\Library\Services\Resources;
 
 
+use App\Exceptions\RestrictedOldException;
 use App\News;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +35,7 @@ class VideoRouter implements InterfaceRouter
 
         if (!$news) {
             Log::error("Not found news with video id {$videoID}");
-            abort(404);
+            throw new RestrictedOldException('','Data is empty or invalid');
         }
 
         if ($news->url) {
@@ -50,14 +51,14 @@ class VideoRouter implements InterfaceRouter
             return config('api_images.video_root') . $url;
         }
 
-        abort(404);
+        throw new RestrictedOldException('','Data is empty or invalid');
     }
 
     function getResult(array $params): string
     {
         if (!isset($params['videoID'])) {
             Log::error('Need use videoID params');
-            abort(404);
+            throw new RestrictedOldException('','Data is empty or invalid');
         }
 
         return $this->getUrl($params['videoID']);

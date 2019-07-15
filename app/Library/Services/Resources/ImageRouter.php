@@ -5,6 +5,7 @@ namespace App\Library\Services\Resources;
 
 
 use App\Crops;
+use App\Exceptions\RestrictedOldException;
 use App\News;
 
 use App\Photos;
@@ -51,7 +52,7 @@ class ImageRouter implements InterfaceRouter
 
         if (!$news) {
             Log::error("Not found news for $imageId");
-            abort(404);
+            throw new RestrictedOldException('','Data is empty or invalid');
         }
 
         foreach ($data as $item) {
@@ -71,7 +72,7 @@ class ImageRouter implements InterfaceRouter
 
         Log::error("Not found 'crops' for image with id={$imageId}");
 
-        abort(404);
+        throw new RestrictedOldException('','Data is empty or invalid');
     }
 
 
@@ -79,7 +80,7 @@ class ImageRouter implements InterfaceRouter
     {
         if (!isset($params['id']) || !isset($params['type'])) {
             Log::error('Need use image and type params');
-            abort(404);
+            throw new RestrictedOldException('','Data is empty or invalid');
         }
         return $this->getSrc($params['id'], $params['type']);
     }

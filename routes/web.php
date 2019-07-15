@@ -20,9 +20,19 @@ Route::get('/', function () {
 });
 
 Route::get('/images/uploaded/{type}{id}.jpg', function ($type, $id, ImageRouter $router) {
-    return redirect(
+    return redirect()->away(
         (new ResourcesCache($router))->addCache(
-            "/images/uploaded/{$type}{$id}.jpg/",
+            $_SERVER['REQUEST_URI'],
+            ['type' => $type, 'id' => $id],
+            config('cache.images_url_cache_time')
+        )
+    );
+})->where(['id' => '[0-9]+', 'type' => '[a-z,_]+']);
+
+Route::get('/v2/media/images/uploaded/{type}{id}.jpg', function ($type, $id, ImageRouter $router) {
+    return redirect()->away(
+        (new ResourcesCache($router))->addCache(
+            $_SERVER['REQUEST_URI'],
             ['type' => $type, 'id' => $id],
             config('cache.images_url_cache_time')
         )
@@ -30,9 +40,9 @@ Route::get('/images/uploaded/{type}{id}.jpg', function ($type, $id, ImageRouter 
 })->where(['id' => '[0-9]+', 'type' => '[a-z,_]+']);
 
 Route::get('/video/content/{videoID}', function ($videoID, VideoRouter $router) {
-    return redirect(
+    return redirect()->away(
         (new ResourcesCache($router))->addCache(
-            "/video/content/{$videoID}",
+            $_SERVER['REQUEST_URI'],
             ['videoID' => $videoID],
             config('cache.video_url_cache_time')
         )
