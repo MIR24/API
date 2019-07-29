@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Chanels;
 use App\Exceptions\AnswerOldException;
 use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\OldException;
@@ -783,6 +784,7 @@ class ApiController extends BaseController
     }
 
     public function channels(){
-       return response()->json(config('api_channels'));
+       return response()->json(Chanels::all());
+
     }
 }
