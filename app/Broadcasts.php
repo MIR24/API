@@ -21,7 +21,7 @@ class Broadcasts extends Model
 {
     protected $table = 'broadcasts';
 
-    protected $fillable = ['id', 'title', 'subtitle', 'age_restriction', 'day_of_week', 'time_begin', 'time_end', 'category_id', 'channel_id'];
+    protected $fillable = ['id', 'title', 'subtitle', 'age_restriction', 'day_of_week', 'time_begin', 'time_end', 'category_id', 'channel_id','old_id'];
 
     protected $hidden = [
         'id',
