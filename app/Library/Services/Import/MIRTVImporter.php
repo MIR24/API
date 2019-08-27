@@ -26,6 +26,7 @@ class MIRTVImporter
         $this->params['days'] = date(DATE_W3C, strtotime($this->params['days']));
     }
 
+
     public function getPremiere()
     {
         $query = "SELECT premiere_id, title, description, start FROM premiere where start > ? order by start desc limit ?";
