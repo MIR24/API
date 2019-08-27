@@ -85,6 +85,11 @@ class SmartTvImporter
                 . " FROM programms t"
                 . " where t.date > ?  order by t.date asc";
         }
+        if ($connection == self::MIRTV) {
+            $query = "SELECT t.teleprogramm_id, t.title, t.description, t.min_age, t.start"
+                . " FROM teleprogramm_mir t"
+                . " where t.start > ?  order by t.start asc";
+        }
 
         $start_time = (new \DateTime("now - {$this->params['tv_program_end_period']} minute"))->format(DATE_W3C);
 
