@@ -19,6 +19,8 @@ class SmartTvImporter
 
     const MIRHD = 'mirhd';
 
+    const MIRTV = 'mirtv';
+
     /**
      * SmartTvImporter constructor.
      * @param $params array

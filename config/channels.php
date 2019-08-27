@@ -120,11 +120,19 @@ return [
             'logo' => 'http://onair.mir24.tv/images/custom/logo.png',
         ],
         [
-            'name' => 'МИР',
+            'name' => 'МИР24',
             'id_in_mir24' => 15363866,
             'id_in_api' => 2,
             'stream_shift' => '',
             'stream_live' => 'http://hls.mirtv.cdnvideo.ru/mirtv-parampublish/mirtv_2500/playlist.m3u8',
+            'logo' => 'http://onair.mir24.tv/images/custom/logo.png',
+        ],
+        [
+            'name' => 'МИРТВ',
+            'id_in_mir24' => 15363866,
+            'id_in_api' => 3,
+            'stream_shift' => '',
+            'stream_live' => ' ',
             'logo' => 'http://onair.mir24.tv/images/custom/logo.png',
         ]
     ],

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Library\Services\Import\MIRTVImporter;
 use App\Library\Services\Import\SmartTvImporter;
 use App\Library\Services\Import\SmartTvVideo;
 use App\Library\Services\TimeReplacer\TimeReplacer;
@@ -43,6 +44,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->bind('App\Library\Services\Import\SmartTvVideo', function ($app) {
             return new SmartTvVideo(config('channels.archive'));
+        });
+        $this->app->bind('App\Library\Services\Import\MIRTVImporter', function ($app) {
+            return new MIRTVImporter(config('mir_news'));
         });
 
     }
