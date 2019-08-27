@@ -71,19 +71,25 @@ class SmartTvImporter
         return $this;
     }
 
-    public function getBroadcasts(): array
+    public function getBroadcasts($connection=self::MIRHD): array
     {
-
-        $query = "SELECT t.teleprogramm_id, t.title, t.description, t.min_age, t.start, a.title as article_title"
-            . " FROM teleprogramm_mirhd t LEFT JOIN article a ON t.article_broadcast_id = a.article_id"
-            . " where t.start > ?  order by t.start asc";
+        if ($connection == self::MIRHD) {
+            $query = "SELECT t.teleprogramm_id, t.title, t.description, t.min_age, t.start, a.title as article_title"
+                . " FROM teleprogramm_mirhd t LEFT JOIN article a ON t.article_broadcast_id = a.article_id"
+                . " where t.start > ?  order by t.start asc";
+        }
+        if ($connection == self::MIR24) {
+            $query = "SELECT t.id teleprogramm_id, t.brand_name title, t.desc description, t.age min_age, t.date start, t.time"
+                . " FROM programms t"
+                . " where t.date > ?  order by t.date asc";
+        }
 
         $start_time = (new \DateTime("now - {$this->params['tv_program_end_period']} minute"))->format(DATE_W3C);
 
-        return DB::connection(self::MIRHD)->select($query, [$start_time]);
+        return DB::connection($connection)->select($query, [$start_time]);
     }
 
-    public function saveBroadcasts($broadcasts, $channel_id): self
+    public function saveBroadcasts($broadcasts, $channel_id, $isCategory = true): self
     {
         $end = null;
         $buff = null;
@@ -92,32 +98,37 @@ class SmartTvImporter
         $this->addTimeEnd($broadcasts);
 
         foreach ($broadcasts as $broadcast) {
-            $category_id = array_key_exists($broadcast->article_title, $categories)
-                ? $categories[$broadcast->article_title]??null
-                : array_key_exists($broadcast->title, $categories)
-                    ? $categories[$broadcast->title]??null
-                    : null;
+
+            if ($isCategory) {
+                $category_id = array_key_exists($broadcast->article_title, $categories)
+                    ? $categories[$broadcast->article_title] ?? null
+                    : array_key_exists($broadcast->title, $categories)
+                        ? $categories[$broadcast->title] ?? null
+                        : null;
+            }
 
             $atributes = [
                 'title' => $broadcast->title,
                 'subtitle' => $broadcast->description,
-                'age_restriction' => $broadcast->min_age,
+                'age_restriction' => $broadcast->min_age??0,
                 'day_of_week' => (new \DateTime($broadcast->start))->format('l'),
-                'time_begin' => $broadcast->start,
+                'time_begin' => isset($broadcast->time) ? $broadcast->start . ' ' . $broadcast->time : $broadcast->start,
                 'time_end' => isset($broadcast->end) ? $broadcast->end : $broadcast->start,
-                'category_id' => $category_id,
+                'category_id' => $isCategory ? $category_id : null,
                 'channel_id' => $channel_id,
             ];
 
             /**
              * @var $res Broadcasts
              */
-            $res = Broadcasts::find($broadcast->teleprogramm_id);
+            $res = Broadcasts::where('old_id', $broadcast->teleprogramm_id)
+                ->where('channel_id',$channel_id)
+                ->first();
 
             if ($res) {
                 $res->update($atributes);
             } else {
-                $res = new Broadcasts(array_merge(['id' => $broadcast->teleprogramm_id], $atributes));
+                $res = new Broadcasts(array_merge(['old_id' => $broadcast->teleprogramm_id], $atributes));
             }
 
             $res->save();

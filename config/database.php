@@ -88,6 +88,22 @@ return [
             'engine' => null,
         ],
 
+        'mirtv' => [
+            'driver' => 'mysql',
+            'host' => env('DB_MIRTV_HOST', '127.0.0.1'),
+            'port' => env('DB_MIRTV_PORT', '3306'),
+            'database' => env('DB_MIRTV_DATABASE', ''),
+            'username' => env('DB_MIRTV_USERNAME', ''),
+            'password' => env('DB_MIRTV_PASSWORD', ''),
+            'unix_socket' => env('DB_MIRTV_SOCKET', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),
