@@ -117,7 +117,7 @@ class SmartTvImporter
             $atributes = [
                 'title' => $broadcast->title,
                 'subtitle' => $broadcast->description,
-                'age_restriction' => $broadcast->min_age??0,
+                'age_restriction' => empty($broadcast->min_age) ? 0 : $broadcast->min_age,
                 'day_of_week' => (new \DateTime($broadcast->start))->format('l'),
                 'time_begin' => isset($broadcast->time) ? $broadcast->start . ' ' . $broadcast->time : $broadcast->start,
                 'time_end' => isset($broadcast->end) ? $broadcast->end : $broadcast->start,
