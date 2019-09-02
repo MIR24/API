@@ -80,10 +80,15 @@ class SmartTvImporter
                 . " FROM teleprogramm_mirhd t LEFT JOIN article a ON t.article_broadcast_id = a.article_id"
                 . " where t.start > ?  order by t.start asc";
         }
+//        if ($connection == self::MIR24) {
+//            $query = "SELECT t.id teleprogramm_id, t.brand_name title, t.desc description, t.age min_age, t.date start, t.time"
+//                . " FROM programms t"
+//                . " where t.date > ?  order by t.date asc";
+//        }
         if ($connection == self::MIR24) {
-            $query = "SELECT t.id teleprogramm_id, t.brand_name title, t.desc description, t.age min_age, t.date start, t.time"
-                . " FROM programms t"
-                . " where t.date > ?  order by t.date asc";
+            $query = "SELECT t.teleprogramm_id, t.title, t.description, t.min_age, t.start"
+                . " FROM teleprogramm_mir24 t"
+                . " where t.start > ?  order by t.start asc";
         }
         if ($connection == self::MIRTV) {
             $query = "SELECT t.teleprogramm_id, t.title, t.description, t.min_age, t.start"
@@ -92,8 +97,8 @@ class SmartTvImporter
         }
 
         $start_time = (new \DateTime("now - {$this->params['tv_program_end_period']} minute"))->format(DATE_W3C);
-        $connection == self::MIRHD ? self::MIRTV : $connection;
-        return DB::connection($connection)->select($query, [$start_time]);
+
+        return DB::connection(self::MIRTV)->select($query, [$start_time]);
     }
 
     public function saveBroadcasts($broadcasts, $channel_id, $isCategory = true): self
