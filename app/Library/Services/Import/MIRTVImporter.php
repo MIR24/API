@@ -5,7 +5,6 @@ namespace App\Library\Services\Import;
 
 
 use Illuminate\Support\Facades\DB;
-use test\Mockery\ReturnTypeObjectTypeHint;
 
 class MIRTVImporter
 {
@@ -30,6 +29,6 @@ class MIRTVImporter
     public function getPremiere()
     {
         $query = "select  premiere_id, title, description, start  from premiere  where active = 1 and mainpage_top = 1 and published_start < now() and published_stop > now() order by start  limit ?";
-        return DB::connection(self::MIRTV)->select($query, $this->params['limit']]);
+        return DB::connection(self::MIRTV)->select($query, $this->params['limit']);
     }
 }
