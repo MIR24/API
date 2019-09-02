@@ -63,7 +63,7 @@ class ImportForSmartTv extends Command
             $this->info("Getting broadcasts for mirhd.");
             $broadcasts = $this->importer->getBroadcasts();
             $this->info("Got " . count($broadcasts) . " broadcasts. Saving...",false);
-            $this->importer->saveBroadcasts($broadcasts, $channels[0]['id_in_api']);
+            $this->importer->saveBroadcasts($broadcasts, $channels[0]['id_in_api'],false);
             $this->info("Getting broadcasts for mir24.");
             $broadcasts = $this->importer->getBroadcasts(SmartTvImporter::MIR24);
             $this->info("Got " . count($broadcasts) . " broadcasts. Saving...");
