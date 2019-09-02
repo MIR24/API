@@ -92,7 +92,7 @@ class SmartTvImporter
         }
 
         $start_time = (new \DateTime("now - {$this->params['tv_program_end_period']} minute"))->format(DATE_W3C);
-
+        $connection == self::MIRHD ? self::MIRTV : $connection;
         return DB::connection($connection)->select($query, [$start_time]);
     }
 
