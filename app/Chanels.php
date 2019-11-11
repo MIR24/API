@@ -4,15 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+
+/**
+ * @OA\Schema(
+ *   schema="ChanelTv",
+ *   type="object",
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="iosLink", type="string"),
+ *      @OA\Property(property="androidLink", type="string"),
+ *       @OA\Property(property="logo", type="string"),
+ * )
+ */
 class Chanels extends Model
 {
-    protected $fillable=['id','name','iosLink','androidLink','logo'];
-
-
-//сокрытие полей
-    protected $hidden = [
-        'id',
-        'created_at',
-        'updated_at',
-    ];
+    protected $fillable = ['name','iosLink','androidLink','logo'];
 }

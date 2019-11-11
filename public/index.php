@@ -1,4 +1,5 @@
 <?php
+header('X-Total-Count: 216');
 
 /**
  * Laravel - A PHP Framework For Web Artisans

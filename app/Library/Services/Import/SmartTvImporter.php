@@ -7,6 +7,7 @@ use App\Archive;
 use App\Broadcasts;
 use App\CategoryTv;
 use App\Channel;
+use App\ChoiceCategory;
 use App\Episode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -93,9 +94,9 @@ class SmartTvImporter
 
         foreach ($broadcasts as $broadcast) {
             $category_id = array_key_exists($broadcast->article_title, $categories)
-                ? $categories[$broadcast->article_title]??null
+                ? $categories[$broadcast->article_title] ?? null
                 : array_key_exists($broadcast->title, $categories)
-                    ? $categories[$broadcast->title]??null
+                    ? $categories[$broadcast->title] ?? null
                     : null;
 
             $atributes = [
@@ -248,19 +249,61 @@ class SmartTvImporter
         return str_replace("\n", "", strip_tags($title));
     }
 
-    private function getCategoryNames()
+    /**
+     * @return array
+     *
+     */
+
+    public function getNames($itemArchs, $itemCategory)
     {
         $categories = [];
-        foreach ($this->params['archives'] as $itemArch) {
-            $filteredCategoriesTv = array_values(array_filter($this->params['categories_tv'],
+
+        foreach ($itemArchs as $itemArch) {
+            $filteredCategoriesTv = array_values(array_filter($itemCategory),
                 function ($itemCat) use ($itemArch) {
                     return $itemCat['name'] === $itemArch['category'];
-                }));
+                });
             if (count($filteredCategoriesTv)) {
                 $categories[$itemArch['name']] = $filteredCategoriesTv[0]['id'];
             }
         }
-
         return $categories;
     }
+
+    private function getCategoryNames()
+    {
+        $itemArchs = ChoiceCategory::all()->toArray();
+        $itemCategory = CategoryTv::all()->toArray();
+        if (!empty($itemArchs) && !empty($itemCategory)) {
+            return $this->getNames($itemArchs, $itemCategory);
+        }
+
+        return $this->getNames($this->params['archives'], $this->params['categories_tv']);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+/*$categories = [];
+
+foreach ($this->params(ChoiceCategory:: all('name','category')->toArray()) as $itemArch) {
+    $filteredCategoriesTv = array_values(array_filter($this->params['categories_tv'],
+        function ($itemCat) use ($itemArch) {
+            return $itemCat['name'] === $itemArch['category'];
+        }));
+    if (count($filteredCategoriesTv)) {
+        $categories[$itemArch['name']] = $filteredCategoriesTv[0]['id'];
+    }
+}
+
+return $categories;
+}
+}*/

@@ -35,6 +35,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
+        $this->mapApiAdminRoutes();
+
         $this->mapApiOldRoutes();
 
         $this->mapApiRoutes();
@@ -54,8 +56,8 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web.php'));
     }
 
     /**
@@ -68,9 +70,9 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::prefix('v2')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
+            ->middleware('api' , 'cors')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
     }
 
     protected function mapApiOldRoutes()
@@ -85,8 +87,27 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapSmartTVRoutes()
     {
         Route::prefix('api')
-           // ->middleware('api')
+            // ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/smarttv.php'));
     }
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapApiAdminRoutes()
+    {
+        Route::prefix('v2')
+//            ->middleware(
+//                'api'
+//             ,  'auth:api'
+//            )
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api_admin.php'));
+    }
 }
+

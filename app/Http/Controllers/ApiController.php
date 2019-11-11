@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Chanels;
 use App\Exceptions\AnswerOldException;
-use App\Exceptions\InvalidClientOldException;
 use App\Exceptions\OldException;
 use App\Exceptions\ServerOldException;
 use App\Library\Services\Commands\GetComment;
-use App\Library\Services\Commands\GetListOfEntityTypesForComment;
 use App\Library\Services\Commands\GetListOfCategories;
 use App\Library\Services\Commands\GetListOfConfig;
 use App\Library\Services\Commands\GetListOfCountries;
+use App\Library\Services\Commands\GetListOfEntityTypesForComment;
 use App\Library\Services\Commands\GetListOfNews;
 use App\Library\Services\Commands\GetListOfPhotos;
 use App\Library\Services\Commands\GetListOfTags;
@@ -289,8 +288,8 @@ class ApiController extends BaseController
      *   type="object",
      *   description="Параметры onlyVideo, onlyWithGallery, lastNews (limit новостей из каждой категории) – являются необязательными (при false – можно не указывать) и взаимоисключающими.
      *      actual – прислать последние limit новостей из раздела актуальное (lastNews должно быть отключено).",
-     *   @OA\Property(property="request", type="string", example="newslist"),
-     *   @OA\Property(property="options", type="object",
+     * @OA\Property(property="request", type="string", example="newslist"),
+     * @OA\Property(property="options", type="object",
      *     @OA\Property(property="page", type="integer", example=1),
      *     @OA\Property(property="limit", type="integer", example=20),
      *     @OA\Property(property="actual", type="boolean", example=false),
@@ -302,7 +301,7 @@ class ApiController extends BaseController
      *     @OA\Property(property="onlyVideo", type="boolean", example=false),
      *     @OA\Property(property="onlyWithGallery", type="boolean", example=false)
      *   ),
-     *   @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
+     * @OA\Property(property="token", type="string", description="идентификатор, получаемый после удачной авторизации"),
      * )
      * @OA\Schema(
      *   schema="apiResponseNewsList",
@@ -454,7 +453,8 @@ class ApiController extends BaseController
         GetListOfPhotos $getListOfPhotos,
         GetListOfTags $getListOfTags,
         Push $push
-    ) {
+    )
+    {
 
         $validator = Validator::make($request->all(), [
             'request' => [
@@ -783,8 +783,9 @@ class ApiController extends BaseController
             sprintf("Operation \"%s\" not contains in path \"%s\"", $operation, $path));
     }
 
-    public function channels(){
-       return response()->json(Chanels::all());
+    public function channels()
+    {
+        return response()->json(Chanels::all());
 
     }
 }

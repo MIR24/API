@@ -8,7 +8,7 @@ use Closure;
 class APIToken
 {
 
-    private  $validation;
+    private $validation;
 
     /**
      * APIToken constructor.
@@ -16,19 +16,19 @@ class APIToken
      */
     public function __construct(TokenValidation $validation)
     {
-        $this->validation=$validation;
+        $this->validation = $validation;
     }
 
 
     /**
      * @param $request
      * @param Closure $next
-     * @param mixed $errorsType  configuration for validation errors types @see TokenValidation
+     * @param mixed $errorsType configuration for validation errors types @see TokenValidation
      * @return \Illuminate\Http\JsonResponse|mixed
      * @throws \App\Exceptions\RestrictedOldException
      * @throws \App\Exceptions\UploadException
      */
-    public function handle($request, Closure $next,$errorsType=false)
+    public function handle($request , Closure $next , $errorsType = false)
     {
         if($request->get('request')==='auth'){
             return $next($request);
@@ -39,3 +39,4 @@ class APIToken
         return response()->json(["message"=>'error','status'=>'404'],200);
     }
 }
+
